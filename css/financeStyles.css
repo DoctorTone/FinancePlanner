@@ -18,8 +18,8 @@
     padding: 1%;
 }
 #expenseInfo {
-    top:0%;
-    right:20%;
+    top:1%;
+    right:2%;
     width: 15%;
 }
 #expenseInfo p {
@@ -38,4 +38,8 @@
     top:10%;
     left:30%;
     width: 30%;
+}
+.selected {
+    background-color: red;
+    color: white;
 }

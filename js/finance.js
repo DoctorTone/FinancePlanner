@@ -193,6 +193,10 @@ Finance.prototype.removeExpense = function() {
     $('#removeForm').show();
 };
 
+Finance.prototype.dismissExpense = function() {
+    $('#removeForm').hide();
+};
+
 Finance.prototype.updateCurrentNode = function(expense) {
     var day = this.currentDate.day;
     var label = spriteManager.getSpriteByIndex((day*2)+2);
@@ -208,7 +212,7 @@ $(document).ready(function() {
     var app = new Finance();
     app.init(container);
     app.createScene();
-    app.createGUI();
+    //app.createGUI();
 
     //GUI callbacks
     $('#right').on("click", function(event) {
@@ -231,6 +235,15 @@ $(document).ready(function() {
 
     $('#removeItem').on("click", function(event) {
         app.removeExpense();
+    });
+
+    $('#dismiss').on("click", function(event) {
+        app.dismissExpense();
+    });
+
+    $('#removeTable tr').click(function() {
+        $(this).addClass('selected').siblings().removeClass('selected');
+        //var value=$(this).find('td:first').html();
     });
 
     app.run();

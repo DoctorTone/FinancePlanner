@@ -16,7 +16,7 @@
     <script type="text/javascript" src="js/baseApp.js?v=0.3"></script>
     <script type="text/javascript" src="js/expense.js?v=0.1"></script>
     <script type="text/javascript" src="js/expenseManager.js?v=0.2"></script>
-    <script type="text/javascript" src="js/finance.js?v=0.3"></script>
+    <script type="text/javascript" src="js/finance.js?v=0.4"></script>
 
     <link rel="stylesheet" href="css/bootstrap.min.css?v=0.1">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css?v=0.1">
@@ -74,7 +74,7 @@
 </div>
 
 <div id="removeForm" class="infoPanel noDisplay">
-    <table class="table table-hover">
+    <table id="removeTable" class="table">
         <thead>
             <tr>
                 <th>#</th>
@@ -83,7 +83,28 @@
                 <th>Tags</th>
             </tr>
         </thead>
+        <tbody>
+            <tr>
+                <th>1</th>
+                <td>2.20</td>
+                <td>Coffee</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>2</th>
+                <td>3.75</td>
+                <td>Lunch</td>
+                <td></td>
+            </tr>
+            <tr>
+                <th>3</th>
+                <td>14.80</td>
+                <td>Sainsburys</td>
+                <td></td>
+            </tr>
+        </tbody>
     </table>
+    <button id="dismiss" type="button">Close</button>
 </div>
 
 </body>
