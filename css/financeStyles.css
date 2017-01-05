@@ -1,0 +1,41 @@
+/* Framework styles */
+
+#WebGL-output {
+    /* set margin to 0 and overflow to hidden, to go fullscreen */
+    margin: 0;
+    overflow: hidden;
+}
+.noDisplay {
+    display: none;
+}
+.centre {
+    text-align: center;
+}
+.infoPanel {
+    position: absolute;
+    background-color: lightgrey;
+    border-radius: 10px;
+    padding: 1%;
+}
+#expenseInfo {
+    top:0%;
+    right:20%;
+    width: 15%;
+}
+#expenseInfo p {
+    text-align: center;
+}
+#addForm {
+    top:10%;
+    left:40%;
+    width: 30%;
+}
+#errorText {
+    margin-left: 55%;
+    color: red;
+}
+#removeForm {
+    top:10%;
+    left:30%;
+    width: 30%;
+}
