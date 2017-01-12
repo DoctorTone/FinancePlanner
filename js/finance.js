@@ -141,8 +141,31 @@ Finance.prototype.updateExpenditure = function() {
     $('#expenditure').html(expense !== undefined ? expense.getTotal().toFixed(2) : "00.00");
 };
 
-Finance.prototype.showAddExpense = function() {
+Finance.prototype.addExpense = function() {
     $('#addForm').show();
+};
+
+Finance.prototype.addExpenseItem = function() {
+    var expense = ExpenseManager.updateExpense(this.currentDate, this.currentAmount, this.currentItem, this.currentTags);
+    this.updateCurrentNode(expense);
+    this.updateExpenditure();
+};
+
+Finance.prototype.showExpense = function() {
+    //Show item values to edit
+    var expense = ExpenseManager.getExpense(this.currentDate);
+    var table = document.getElementById("expenseTable");
+    var row = table.insertRow(1);
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    cell1.innerHTML = "1";
+    cell2.innerHTML = "2.20";
+
+    $('#viewForm').show();
+};
+
+Finance.prototype.dismissExpense = function() {
+    $('#viewForm').hide();
 };
 
 Finance.prototype.validateExpense = function() {
@@ -152,7 +175,6 @@ Finance.prototype.validateExpense = function() {
     var tags = form["tags"].value;
     var amountElem = $('#inputAmount');
     var errorElem = $('#errorText');
-    var label;
 
     if(isNaN(amount)) {
         console.log("Invalid number");
@@ -183,18 +205,8 @@ Finance.prototype.validateExpense = function() {
     return false;
 };
 
-Finance.prototype.addExpense = function() {
-    var expense = ExpenseManager.updateExpense(this.currentDate, this.currentAmount, this.currentItem, this.currentTags);
-    this.updateCurrentNode(expense);
-    this.updateExpenditure();
-};
-
-Finance.prototype.removeExpense = function() {
-    $('#removeForm').show();
-};
-
-Finance.prototype.dismissExpense = function() {
-    $('#removeForm').hide();
+Finance.prototype.editItem = function() {
+    $('#addForm').show();
 };
 
 Finance.prototype.updateCurrentNode = function(expense) {
@@ -223,25 +235,33 @@ $(document).ready(function() {
     });
 
     $('#addExpense').on("click", function() {
-        app.showAddExpense();
+        app.addExpense();
     });
 
     $('#addExpenseForm').submit(function(event) {
         event.preventDefault();
         if(app.validateExpense()) {
-            app.addExpense();
+            app.addExpenseItem();
         }
     });
 
-    $('#removeItem').on("click", function(event) {
-        app.removeExpense();
+    $('#editExpense').on("click", function(event) {
+        app.showExpense();
     });
 
     $('#dismiss').on("click", function(event) {
         app.dismissExpense();
     });
 
-    $('#removeTable tr').click(function() {
+    $('#editItem').on("click", function() {
+        app.editItem();
+    });
+
+    $('#finish').on("click", function() {
+        app.dismissExpense();
+    });
+
+    $('#expenseTable tr').click(function() {
         $(this).addClass('selected').siblings().removeClass('selected');
         //var value=$(this).find('td:first').html();
     });

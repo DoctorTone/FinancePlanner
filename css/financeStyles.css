@@ -29,17 +29,22 @@
     top:10%;
     left:40%;
     width: 30%;
+    z-index: 1;
 }
 #errorText {
     margin-left: 55%;
     color: red;
 }
-#removeForm {
+#viewForm {
     top:10%;
     left:30%;
     width: 30%;
+    z-index: 0;
 }
 .selected {
     background-color: red;
     color: white;
+}
+#options button {
+    margin-right: 5%;
 }

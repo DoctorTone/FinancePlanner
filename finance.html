@@ -16,7 +16,7 @@
     <script type="text/javascript" src="js/baseApp.js?v=0.3"></script>
     <script type="text/javascript" src="js/expense.js?v=0.1"></script>
     <script type="text/javascript" src="js/expenseManager.js?v=0.2"></script>
-    <script type="text/javascript" src="js/finance.js?v=0.4"></script>
+    <script type="text/javascript" src="js/finance.js?v=0.5"></script>
 
     <link rel="stylesheet" href="css/bootstrap.min.css?v=0.1">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css?v=0.1">
@@ -41,7 +41,7 @@
             <span>Expenditure: </span><span id="expenditure">00.00</span>
         </div>
         <div>
-            <button id="addExpense" type="button">Add</button> <button id="removeItem" type="button">Remove</button> <button type="button">Edit</button>
+            <button id="addExpense" type="button">Add</button> <button id="editExpense" type="button">Edit</button>
         </div>
         <div>
             <button type="button">Save</button>
@@ -73,8 +73,8 @@
     </form>
 </div>
 
-<div id="removeForm" class="infoPanel noDisplay">
-    <table id="removeTable" class="table">
+<div id="viewForm" class="infoPanel noDisplay">
+    <table id="expenseTable" class="table">
         <thead>
             <tr>
                 <th>#</th>
@@ -84,27 +84,14 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <th>1</th>
-                <td>2.20</td>
-                <td>Coffee</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>2</th>
-                <td>3.75</td>
-                <td>Lunch</td>
-                <td></td>
-            </tr>
-            <tr>
-                <th>3</th>
-                <td>14.80</td>
-                <td>Sainsburys</td>
-                <td></td>
-            </tr>
+
         </tbody>
     </table>
-    <button id="dismiss" type="button">Close</button>
+    <div id="options">
+        <button id="editItem" type="button">Edit</button>
+        <button id="deleteItem" type="button">Delete</button>
+        <button id="finish" type="button">Finish</button>
+    </div>
 </div>
 
 </body>
