@@ -26,6 +26,7 @@ Finance.prototype.init = function(container) {
     this.currentAmount = 0;
     this.currentItem = undefined;
     this.currentTags = [];
+    this.expenseIndex = undefined;
 
     //Date info
     this.currentDate = {};
@@ -155,13 +156,50 @@ Finance.prototype.showExpense = function() {
     //Show item values to edit
     var expense = ExpenseManager.getExpense(this.currentDate);
     var table = document.getElementById("expenseTable");
-    var row = table.insertRow(1);
-    var cell1 = row.insertCell(0);
-    var cell2 = row.insertCell(1);
-    cell1.innerHTML = "1";
-    cell2.innerHTML = "2.20";
+    //Delete existing data
+    var i, numRows = table.rows.length-1;
+    for(i=numRows; i>=1; --i) {
+        table.deleteRow(i);
+    }
+    var numItems = expense.priceInfo.length-1;
+    var row, info;
+    for(i=0; i<=numItems; ++i) {
+        info = expense.priceInfo[i];
+        row = table.insertRow(i+1);
+        $(row).addClass("selectable");
+        row.insertCell(0).innerHTML = (i+1).toString();
+        row.insertCell(1).innerHTML = expense.prices[i];
+        row.insertCell(2).innerHTML = info.item;
+        row.insertCell(3).innerHTML = info.tags;
+    }
+
+    //this.addRowHandlers();
+    $('.selectable').on("click", function() {
+        $(this).addClass('selected').siblings().removeClass('selected');
+        var value=$(this).find('td:first').html();
+        //DEBUG
+        console.log("Selected = ", value);
+    });
 
     $('#viewForm').show();
+};
+
+Finance.prototype.addRowHandlers = function() {
+    var table = document.getElementById("expenseTable");
+    var rows = table.getElementsByTagName("tr");
+    var i, numRows = rows.length;
+    for(i = 1; i < numRows; i++) {
+        var currentRow = table.rows[i];
+        var createClickHandler =
+            function(row)
+            {
+                return function() {
+                    $(row).addClass("selected").siblings().removeClass('selected');
+                };
+            };
+
+        currentRow.onclick = createClickHandler(currentRow);
+    }
 };
 
 Finance.prototype.dismissExpense = function() {
@@ -259,11 +297,6 @@ $(document).ready(function() {
 
     $('#finish').on("click", function() {
         app.dismissExpense();
-    });
-
-    $('#expenseTable tr').click(function() {
-        $(this).addClass('selected').siblings().removeClass('selected');
-        //var value=$(this).find('td:first').html();
     });
 
     app.run();
