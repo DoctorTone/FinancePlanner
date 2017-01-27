@@ -3,26 +3,32 @@
  */
 //Financial records
 
-var Expense = function(date, amount, item, tags) {
-    this.total = amount;
+var Expense = function(date, expenseInfo) {
+    this.total = 0;
     this.day = date.day;
     this.month = date.month;
     this.year = date.year;
     this.prices = [];
-    this.prices.push(amount);
     this.priceInfo = [];
-    var info = { item: item,
-                tags: tags};
-    this.priceInfo.push(info);
+    this.addItem(expenseInfo);
 };
 
 Expense.prototype = {
-    update: function(amount, item, tags) {
-        this.prices.push(amount);
-        this.total += amount;
-        var info = { item: item,
-            tags: tags};
+    addItem: function(expenseInfo) {
+        this.prices.push(expenseInfo.amount);
+        this.total += expenseInfo.amount;
+        var info = { item: expenseInfo.item,
+                    tags: expenseInfo.tags};
         this.priceInfo.push(info);
+    },
+
+    updateItem: function(amount, item, tags, itemIndex) {
+        //Amend total
+        this.total -= this.prices[itemIndex];
+        this.prices[itemIndex] = amount;
+        this.total += amount;
+        this.priceInfo[itemIndex].item = item;
+        this.priceInfo[itemIndex].tags = tags;
     },
 
     getTotal: function() {

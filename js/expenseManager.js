@@ -8,15 +8,15 @@ var ExpenseManager = (function() {
     var expenses = [];
 
     return {
-        updateExpense: function(date, amount, item, tags) {
+        updateExpense: function(date, expenseInfo, itemIndex) {
             var index = this.getExpenseIndex(date);
             var expense;
             if(index < 0) {
-                expense = new Expense(date, amount, item, tags);
+                expense = new Expense(date, expenseInfo);
                 expenses.push(expense);
             } else {
                 expense = expenses[index];
-                expense.update(amount, item, tags);
+                itemIndex !== undefined ? expense.updateItem(expenseInfo, itemIndex) : expense.addItem(expenseInfo);
             }
 
             return expense;

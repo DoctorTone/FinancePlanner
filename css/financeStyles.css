@@ -11,6 +11,9 @@
 .centre {
     text-align: center;
 }
+.rightShift {
+    text-align: right;
+}
 .infoPanel {
     position: absolute;
     background-color: lightgrey;
@@ -31,8 +34,12 @@
     width: 30%;
     z-index: 1;
 }
+#addTitle {
+    margin-bottom: 2%;
+    font-size: 1.2vw;
+}
 #errorText {
-    margin-left: 55%;
+    margin-left: 42.5%;
     color: red;
 }
 #viewForm {

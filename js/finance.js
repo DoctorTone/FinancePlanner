@@ -8,6 +8,8 @@ var FLOOR_HEIGHT = 600;
 var SEGMENTS = 8;
 var NODE_RADIUS = 5;
 var NODE_SEGMENTS = 24;
+var EXPENSE_ADD = 0;
+var EXPENSE_EDIT = 1;
 
 //Init this app from base
 function Finance() {
@@ -27,6 +29,7 @@ Finance.prototype.init = function(container) {
     this.currentItem = undefined;
     this.currentTags = [];
     this.expenseIndex = undefined;
+    this.expenseState = EXPENSE_ADD;
 
     //Date info
     this.currentDate = {};
@@ -143,13 +146,33 @@ Finance.prototype.updateExpenditure = function() {
 };
 
 Finance.prototype.addExpense = function() {
+    this.expenseState = EXPENSE_ADD;
     $('#addForm').show();
 };
 
+Finance.prototype.cancelExpense = function() {
+    //Clear inputs for next time
+    this.clearAddForm();
+
+    $('#addForm').hide();
+};
+
+Finance.prototype.clearAddForm = function() {
+    $('#amount').val("");
+    $('#item').val("");
+    $('#tags').val("");
+};
+
 Finance.prototype.addExpenseItem = function() {
-    var expense = ExpenseManager.updateExpense(this.currentDate, this.currentAmount, this.currentItem, this.currentTags);
+    this.expenseIndex = this.expenseState === EXPENSE_ADD ? undefined : this.expenseIndex;
+    var expenseInfo = {};
+    expenseInfo.amount = this.currentAmount;
+    expenseInfo.item = this.currentItem;
+    expenseInfo.tags = this.currentTags;
+    var expense = ExpenseManager.updateExpense(this.currentDate, expenseInfo, this.expenseIndex);
     this.updateCurrentNode(expense);
     this.updateExpenditure();
+    this.clearAddForm();
 };
 
 Finance.prototype.showExpense = function() {
@@ -173,33 +196,16 @@ Finance.prototype.showExpense = function() {
         row.insertCell(3).innerHTML = info.tags;
     }
 
-    //this.addRowHandlers();
+    var _this = this;
     $('.selectable').on("click", function() {
         $(this).addClass('selected').siblings().removeClass('selected');
         var value=$(this).find('td:first').html();
         //DEBUG
         console.log("Selected = ", value);
+        _this.expenseIndex = value-1;
     });
 
     $('#viewForm').show();
-};
-
-Finance.prototype.addRowHandlers = function() {
-    var table = document.getElementById("expenseTable");
-    var rows = table.getElementsByTagName("tr");
-    var i, numRows = rows.length;
-    for(i = 1; i < numRows; i++) {
-        var currentRow = table.rows[i];
-        var createClickHandler =
-            function(row)
-            {
-                return function() {
-                    $(row).addClass("selected").siblings().removeClass('selected');
-                };
-            };
-
-        currentRow.onclick = createClickHandler(currentRow);
-    }
 };
 
 Finance.prototype.dismissExpense = function() {
@@ -244,7 +250,20 @@ Finance.prototype.validateExpense = function() {
 };
 
 Finance.prototype.editItem = function() {
+    this.expenseState = EXPENSE_EDIT;
+    this.populateAddForm();
     $('#addForm').show();
+};
+
+Finance.prototype.populateAddForm = function() {
+    var expense = ExpenseManager.getExpense(this.currentDate);
+    if(!expense) {
+        console.log("No expense for that data");
+        return;
+    }
+    $('#amount').val(expense.prices[this.expenseIndex]);
+    $('#item').val(expense.priceInfo[this.expenseIndex].item);
+    $('#tags').val(expense.priceInfo[this.expenseIndex].tags);
 };
 
 Finance.prototype.updateCurrentNode = function(expense) {
@@ -274,6 +293,10 @@ $(document).ready(function() {
 
     $('#addExpense').on("click", function() {
         app.addExpense();
+    });
+
+    $('#cancelAdd').on("click", function() {
+        app.cancelExpense();
     });
 
     $('#addExpenseForm').submit(function(event) {
