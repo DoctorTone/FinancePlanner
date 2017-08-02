@@ -28,14 +28,16 @@ body {
 #expenseInfo p {
     text-align: center;
 }
-#addForm {
+#addFormContainer {
     top:10%;
     left:40%;
     width: 30%;
     z-index: 1;
 }
-#addTitle {
+.title {
     margin-bottom: 2%;
+}
+#addFormTitle {
     font-size: 1.2vw;
 }
 #errorText {

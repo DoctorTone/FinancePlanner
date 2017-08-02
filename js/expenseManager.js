@@ -9,7 +9,7 @@ class ExpenseManager {
     }
 
     addExpense(expense) {
-        let index = this.getExpenseFromDate(expense.date);
+        let index = this.getExpenseIndexFromDate(expense.date);
         if(index < 0) {
             //New expense
             this.expenses.push([]);
@@ -18,7 +18,7 @@ class ExpenseManager {
         this.expenses[index].push(expense);
     }
 
-    getExpenseFromDate(date) {
+    getExpenseIndexFromDate(date) {
         let currentExpense, currentDate;
         for(let i=0, numExpenses=this.expenses.length; i<numExpenses; ++i) {
             currentExpense = this.expenses[i];
@@ -31,10 +31,36 @@ class ExpenseManager {
         return -1;
     }
 
+    getExpenses(date) {
+        //Get all expenses on this date
+        let index = this.getExpenseIndexFromDate(date);
+        if(index >= 0) {
+            return this.expenses[index];
+        }
+
+        return undefined;
+    }
+
+    getExpense(date, index) {
+        let expense = this.getExpenses(date);
+        if(expense) {
+            return expense[index];
+        }
+
+        return undefined;
+    }
+
+    updateExpense(expense, index) {
+        let expenses = this.getExpenses(expense.date);
+        if(expenses) {
+            expenses[index] = expense;
+        }
+    }
+
     getDailyTotal(date) {
         //Get amount for this date
         let total = 0;
-        let index = this.getExpenseFromDate(date);
+        let index = this.getExpenseIndexFromDate(date);
         if(index >= 0) {
             let currentExpense = this.expenses[index];
             for(let i=0, numItems=currentExpense.length; i<numItems; ++i) {

@@ -124,14 +124,14 @@ class Finance extends BaseApp {
 
     addExpense() {
         this.expenseState = EXPENSE_ADD;
-        $('#addForm').show();
+        $('#addFormContainer').show();
     }
 
     cancelExpense() {
         //Clear inputs for next time
         this.clearAddForm();
 
-        $('#addForm').hide();
+        $('#addFormContainer').hide();
     }
 
     clearAddForm() {
@@ -147,7 +147,10 @@ class Finance extends BaseApp {
         expenseInfo.tags = this.currentTags;
 
         let expense = new Expense(this.currentDate, expenseInfo);
-        this.expenseManager.addExpense(expense);
+
+        this.expenseState === EXPENSE_EDIT ? this.expenseManager.updateExpense(expense, this.expenseIndex) :
+            this.expenseManager.addExpense(expense);
+
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateCurrentNode(total);
         this.updateExpenditure(total);
@@ -156,21 +159,21 @@ class Finance extends BaseApp {
 
     showExpense() {
         //Show item values to edit
-        let expense = this.expenseManager.getExpense(this.currentDate);
+        let expenses = this.expenseManager.getExpenses(this.currentDate);
         let table = document.getElementById("expenseTable");
         //Delete existing data
         let i, numRows = table.rows.length-1;
         for(i=numRows; i>=1; --i) {
             table.deleteRow(i);
         }
-        let numItems = expense.priceInfo.length-1;
+        let numItems = expenses.length-1;
         let row, info;
         for(i=0; i<=numItems; ++i) {
-            info = expense.priceInfo[i];
+            info = expenses[i].priceInfo;
             row = table.insertRow(i+1);
             $(row).addClass("selectable");
             row.insertCell(0).innerHTML = (i+1).toString();
-            row.insertCell(1).innerHTML = expense.prices[i];
+            row.insertCell(1).innerHTML = expenses[i].price;
             row.insertCell(2).innerHTML = info.item;
             row.insertCell(3).innerHTML = info.tags;
         }
@@ -215,7 +218,7 @@ class Finance extends BaseApp {
                 amount = parseFloat(amount);
                 //Ensure text is valid as well
                 if(item !== "") {
-                    $('#addForm').hide();
+                    $('#addFormContainer').hide();
                     this.currentAmount = amount;
                     this.currentItem = item;
                     this.currentTags = tags;
@@ -231,18 +234,19 @@ class Finance extends BaseApp {
     editItem() {
         this.expenseState = EXPENSE_EDIT;
         this.populateAddForm();
-        $('#addForm').show();
+        $('#addFormContainer').show();
     }
 
     populateAddForm() {
-        var expense = this.expenseManager.getExpense(this.currentDate);
+        $('#addFormTitle').html("Edit expense");
+        let expense = this.expenseManager.getExpense(this.currentDate, this.expenseIndex);
         if(!expense) {
             console.log("No expense for that data");
             return;
         }
-        $('#amount').val(expense.prices[this.expenseIndex]);
-        $('#item').val(expense.priceInfo[this.expenseIndex].item);
-        $('#tags').val(expense.priceInfo[this.expenseIndex].tags);
+        $('#amount').val(expense.price);
+        $('#item').val(expense.priceInfo.item);
+        $('#tags').val(expense.priceInfo.tags);
     }
 
     updateCurrentNode(total) {
@@ -281,6 +285,7 @@ $(document).ready(function() {
     $('#addExpenseForm').submit(function(event) {
         event.preventDefault();
         if(app.validateExpense()) {
+            $('#addFormTitle').html("Add Expense");
             app.addExpenseItem();
         }
     });
