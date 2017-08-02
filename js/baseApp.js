@@ -3,175 +3,204 @@
  */
 //Common baseline for visualisation app
 
-function BaseApp() {
-    this.renderer = null;
-    this.scene = null;
-    this.camera = null;
-    this.controls = null;
-    this.stats = null;
-    this.container = null;
-    this.objectList = [];
-    this.root = null;
-    this.mouse = { startX:0, startY:0};
-    this.pickedObjects = [];
-    this.selectedObject = null;
-    this.hoverObjects = [];
-    this.startTime = 0;
-    this.elapsedTime = 0;
-    this.clock = new THREE.Clock();
-    this.clock.start();
-    this.objectsPicked = false;
-}
-
-BaseApp.prototype.init = function(container) {
-    this.container = container;
-    this.createRenderer();
-    this.createCamera();
-    this.createControls();
-    //this.stats = initStats();
-    this.statsShowing = false;
-    //$("#Stats-output").hide();
-};
-
-BaseApp.prototype.createRenderer = function() {
-    this.renderer = new THREE.WebGLRenderer( {antialias : true, alpha: true});
-    this.renderer.setClearColor(0xd8dee8, 1.0);
-    this.renderer.shadowMapEnabled = true;
-    var isMSIE = /*@cc_on!@*/0;
-
-    var width = this.container.clientWidth;
-    if (isMSIE) {
-        // do IE-specific things
-        width = window.innerWidth;
+class BaseApp {
+    constructor() {
+        this.renderer = null;
+        this.scenes = [];
+        this.currentScene = 0;
+        this.camera = null;
+        this.controls = null;
+        this.stats = null;
+        this.container = null;
+        this.objectList = [];
+        this.root = null;
+        this.mouse = new THREE.Vector2();
+        this.pickedObjects = [];
+        this.selectedObject = null;
+        this.hoverObjects = [];
+        this.startTime = 0;
+        this.elapsedTime = 0;
+        this.clock = new THREE.Clock();
+        this.clock.start();
+        this.raycaster = new THREE.Raycaster();
+        this.objectsPicked = false;
     }
-    this.renderer.setSize(width, window.innerHeight);
-    this.container.appendChild( this.renderer.domElement );
-    var _this = this;
 
-    this.container.addEventListener('mousedown', function(event) {
-        _this.mouseClicked(event);
-    }, false);
-    this.container.addEventListener('mouseup', function(event) {
-        _this.mouseClicked(event);
-    }, false);
-    this.container.addEventListener('mousemove', function(event) {
-        _this.mouseMoved(event);
-    }, false);
-
-    window.addEventListener('keydown', function(event) {
-        _this.keydown(event);
-    }, false);
-
-    window.addEventListener('resize', function(event) {
-        _this.windowResize(event);
-    }, false);
-};
-
-BaseApp.prototype.keydown = function(event) {
-    //Key press functionality
-    switch(event.keyCode) {
-        case 80: //'P'
-            console.log('Cam =', this.camera.position);
-            console.log('Look =', this.controls.getLookAt());
+    init(container) {
+        this.container = container;
+        this.createRenderer();
+        this.createCamera();
+        this.createControls();
+        //this.stats = initStats();
+        this.statsShowing = false;
+        //$("#Stats-output").hide();
     }
-};
 
-BaseApp.prototype.mouseClicked = function(event) {
-    //Update mouse state
-    this.pickedObjects.length = 0;
+    createRenderer() {
+        this.renderer = new THREE.WebGLRenderer( {antialias : true, alpha: true});
+        this.renderer.setClearColor(0x7d818c, 1.0);
+        this.renderer.shadowMap.enabled = true;
 
-    if(event.type == 'mouseup') {
+        this.renderer.setSize(this.container.clientWidth, window.innerHeight);
+        this.container.appendChild( this.renderer.domElement );
+
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFShadowMap;
+
+        window.addEventListener('keydown', event => {
+            this.keyDown(event);
+        }, false);
+
+        window.addEventListener('resize', event => {
+            this.windowResize(event);
+        }, false);
+    }
+
+    keyDown(event) {
+        //Key press functionality
+        switch(event.keyCode) {
+            case 83: //'S'
+                if (this.stats) {
+                    if (this.statsShowing) {
+                        $("#Stats-output").hide();
+                        this.statsShowing = false;
+                    } else {
+                        $("#Stats-output").show();
+                        this.statsShowing = true;
+                    }
+                }
+                break;
+            case 80: //'P'
+                console.log('Cam =', this.camera.position);
+                console.log('Look =', this.controls.getLookAt());
+        }
+    }
+
+    mouseClicked(event) {
+        //Update mouse state
+        event.preventDefault();
+        this.pickedObjects.length = 0;
+
+        if(event.type == 'mouseup') {
+            this.mouse.endX = event.clientX;
+            this.mouse.endY = event.clientY;
+            this.mouse.down = false;
+            this.objectsPicked = false;
+            return;
+        }
+        this.mouse.set((event.clientX / window.innerWidth) * 2 - 1,
+            -(event.clientY / window.innerHeight) * 2 + 1);
+        this.mouse.down = true;
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        let intersects = this.raycaster.intersectObjects( this.scenes[this.currentScene].children, true );
+        if(intersects.length > 0) {
+            this.selectedObject = intersects[0].object;
+            //DEBUG
+            console.log("Picked = ", this.selectedObject);
+        }
+    }
+
+    mouseMoved(event) {
+        //Update mouse state
         this.mouse.endX = event.clientX;
         this.mouse.endY = event.clientY;
-        this.mouse.down = false;
-        this.objectsPicked = false;
-        return;
     }
-    this.mouse.startX = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.startY = (event.clientY / window.innerHeight) * 2 + 1;
-    this.mouse.down = true;
-};
 
-BaseApp.prototype.mouseMoved = function(event) {
-    //Update mouse state
-    this.mouse.endX = event.clientX;
-    this.mouse.endY = event.clientY;
-};
+    windowResize(event) {
+        //Handle window resize
+        this.camera.aspect = this.container.clientWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
 
-BaseApp.prototype.windowResize = function(event) {
-    //Handle window resize
-    this.camera.aspect = this.container.clientWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
+        this.renderer.setSize( this.container.clientWidth, window.innerHeight);
+    }
 
-    this.renderer.setSize( this.container.clientWidth, window.innerHeight);
-    //console.log('Size =', )
-};
+    createScene() {
+        let scene = new THREE.Scene();
+        this.scenes.push(scene);
 
-BaseApp.prototype.createScene = function() {
-    this.scene = new THREE.Scene();
+        let ambientLight = new THREE.AmbientLight(0x383838);
+        scene.add(ambientLight);
 
-    var ambientLight = new THREE.AmbientLight(0x383838);
-    this.scene.add(ambientLight);
-
-    /*
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(100, 100, 200);
-    spotLight.intensity = 1;
-    this.scene.add(spotLight);
-    */
-
-    /*
-    var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
-    directionalLight.position.set( 1, 1, 1 );
-    this.scene.add( directionalLight );
-    */
+        /*
+         let directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
+         directionalLight.position.set( 20, 20, 20 );
+         directionalLight.name = "sunlight";
+         scene.add( directionalLight );
+         */
 
 
-    this.pointLight = new THREE.PointLight(0xffffff);
-    this.pointLight.position.set(-100,100,-100);
-    this.pointLight.name = 'PointLight';
-    this.scene.add(this.pointLight);
 
-};
+        let pointLight = new THREE.PointLight(0xffffff);
+        pointLight.position.set(0,100,100);
+        pointLight.name = 'PointLight';
+        scene.add(pointLight);
 
-BaseApp.prototype.createCamera = function() {
+        return this.scenes.length-1;
+    }
 
-    this.camera = new THREE.PerspectiveCamera(45, this.container.clientWidth / window.innerHeight, 0.1, 5000 );
-    this.camera.position.set(0, 70, 200 );
+    addToScene(object) {
+        this.scenes[this.currentScene].add(object);
+    }
 
-    console.log('dom =', this.renderer.domElement);
-};
+    getObjectByName(name) {
+        return this.scenes[this.currentScene].getObjectByName(name);
+    }
 
-BaseApp.prototype.createControls = function() {
-    this.controls = new THREE.TrackballControls(this.camera, this.container);
-    this.controls.rotateSpeed = 1.0;
-    this.controls.zoomSpeed = 1.0;
-    this.controls.panSpeed = 1.0;
+    createCamera() {
+        const CAM_X = 0, CAM_Y = 70, CAM_Z = 200;
+        const NEAR_PLANE = 0.1, FAR_PLANE = 5000;
+        this.defaultCamPos = new THREE.Vector3(CAM_X, CAM_Y, CAM_Z);
+        this.camera = new THREE.PerspectiveCamera(45, this.container.clientWidth / window.innerHeight, NEAR_PLANE, FAR_PLANE );
+        this.camera.position.copy(this.defaultCamPos);
+    }
 
-    this.controls.staticMoving = true;
-    this.controls.dynamicDampingFactor = 0.3;
+    createControls() {
+        this.controls = new THREE.TrackballControls(this.camera, this.container);
+        this.controls.rotateSpeed = 1.0;
+        this.controls.zoomSpeed = 1.0;
+        this.controls.panSpeed = 1.0;
 
-    this.controls.keys = [ 65, 83, 68 ];
+        this.controls.staticMoving = true;
+        this.controls.dynamicDampingFactor = 0.3;
 
-    var lookAt = new THREE.Vector3(0, 50, 0);
-    this.controls.setLookAt(lookAt);
-};
+        this.controls.keys = [ 65, 83, 68 ];
 
-BaseApp.prototype.setCamera = function(cameraProp) {
-    this.camera.position.set(cameraProp[0].x, cameraProp[0].y, cameraProp[0].z);
-    this.controls.setLookAt(cameraProp[1]);
-};
+        const LOOK_X = 0, LOOK_Y = 50, LOOK_Z = 0;
+        let lookAt = new THREE.Vector3(LOOK_X, LOOK_Y, LOOK_Z);
+        this.controls.setLookAt(lookAt);
+    }
 
-BaseApp.prototype.update = function() {
-    //Do any updates
-    this.controls.update();
-};
+    setCamera(cameraProp) {
+        this.camera.position.set(cameraProp[0].x, cameraProp[0].y, cameraProp[0].z);
+        this.controls.setLookAt(cameraProp[1]);
+    }
 
-BaseApp.prototype.run = function() {
-    this.renderer.render( this.scene, this.camera );
-    var _this = this;
-    this.update();
-    requestAnimationFrame(function() {
-        _this.run();
-    });
-};
+    update() {
+        //Do any updates
+        this.controls.update();
+    }
+
+    run() {
+        this.renderer.render( this.scenes[this.currentScene], this.camera );
+        this.update();
+        if(this.stats) this.stats.update();
+        requestAnimationFrame(() => {
+            this.run();
+        });
+    }
+
+    initStats() {
+        let stats = new Stats();
+
+        stats.setMode(0); // 0: fps, 1: ms
+
+        // Align top-left
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.left = '0px';
+        stats.domElement.style.top = '0px';
+
+        $("#Stats-output").append( stats.domElement );
+
+        return stats;
+    }
+}
