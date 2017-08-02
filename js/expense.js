@@ -24,6 +24,10 @@ class Expense {
         this.priceInfo.tags = tags;
     }
 
+    getDate() {
+        return this.date;
+    }
+
     getTotal() {
         return this.price;
     }

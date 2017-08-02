@@ -2,14 +2,14 @@
  * Created by DrTone on 04/12/2014.
  */
 //Visualisation framework
-var NUM_DAYS = 7;
-var FLOOR_WIDTH = 800;
-var FLOOR_HEIGHT = 600;
-var SEGMENTS = 8;
-var NODE_RADIUS = 5;
-var NODE_SEGMENTS = 24;
-var EXPENSE_ADD = 0;
-var EXPENSE_EDIT = 1;
+let NUM_DAYS = 7;
+let FLOOR_WIDTH = 800;
+let FLOOR_HEIGHT = 600;
+let SEGMENTS = 8;
+let NODE_RADIUS = 5;
+let NODE_SEGMENTS = 24;
+let EXPENSE_ADD = 0;
+let EXPENSE_EDIT = 1;
 
 //Init this app from base
 class Finance extends BaseApp {
@@ -32,6 +32,9 @@ class Finance extends BaseApp {
         this.currentDate.day = 0;
         this.currentDate.month = 9;
         this.currentDate.year = 2016;
+
+        //Expenses
+        this.expenseManager = new ExpenseManager();
     }
 
     createScene() {
@@ -85,39 +88,38 @@ class Finance extends BaseApp {
 
     nextDay() {
         if(++this.currentDate.day > 30) {
-            this.currentDate.day = 30;
-            return;
+            this.currentDate.day = 0;
         }
 
-        var day = this.currentDate.day;
+        let day = this.currentDate.day;
         this.nodes[day].material = this.sphereMatSelected;
         this.nodes[day].material.needsUpdate = true;
         this.nodes[day-1].material = this.sphereMat;
         this.nodes[day-1].material.needsUpdate = true;
         $('#day').html(DATES.DayNumbers[day]);
 
-        this.updateExpenditure();
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        this.updateExpenditure(total);
     }
 
     previousDay() {
         if(--this.currentDate.day < 0) {
-            this.currentDate.day = 0;
-            return;
+            this.currentDate.day = 30;
         }
 
-        var day = this.currentDate.day;
+        let day = this.currentDate.day;
         this.nodes[day].material = this.sphereMatSelected;
         this.nodes[day].material.needsUpdate = true;
         this.nodes[day+1].material = this.sphereMat;
         this.nodes[day+1].material.needsUpdate = true;
         $('#day').html(DATES.DayNumbers[day]);
 
-        this.updateExpenditure();
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        this.updateExpenditure(total);
     }
 
-    updateExpenditure() {
-        var expense = ExpenseManager.getExpense(this.currentDate);
-        $('#expenditure').html(expense !== undefined ? expense.getTotal().toFixed(2) : "00.00");
+    updateExpenditure(total) {
+        $('#expenditure').html(total.toFixed(2));
     }
 
     addExpense() {
@@ -139,28 +141,30 @@ class Finance extends BaseApp {
     }
 
     addExpenseItem() {
-        this.expenseIndex = this.expenseState === EXPENSE_ADD ? undefined : this.expenseIndex;
-        var expenseInfo = {};
+        let expenseInfo = {};
         expenseInfo.amount = this.currentAmount;
         expenseInfo.item = this.currentItem;
         expenseInfo.tags = this.currentTags;
-        var expense = ExpenseManager.updateExpense(this.currentDate, expenseInfo, this.expenseIndex);
-        this.updateCurrentNode(expense);
-        this.updateExpenditure();
+
+        let expense = new Expense(this.currentDate, expenseInfo);
+        this.expenseManager.addExpense(expense);
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        this.updateCurrentNode(total);
+        this.updateExpenditure(total);
         this.clearAddForm();
     }
 
     showExpense() {
         //Show item values to edit
-        var expense = ExpenseManager.getExpense(this.currentDate);
-        var table = document.getElementById("expenseTable");
+        let expense = this.expenseManager.getExpense(this.currentDate);
+        let table = document.getElementById("expenseTable");
         //Delete existing data
-        var i, numRows = table.rows.length-1;
+        let i, numRows = table.rows.length-1;
         for(i=numRows; i>=1; --i) {
             table.deleteRow(i);
         }
-        var numItems = expense.priceInfo.length-1;
-        var row, info;
+        let numItems = expense.priceInfo.length-1;
+        let row, info;
         for(i=0; i<=numItems; ++i) {
             info = expense.priceInfo[i];
             row = table.insertRow(i+1);
@@ -171,10 +175,10 @@ class Finance extends BaseApp {
             row.insertCell(3).innerHTML = info.tags;
         }
 
-        var _this = this;
+        let _this = this;
         $('.selectable').on("click", function() {
             $(this).addClass('selected').siblings().removeClass('selected');
-            var value=$(this).find('td:first').html();
+            let value=$(this).find('td:first').html();
             //DEBUG
             console.log("Selected = ", value);
             _this.expenseIndex = value-1;
@@ -188,12 +192,12 @@ class Finance extends BaseApp {
     }
 
     validateExpense() {
-        var form = document.forms["addExpenseForm"];
-        var amount = form["amount"].value;
-        var item = form["item"].value;
-        var tags = form["tags"].value;
-        var amountElem = $('#inputAmount');
-        var errorElem = $('#errorText');
+        let form = document.forms["addExpenseForm"];
+        let amount = form["amount"].value;
+        let item = form["item"].value;
+        let tags = form["tags"].value;
+        let amountElem = $('#inputAmount');
+        let errorElem = $('#errorText');
 
         if(isNaN(amount)) {
             console.log("Invalid number");
@@ -231,7 +235,7 @@ class Finance extends BaseApp {
     }
 
     populateAddForm() {
-        var expense = ExpenseManager.getExpense(this.currentDate);
+        var expense = this.expenseManager.getExpense(this.currentDate);
         if(!expense) {
             console.log("No expense for that data");
             return;
@@ -241,10 +245,9 @@ class Finance extends BaseApp {
         $('#tags').val(expense.priceInfo[this.expenseIndex].tags);
     }
 
-    updateCurrentNode(expense) {
-        var day = this.currentDate.day;
-        var label = spriteManager.getSpriteByIndex((day*2)+2);
-        var total = expense.getTotal();
+    updateCurrentNode(total) {
+        let day = this.currentDate.day;
+        let label = spriteManager.getSpriteByIndex((day*2)+2);
         label.position.y = this.groundOffset + this.labelOffset + total;
         spriteManager.setTextAmount(label, total);
         this.nodes[day].position.y = this.groundOffset + total;
