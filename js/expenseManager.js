@@ -3,56 +3,32 @@
  */
 
 //Manage expense records
-
-var ExpenseManager = (function() {
-    var expenses = [];
-
-    return {
-        updateExpense: function(date, expenseInfo, itemIndex) {
-            var index = this.getExpenseIndex(date);
-            var expense;
-            if(index < 0) {
-                expense = new Expense(date, expenseInfo);
-                expenses.push(expense);
-            } else {
-                expense = expenses[index];
-                itemIndex !== undefined ? expense.updateItem(expenseInfo, itemIndex) : expense.addItem(expenseInfo);
-            }
-
-            return expense;
-        },
-
-        getExpenseIndex: function(date) {
-            var expense, i;
-            for(i=0; i<expenses.length; ++i) {
-                expense = expenses[i];
-                if(expense.year === date.year && expense.month === date.month && expense.day === date.day) {
-                    return i;
-                }
-            }
-
-            return -1;
-        },
-
-        getExpense: function(date) {
-            var expense, i;
-            for(i=0; i<expenses.length; ++i) {
-                expense = expenses[i];
-                if(expense.year === date.year && expense.month === date.month && expense.day === date.day) {
-                    return expenses[i];
-                }
-            }
-
-            return undefined;
-        },
-
-        getWeeklyExpense: function() {
-
-        },
-
-        getMonthlyExpense: function() {
-
-        }
+class ExpenseManager {
+    constructor() {
+        this.expenses = [];
     }
-})();
+
+    addExpense(expense) {
+        let index = this.getExpenseFromDate(expense.date);
+        if(index < 0) {
+            //New expense
+            this.expenses.push([]);
+            index = this.expenses.length - 1;
+        }
+        this.expenses[index].push(expense);
+    }
+
+    getExpenseFromDate(date) {
+        let currentExpense, currentDate;
+        for(let i=0, numExpenses=this.expenses.length; i<numExpenses; ++i) {
+            currentExpense = this.expenses[i];
+            currentDate = currentExpense.getDate();
+            if(currentDate.year === date.year && currentDate.month === date.month && currentDate.day === date.day) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+}
 
