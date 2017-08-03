@@ -171,6 +171,7 @@ class Finance extends BaseApp {
         } else {
             this.expenseState = EXPENSE_NOTHING;
         }
+        this.expenseIndex = -1;
     }
 
     showExpense() {
@@ -275,6 +276,7 @@ class Finance extends BaseApp {
         this.updateExpenditure(total);
         $('#expenseTableContainer').hide();
         this.showExpense();
+        this.expenseIndex = -1;
     }
 
     populateAddForm() {
