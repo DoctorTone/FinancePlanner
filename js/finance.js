@@ -329,6 +329,18 @@ class Finance extends BaseApp {
         let fileUrl = window.URL.createObjectURL(dataFile);
         this.dataLoader.load(fileUrl, data => {
             this.expenseManager.loadExpenses(data);
+            //Update expenditure
+            let total;
+            for(let i=1; i<3; ++i) {
+                this.currentDate.day = i;
+                total = this.expenseManager.getDailyTotal(this.currentDate);
+                this.updateCurrentNode(total);
+            }
+            //Do first day expenditure
+            this.currentDate.day = 0;
+            total = this.expenseManager.getDailyTotal(this.currentDate);
+            this.updateExpenditure(total);
+            this.updateCurrentNode(total);
         });
     }
 }

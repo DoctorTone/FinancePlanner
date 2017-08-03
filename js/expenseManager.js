@@ -85,7 +85,18 @@ class ExpenseManager {
 
     loadExpenses(expenses) {
         this.expenses.length = 0;
-        this.expenses = expenses;
+        let currentExpense, expenseInfo;
+        for(let i=0, numDays=expenses.length; i<numDays; ++i) {
+            currentExpense = expenses[i];
+            this.expenses.push([]);
+            for(let j=0, numExpenses=currentExpense.length; j<numExpenses; ++j) {
+                expenseInfo = {};
+                expenseInfo.amount = currentExpense[j].price;
+                expenseInfo.item = currentExpense[j].priceInfo.item;
+                expenseInfo.tags = currentExpense[j].priceInfo.tags;
+                this.expenses[i].push(new Expense(currentExpense[j].date, expenseInfo));
+            }
+        }
     }
 }
 
