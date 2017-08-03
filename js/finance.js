@@ -42,28 +42,28 @@ class Finance extends BaseApp {
         super.createScene();
 
         //Floor
-        var planeGeom = new THREE.PlaneBufferGeometry(FLOOR_WIDTH, FLOOR_HEIGHT, SEGMENTS, SEGMENTS);
-        var planeMat = new THREE.MeshLambertMaterial( {color: 0x444444});
-        var plane = new THREE.Mesh(planeGeom, planeMat);
+        let planeGeom = new THREE.PlaneBufferGeometry(FLOOR_WIDTH, FLOOR_HEIGHT, SEGMENTS, SEGMENTS);
+        let planeMat = new THREE.MeshLambertMaterial( {color: 0x444444});
+        let plane = new THREE.Mesh(planeGeom, planeMat);
         plane.rotation.x = -Math.PI/2;
         this.addToScene(plane);
 
         //Create weeks worth of data
-        var label;
-        var pos = new THREE.Vector3(0, 50, -50);
-        var monthScale = new THREE.Vector3(80, 60, 1);
-        var dayLabelOffset = new THREE.Vector3(0, -15, 10);
-        var expendLabelOffset = new THREE.Vector3(0, 2, 0);
-        var sphereGeom = new THREE.SphereBufferGeometry(NODE_RADIUS, NODE_SEGMENTS, NODE_SEGMENTS);
+        let label;
+        let pos = new THREE.Vector3(0, 50, -50);
+        let monthScale = new THREE.Vector3(80, 60, 1);
+        let dayLabelOffset = new THREE.Vector3(0, -15, 10);
+        let expendLabelOffset = new THREE.Vector3(0, 2, 0);
+        let sphereGeom = new THREE.SphereBufferGeometry(NODE_RADIUS, NODE_SEGMENTS, NODE_SEGMENTS);
         this.sphereMat = new THREE.MeshPhongMaterial({color: 0xfed600});
         this.sphereMatSelected = new THREE.MeshPhongMaterial( {color: 0xffffff, emissive: 0xfed600} );
-        var i, xStart=-100, xInc=35, yStart=10, zStart=0;
-        var node;
+        let i, xStart=-100, xInc=35, yStart=10, zStart=0;
+        let node;
         this.nodes = [];
         label = spriteManager.create("October 2016", pos, monthScale, 32, 1, true, false);
         this.addToScene(label);
 
-        var dayScale = new THREE.Vector3(30, 30, 1);
+        let dayScale = new THREE.Vector3(30, 30, 1);
         for(i=0; i<NUM_DAYS; ++i) {
             node = new THREE.Mesh(sphereGeom, i===this.currentDate.day ? this.sphereMatSelected : this.sphereMat);
             node.position.set(xStart+(xInc*i), yStart, zStart);
@@ -141,6 +141,7 @@ class Finance extends BaseApp {
     }
 
     addExpenseItem() {
+        let state = this.expenseState;
         let expenseInfo = {};
         expenseInfo.amount = this.currentAmount;
         expenseInfo.item = this.currentItem;
@@ -148,13 +149,18 @@ class Finance extends BaseApp {
 
         let expense = new Expense(this.currentDate, expenseInfo);
 
-        this.expenseState === EXPENSE_EDIT ? this.expenseManager.updateExpense(expense, this.expenseIndex) :
+        state === EXPENSE_EDIT ? this.expenseManager.updateExpense(expense, this.expenseIndex) :
             this.expenseManager.addExpense(expense);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateCurrentNode(total);
         this.updateExpenditure(total);
         this.clearAddForm();
+        if(state === EXPENSE_EDIT) {
+            //Update expenses
+            $('#expenseTableContainer').hide();
+            this.showExpense();
+        }
     }
 
     showExpense() {
@@ -173,11 +179,12 @@ class Finance extends BaseApp {
             row = table.insertRow(i+1);
             $(row).addClass("selectable");
             row.insertCell(0).innerHTML = (i+1).toString();
-            row.insertCell(1).innerHTML = expenses[i].price;
+            row.insertCell(1).innerHTML = expenses[i].price.toFixed(2);
             row.insertCell(2).innerHTML = info.item;
             row.insertCell(3).innerHTML = info.tags;
         }
 
+        //Need pointer to table
         let _this = this;
         $('.selectable').on("click", function() {
             $(this).addClass('selected').siblings().removeClass('selected');
@@ -187,11 +194,11 @@ class Finance extends BaseApp {
             _this.expenseIndex = value-1;
         });
 
-        $('#viewForm').show();
+        $('#expenseTableContainer').show();
     }
 
     dismissExpense() {
-        $('#viewForm').hide();
+        $('#expenseTableContainer').hide();
     }
 
     validateExpense() {
@@ -239,15 +246,18 @@ class Finance extends BaseApp {
 
     deleteItem() {
         this.expenseManager.deleteExpense(this.currentDate, this.expenseIndex);
-        //DEBUG
-        console.log("Expense deleted");
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        this.updateCurrentNode(total);
+        this.updateExpenditure(total);
+        $('#expenseTableContainer').hide();
+        this.showExpense();
     }
 
     populateAddForm() {
         $('#addFormTitle').html("Edit expense");
         let expense = this.expenseManager.getExpense(this.currentDate, this.expenseIndex);
         if(!expense) {
-            console.log("No expense for that data");
+            console.log("No expense for that date");
             return;
         }
         $('#amount').val(expense.price);
@@ -266,8 +276,8 @@ class Finance extends BaseApp {
 
 $(document).ready(function() {
     //Initialise app
-    var container = document.getElementById("WebGL-output");
-    var app = new Finance();
+    let container = document.getElementById("WebGL-output");
+    let app = new Finance();
     app.init(container);
     app.createScene();
     //app.createGUI();

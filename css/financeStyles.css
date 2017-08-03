@@ -30,7 +30,7 @@ body {
 }
 #addFormContainer {
     top:10%;
-    left:40%;
+    left:35%;
     width: 30%;
     z-index: 1;
 }
@@ -44,9 +44,9 @@ body {
     margin-left: 42.5%;
     color: red;
 }
-#viewForm {
+#expenseTableContainer {
     top:10%;
-    left:30%;
+    left:35%;
     width: 30%;
     z-index: 0;
 }
