@@ -12,6 +12,8 @@
     <script type="text/javascript" src="js/stats.js"></script>
     <script type="text/javascript" src="js/spriteManager.js?v=0.1"></script>
     <script type="text/javascript" src="js/dateInfo.js?v=0.1"></script>
+    <script type="text/javascript" src="js/FileSaver.js?v=0.1"></script>
+    <script type="text/javascript" src="js/dataJSONLoader.js?v=0.1"></script>
     <script type="text/javascript" src="js/baseApp.js?v=0.5"></script>
     <script type="text/javascript" src="js/expense.js?v=0.2"></script>
     <script type="text/javascript" src="js/expenseManager.js?v=0.3"></script>
@@ -43,7 +45,10 @@
             <button id="addExpense" type="button">Add</button> <button id="editExpense" type="button">Edit</button>
         </div>
         <div>
-            <button type="button">Save</button>
+            <span id="loadFile" class="btn btn-primary btn-file">Load<input type="file"></span>
+        </div>
+        <div>
+            <button id="saveExpenses" type="button">Save</button>
         </div>
     </div>
 </div>

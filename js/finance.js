@@ -34,6 +34,9 @@ class Finance extends BaseApp {
     init(container) {
         super.init(container);
 
+        //Data loading
+        this.dataLoader = new DataJSONLoader();
+
         //Expenses
         this.expenseManager = new ExpenseManager();
     }
@@ -298,6 +301,36 @@ class Finance extends BaseApp {
         spriteManager.setTextAmount(label, total);
         this.nodes[day].position.y = this.groundOffset + total;
     }
+
+    saveExpenses() {
+        let expenseJSON = this.expenseManager.getAllExpensesJSON();
+        //DEBUG
+        console.log("JSON = ", expenseJSON);
+
+        let bb = window.Blob;
+        let fileName = "financeData.json";
+        saveAs(new bb(
+            [expenseJSON],
+            {type: "text/plain;charset=" + document.characterSet}
+            ),
+            fileName);
+    }
+
+    loadExpenses(event) {
+        let files = event.target.files;
+        if(!files.length) {
+            alert("No file specified!");
+            return;
+        }
+
+        let dataFile = files[0];
+        window.URL = window.URL || window.webkitURL;
+
+        let fileUrl = window.URL.createObjectURL(dataFile);
+        this.dataLoader.load(fileUrl, data => {
+            this.expenseManager.loadExpenses(data);
+        });
+    }
 }
 
 $(document).ready(function() {
@@ -351,6 +384,14 @@ $(document).ready(function() {
 
     $('#OK').on("click", () => {
         app.dismissExpense();
+    });
+
+    $('#saveExpenses').on("click", () => {
+        app.saveExpenses();
+    });
+
+    $('#loadFile').on("change", evt => {
+        app.loadExpenses(evt);
     });
 
     app.run();

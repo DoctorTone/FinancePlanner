@@ -57,3 +57,18 @@ body {
 #options button {
     margin-right: 5%;
 }
+.btn-file input[type=file] {
+    position: absolute;
+    top: 60%;
+    right: 40%;
+    width: 57px;
+    height: 35px;
+    font-size: 2vw;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}

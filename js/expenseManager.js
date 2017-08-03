@@ -77,5 +77,15 @@ class ExpenseManager {
 
         return total;
     }
+
+    getAllExpensesJSON() {
+        //Convert array to JSON
+        return JSON.stringify(this.expenses);
+    }
+
+    loadExpenses(expenses) {
+        this.expenses.length = 0;
+        this.expenses = expenses;
+    }
 }
 
