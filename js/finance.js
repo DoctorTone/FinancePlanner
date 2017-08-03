@@ -237,6 +237,12 @@ class Finance extends BaseApp {
         $('#addFormContainer').show();
     }
 
+    deleteItem() {
+        this.expenseManager.deleteExpense(this.currentDate, this.expenseIndex);
+        //DEBUG
+        console.log("Expense deleted");
+    }
+
     populateAddForm() {
         $('#addFormTitle').html("Edit expense");
         let expense = this.expenseManager.getExpense(this.currentDate, this.expenseIndex);
@@ -267,22 +273,23 @@ $(document).ready(function() {
     //app.createGUI();
 
     //GUI callbacks
-    $('#right').on("click", function(event) {
+    $('#right').on("click", () => {
        app.nextDay();
     });
-    $('#left').on("click", function(event) {
+
+    $('#left').on("click", () => {
         app.previousDay();
     });
 
-    $('#addExpense').on("click", function() {
+    $('#addExpense').on("click", () => {
         app.addExpense();
     });
 
-    $('#cancelAdd').on("click", function() {
+    $('#cancelAdd').on("click", () => {
         app.cancelExpense();
     });
 
-    $('#addExpenseForm').submit(function(event) {
+    $('#addExpenseForm').submit(event => {
         event.preventDefault();
         if(app.validateExpense()) {
             $('#addFormTitle').html("Add Expense");
@@ -290,19 +297,23 @@ $(document).ready(function() {
         }
     });
 
-    $('#editExpense').on("click", function(event) {
+    $('#editExpense').on("click", () => {
         app.showExpense();
     });
 
-    $('#dismiss').on("click", function(event) {
+    $('#dismiss').on("click", () => {
         app.dismissExpense();
     });
 
-    $('#editItem').on("click", function() {
+    $('#editItem').on("click", () => {
         app.editItem();
     });
 
-    $('#finish').on("click", function() {
+    $('#deleteItem').on("click", () => {
+        app.deleteItem();
+    });
+
+    $('#finish').on("click", () => {
         app.dismissExpense();
     });
 

@@ -57,6 +57,13 @@ class ExpenseManager {
         }
     }
 
+    deleteExpense(date, index) {
+        let expenses = this.getExpenses(date);
+        if(expenses) {
+            expenses.splice(index, 1);
+        }
+    }
+
     getDailyTotal(date) {
         //Get amount for this date
         let total = 0;
