@@ -8,30 +8,31 @@ let FLOOR_HEIGHT = 600;
 let SEGMENTS = 8;
 let NODE_RADIUS = 5;
 let NODE_SEGMENTS = 24;
-let EXPENSE_ADD = 0;
-let EXPENSE_EDIT = 1;
+let EXPENSE_NOTHING = 0;
+let EXPENSE_ADD = 1;
+let EXPENSE_EDIT = 2;
 
 //Init this app from base
 class Finance extends BaseApp {
     constructor() {
         super();
-    }
-
-    init(container) {
-        super.init(container);
 
         //Current item
         this.currentAmount = 0;
         this.currentItem = undefined;
         this.currentTags = [];
-        this.expenseIndex = undefined;
-        this.expenseState = EXPENSE_ADD;
+        this.expenseIndex = -1;
+        this.expenseState = EXPENSE_NOTHING;
 
         //Date info
         this.currentDate = {};
         this.currentDate.day = 0;
         this.currentDate.month = 9;
         this.currentDate.year = 2016;
+    }
+
+    init(container) {
+        super.init(container);
 
         //Expenses
         this.expenseManager = new ExpenseManager();
@@ -87,6 +88,8 @@ class Finance extends BaseApp {
     }
 
     nextDay() {
+        if(this.expenseState !== EXPENSE_NOTHING) return;
+
         if(++this.currentDate.day > 30) {
             this.currentDate.day = 0;
         }
@@ -103,6 +106,8 @@ class Finance extends BaseApp {
     }
 
     previousDay() {
+        if(this.expenseState !== EXPENSE_NOTHING) return;
+
         if(--this.currentDate.day < 0) {
             this.currentDate.day = 30;
         }
@@ -132,6 +137,9 @@ class Finance extends BaseApp {
         this.clearAddForm();
 
         $('#addFormContainer').hide();
+        if(this.expenseState !== EXPENSE_EDIT) {
+            this.expenseState = EXPENSE_NOTHING;
+        }
     }
 
     clearAddForm() {
@@ -160,12 +168,19 @@ class Finance extends BaseApp {
             //Update expenses
             $('#expenseTableContainer').hide();
             this.showExpense();
+        } else {
+            this.expenseState = EXPENSE_NOTHING;
         }
     }
 
     showExpense() {
         //Show item values to edit
         let expenses = this.expenseManager.getExpenses(this.currentDate);
+        if(!expenses) {
+            alert("No expenses for that day!");
+            return;
+        }
+        this.expenseState = EXPENSE_EDIT;
         let table = document.getElementById("expenseTable");
         //Delete existing data
         let i, numRows = table.rows.length-1;
@@ -199,6 +214,7 @@ class Finance extends BaseApp {
 
     dismissExpense() {
         $('#expenseTableContainer').hide();
+        this.expenseState = EXPENSE_NOTHING;
     }
 
     validateExpense() {
@@ -239,12 +255,20 @@ class Finance extends BaseApp {
     }
 
     editItem() {
+        if(this.expenseIndex < 0) {
+            alert("Please select an item");
+            return;
+        }
         this.expenseState = EXPENSE_EDIT;
         this.populateAddForm();
         $('#addFormContainer').show();
     }
 
     deleteItem() {
+        if(this.expenseIndex < 0) {
+            alert("Please select an item");
+            return;
+        }
         this.expenseManager.deleteExpense(this.currentDate, this.expenseIndex);
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateCurrentNode(total);
@@ -323,7 +347,7 @@ $(document).ready(function() {
         app.deleteItem();
     });
 
-    $('#finish').on("click", () => {
+    $('#OK').on("click", () => {
         app.dismissExpense();
     });
 
