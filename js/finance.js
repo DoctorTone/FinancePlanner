@@ -2,7 +2,6 @@
  * Created by DrTone on 04/12/2014.
  */
 //Visualisation framework
-let NUM_DAYS = 7;
 let FLOOR_WIDTH = 800;
 let FLOOR_HEIGHT = 600;
 let SEGMENTS = 8;
@@ -27,8 +26,15 @@ class Finance extends BaseApp {
         //Date info
         this.currentDate = {};
         this.currentDate.day = 0;
+        this.currentDate.week = 0;
         this.currentDate.month = 9;
         this.currentDate.year = 2016;
+        this.daysThisMonth = DATES.daysPerMonth[this.currentDate.month];
+
+        //Animation
+        this.moveTime = 0;
+        this.sceneMoving = false;
+        this.SCENE_MOVE_TIME = 2;
     }
 
     init(container) {
@@ -61,48 +67,73 @@ class Finance extends BaseApp {
         let sphereGeom = new THREE.SphereBufferGeometry(NODE_RADIUS, NODE_SEGMENTS, NODE_SEGMENTS);
         this.sphereMat = new THREE.MeshPhongMaterial({color: 0xfed600});
         this.sphereMatSelected = new THREE.MeshPhongMaterial( {color: 0xffffff, emissive: 0xfed600} );
-        let i, xStart=-100, xInc=35, yStart=10, zStart=0;
+        let i, xStart=-105, xInc=35, yStart=10, zStart=0;
         let node;
         this.nodes = [];
         label = spriteManager.create("October 2016", pos, monthScale, 32, 1, true, false);
         this.addToScene(label);
 
         let dayScale = new THREE.Vector3(30, 30, 1);
-        for(i=0; i<NUM_DAYS; ++i) {
+        let dayGroup = new THREE.Object3D();
+        dayGroup.name = "dayGroup";
+        for(i=0; i<this.daysThisMonth; ++i) {
             node = new THREE.Mesh(sphereGeom, i===this.currentDate.day ? this.sphereMatSelected : this.sphereMat);
             node.position.set(xStart+(xInc*i), yStart, zStart);
             this.nodes.push(node);
-            this.addToScene(node);
+            dayGroup.add(node);
             pos.copy(node.position);
             pos.add(dayLabelOffset);
-            label = spriteManager.create(DATES.DayNumbers[i], pos, dayScale, 32, 1, true, false);
-            this.addToScene(label);
+            label = spriteManager.create(DATES.dayNumbers[i], pos, dayScale, 32, 1, true, false);
+            dayGroup.add(label);
             pos.copy(node.position);
             pos.add(expendLabelOffset);
             label = spriteManager.create("£0.00", pos, dayScale, 32, 1, true, false);
-            this.addToScene(label);
+            dayGroup.add(label);
         }
+        this.addToScene(dayGroup);
+        this.dayGroup = dayGroup;
+        //Gap from the middle of each week
+        this.weeklyGap = this.nodes[10].position.x - this.nodes[3].position.x;
+        this.currentDate.position = this.nodes[3].position.x;
         this.groundOffset = yStart;
         this.labelOffset = expendLabelOffset.y;
     }
 
     update() {
         super.update();
+
+        let delta = this.clock.getDelta();
+        this.elapsedTime += delta;
+
+        if(this.sceneMoving) {
+            this.moveTime += delta;
+            this.dayGroup.position.x += (this.moveSpeed * delta);
+            if(this.moveTime >= this.SCENE_MOVE_TIME) {
+                this.dayGroup.position.x = this.sceneMoveEnd;
+                this.moveTime = 0;
+                this.sceneMoving = false;
+            }
+        }
     }
 
     nextDay() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
 
-        if(++this.currentDate.day > 30) {
+        if(++this.currentDate.day > this.daysThisMonth) {
             this.currentDate.day = 0;
         }
 
+        let week = Math.floor(this.currentDate.day / 7);
+        if(week !== this.currentDate.week) {
+            this.moveToWeek(week);
+            this.currentDate.week = week;
+        }
         let day = this.currentDate.day;
         this.nodes[day].material = this.sphereMatSelected;
         this.nodes[day].material.needsUpdate = true;
         this.nodes[day-1].material = this.sphereMat;
         this.nodes[day-1].material.needsUpdate = true;
-        $('#day').html(DATES.DayNumbers[day]);
+        $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
@@ -115,15 +146,33 @@ class Finance extends BaseApp {
             this.currentDate.day = 30;
         }
 
+        let week = Math.floor(this.currentDate.day / 7);
+        if(week !== this.currentDate.week) {
+            this.moveToWeek(week);
+            this.currentDate.week = week;
+        }
+
         let day = this.currentDate.day;
         this.nodes[day].material = this.sphereMatSelected;
         this.nodes[day].material.needsUpdate = true;
         this.nodes[day+1].material = this.sphereMat;
         this.nodes[day+1].material.needsUpdate = true;
-        $('#day').html(DATES.DayNumbers[day]);
+        $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
+    }
+
+    moveToWeek(week) {
+        if(this.sceneMoving) return;
+
+        let dir = week < this.currentDate.week ? 1 : -1;
+        this.moveSpeed = this.weeklyGap / this.SCENE_MOVE_TIME;
+        this.moveSpeed *= dir;
+        this.sceneMoveEnd = this.weeklyGap * -week;
+        this.sceneMoving = true;
+        //DEBUG
+        console.log("End = ", this.sceneMoveEnd);
     }
 
     updateExpenditure(total) {
@@ -219,6 +268,7 @@ class Finance extends BaseApp {
     dismissExpense() {
         $('#expenseTableContainer').hide();
         this.expenseState = EXPENSE_NOTHING;
+        this.expenseIndex = -1;
     }
 
     validateExpense() {
@@ -330,6 +380,8 @@ class Finance extends BaseApp {
         this.dataLoader.load(fileUrl, data => {
             this.expenseManager.loadExpenses(data);
             //Update expenditure
+            //DEBUG
+            //Fix for whole month
             let total;
             for(let i=1; i<3; ++i) {
                 this.currentDate.day = i;

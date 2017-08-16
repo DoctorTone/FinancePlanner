@@ -3,8 +3,8 @@
  */
 
 //Month data
-var DATES = (function() {
-    var monthNames = [
+let DATES = {};
+DATES.monthNames = [
         "January",
         "February",
         "March",
@@ -18,7 +18,7 @@ var DATES = (function() {
         "November",
         "December"
     ];
-    var dayNames = [
+DATES.dayNames = [
         "Sunday",
         "Monday",
         "Tuesday",
@@ -27,10 +27,10 @@ var DATES = (function() {
         "Friday",
         "Saturday"
     ];
-    var daysPerMonth = [
+DATES.daysPerMonth = [
         31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     ];
-    var dayNumbers = [
+DATES.dayNumbers = [
         "1st",
         "2nd",
         "3rd",
@@ -64,10 +64,3 @@ var DATES = (function() {
         "31st"
     ];
 
-    return {
-        MonthNames: monthNames,
-        DayNames: dayNames,
-        DayNumbers: dayNumbers
-    };
-
-})();
