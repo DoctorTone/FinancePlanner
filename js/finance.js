@@ -10,6 +10,7 @@ let NODE_SEGMENTS = 24;
 let EXPENSE_NOTHING = 0;
 let EXPENSE_ADD = 1;
 let EXPENSE_EDIT = 2;
+const PREVIOUS = 1, NEXT = -1;
 
 //Init this app from base
 class Finance extends BaseApp {
@@ -119,20 +120,22 @@ class Finance extends BaseApp {
     nextDay() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
 
-        if(++this.currentDate.day > this.daysThisMonth) {
+        let lastDay = this.currentDate.day;
+        if(++this.currentDate.day >= this.daysThisMonth) {
             this.currentDate.day = 0;
+            lastDay = this.daysThisMonth - 1;
         }
 
         let week = Math.floor(this.currentDate.day / 7);
         if(week !== this.currentDate.week) {
-            this.moveToWeek(week);
+            this.moveToWeek(week, NEXT);
             this.currentDate.week = week;
         }
         let day = this.currentDate.day;
         this.nodes[day].material = this.sphereMatSelected;
         this.nodes[day].material.needsUpdate = true;
-        this.nodes[day-1].material = this.sphereMat;
-        this.nodes[day-1].material.needsUpdate = true;
+        this.nodes[lastDay].material = this.sphereMat;
+        this.nodes[lastDay].material.needsUpdate = true;
         $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
@@ -142,31 +145,37 @@ class Finance extends BaseApp {
     previousDay() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
 
+        let lastDay = this.currentDate.day;
         if(--this.currentDate.day < 0) {
-            this.currentDate.day = 30;
+            this.currentDate.day = this.daysThisMonth-1;
+            lastDay = 0;
         }
 
         let week = Math.floor(this.currentDate.day / 7);
         if(week !== this.currentDate.week) {
-            this.moveToWeek(week);
+            this.moveToWeek(week, PREVIOUS);
             this.currentDate.week = week;
         }
 
         let day = this.currentDate.day;
         this.nodes[day].material = this.sphereMatSelected;
         this.nodes[day].material.needsUpdate = true;
-        this.nodes[day+1].material = this.sphereMat;
-        this.nodes[day+1].material.needsUpdate = true;
+        this.nodes[lastDay].material = this.sphereMat;
+        this.nodes[lastDay].material.needsUpdate = true;
         $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
     }
 
-    moveToWeek(week) {
+    moveToWeek(week, direction) {
         if(this.sceneMoving) return;
 
-        let dir = week < this.currentDate.week ? 1 : -1;
+        let currentWeek = this.currentDate.week;
+        let dir = week < currentWeek ? 1 : -1;
+        if((currentWeek === 4 && week === 0) || (currentWeek === 0 && week === 4)) {
+            dir = direction;
+        }
         this.moveSpeed = this.weeklyGap / this.SCENE_MOVE_TIME;
         this.moveSpeed *= dir;
         this.sceneMoveEnd = this.weeklyGap * -week;
