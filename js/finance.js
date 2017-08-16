@@ -119,6 +119,7 @@ class Finance extends BaseApp {
 
     nextDay() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
+        if(this.sceneMoving) return;
 
         let lastDay = this.currentDate.day;
         if(++this.currentDate.day >= this.daysThisMonth) {
@@ -144,6 +145,7 @@ class Finance extends BaseApp {
 
     previousDay() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
+        if(this.sceneMoving) return;
 
         let lastDay = this.currentDate.day;
         if(--this.currentDate.day < 0) {
@@ -415,11 +417,11 @@ $(document).ready(function() {
     //app.createGUI();
 
     //GUI callbacks
-    $('#right').on("click", () => {
+    $('#nextDay').on("click", () => {
        app.nextDay();
     });
 
-    $('#left').on("click", () => {
+    $('#previousDay').on("click", () => {
         app.previousDay();
     });
 

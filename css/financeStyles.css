@@ -59,8 +59,8 @@ body {
 }
 .btn-file input[type=file] {
     position: absolute;
-    top: 60%;
-    right: 40%;
+    top: 85%;
+    right: 50%;
     width: 57px;
     height: 35px;
     font-size: 2vw;
