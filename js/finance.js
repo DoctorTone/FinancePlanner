@@ -31,6 +31,10 @@ const STAND_SCALE = 4;
 const BASE_OFFSET = 6;
 const START_WEEK_OFFSET = 7;
 const WEEK_OFFSET = 7;
+const NUM_MONTH_GROUPS = 4;
+const MAIN_WIDTH = 300;
+const MAIN_HEIGHT = 60;
+const MAIN_DEPTH = 60;
 
 //Init this app from base
 class Finance extends BaseApp {
@@ -73,14 +77,36 @@ class Finance extends BaseApp {
         //Create scene
         super.createScene();
 
+        //Main root group
+        this.root = new THREE.Object3D();
+        this.root.name = "rootGroup";
+        this.addToScene(this.root);
+
         //Get hexagon
         let loader = new THREE.JSONLoader();
         loader.load("models/hexagon.json", (geometry, materials) => {
             //this.hexMesh = new THREE.Mesh(geometry, materials);
             this.expenseGeom = geometry;
 
-            this.generateRepresentations();
-            //Initialise offsets
+            //Main cylinder geometry
+            let bigGeom = new THREE.BoxBufferGeometry(MAIN_WIDTH, MAIN_HEIGHT, MAIN_DEPTH);
+            let bigMat = new THREE.MeshLambertMaterial( {color: 0x5f5f5f} );
+            let bigMesh = new THREE.Mesh(bigGeom, bigMat);
+            this.root.add(bigMesh);
+
+            //Container groups
+            let monthRep = {};
+            let monthGroups = [];
+            for(let i=0; i<1; ++i) {
+                monthGroups.push(new THREE.Object3D());
+                monthGroups[i].name = "monthGroup" + i;
+                this.root.add(monthGroups[i]);
+                this.generateRepresentations(monthGroups[i]);
+                monthGroups[i].position.y = MAIN_HEIGHT/2;
+            }
+
+            //Initialisation
+            this.setWeekStatus(this.currentDate.week, true);
             this.weeklyGap = this.nodes[10].position.x - this.nodes[3].position.x;
             this.currentDate.position = this.nodes[3].position.x;
             this.groundOffset = START_POS_Y;
@@ -88,7 +114,7 @@ class Finance extends BaseApp {
         });
 
         //Floor
-        this.addFloor();
+        //this.addFloor();
     }
 
     addFloor() {
@@ -99,7 +125,7 @@ class Finance extends BaseApp {
         this.addToScene(plane);
     }
 
-    generateRepresentations() {
+    generateRepresentations(group) {
         //Create representations for each day
         let label;
         let pos = new THREE.Vector3();
@@ -115,19 +141,17 @@ class Finance extends BaseApp {
         this.stands = [];
 
         let dayScale = new THREE.Vector3(30, 30, 1);
-        let dayGroup = new THREE.Object3D();
-        dayGroup.name = "dayGroup";
         for(i=0; i<this.daysThisMonth; ++i) {
             node = new THREE.Mesh(this.expenseGeom, i===this.currentDate.day ? this.expenseMatSelected : this.expenseMat);
             node.visible = false;
             node.position.set(START_POS_X+(X_INC*i), START_POS_Y, START_POS_Z);
             this.nodes.push(node);
-            dayGroup.add(node);
+            group.add(node);
             pos.copy(node.position);
             pos.add(dayLabelOffset);
             label = spriteManager.create(DATES.dayNumbers[i], pos, dayScale, 32, 1, true, false);
             label.visible = false;
-            dayGroup.add(label);
+            group.add(label);
             this.dayLabels.push(label);
             pos.copy(node.position);
             pos.add(expendLabelOffset);
@@ -140,13 +164,9 @@ class Finance extends BaseApp {
             stand.scale.y = STAND_SCALE;
             stand.position.set(START_POS_X+(X_INC*i), STAND_SCALE/2, START_POS_Z);
             this.stands.push(stand);
-            dayGroup.add(stand);
-            dayGroup.add(label);
+            group.add(stand);
+            group.add(label);
         }
-        this.addToScene(dayGroup);
-        this.dayGroup = dayGroup;
-        //Show first week
-        this.setWeekStatus(this.currentDate.week, true);
     }
 
     update() {
