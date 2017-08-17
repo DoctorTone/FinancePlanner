@@ -18,14 +18,17 @@ let DATE_LABEL = {
 };
 let EXPEND_LABEL = {
     X_OFFSET: 0,
-    Y_OFFSET: 2,
+    Y_OFFSET: 0,
     Z_OFFSET: 0
 };
-const EXPEND_SCALE = 6;
 const START_POS_X = -105;
 const X_INC = 35;
 const START_POS_Y = 10;
 const START_POS_Z = 0;
+const STAND_RADIUS = 1;
+const STAND_HEIGHT = 1;
+const STAND_SCALE = 4;
+const BASE_OFFSET = 6;
 
 //Init this app from base
 class Finance extends BaseApp {
@@ -101,16 +104,16 @@ class Finance extends BaseApp {
         let expendLabelOffset = new THREE.Vector3(EXPEND_LABEL.X_OFFSET, EXPEND_LABEL.Y_OFFSET, EXPEND_LABEL.Z_OFFSET);
         this.expenseMat = new THREE.MeshPhongMaterial({color: 0xfed600});
         this.expenseMatSelected = new THREE.MeshPhongMaterial( {color: 0xffffff, emissive: 0xfed600} );
-        let i;
-        let node;
+        let standGeom = new THREE.CylinderBufferGeometry(STAND_RADIUS, STAND_RADIUS, STAND_HEIGHT);
+        let i, node, stand;
         this.nodes = [];
+        this.stands = [];
 
         let dayScale = new THREE.Vector3(30, 30, 1);
         let dayGroup = new THREE.Object3D();
         dayGroup.name = "dayGroup";
         for(i=0; i<this.daysThisMonth; ++i) {
             node = new THREE.Mesh(this.expenseGeom, i===this.currentDate.day ? this.expenseMatSelected : this.expenseMat);
-            node.scale.set(EXPEND_SCALE, EXPEND_SCALE, EXPEND_SCALE);
             node.position.set(START_POS_X+(X_INC*i), START_POS_Y, START_POS_Z);
             this.nodes.push(node);
             dayGroup.add(node);
@@ -121,6 +124,12 @@ class Finance extends BaseApp {
             pos.copy(node.position);
             pos.add(expendLabelOffset);
             label = spriteManager.create("£0.00", pos, dayScale, 32, 1, true, false);
+            //Add stand for representation as well
+            stand = new THREE.Mesh(standGeom, i===this.currentDate.day ? this.expenseMatSelected : this.expenseMat);
+            stand.scale.y = STAND_SCALE;
+            stand.position.set(START_POS_X+(X_INC*i), STAND_SCALE/2, START_POS_Z);
+            this.stands.push(stand);
+            dayGroup.add(stand);
             dayGroup.add(label);
         }
         this.addToScene(dayGroup);
@@ -164,6 +173,10 @@ class Finance extends BaseApp {
         this.nodes[day].material.needsUpdate = true;
         this.nodes[lastDay].material = this.expenseMat;
         this.nodes[lastDay].material.needsUpdate = true;
+        this.stands[day].material = this.expenseMatSelected;
+        this.stands[day].material.needsUpdate = true;
+        this.stands[lastDay].material = this.expenseMat;
+        this.stands[lastDay].material.needsUpdate = true;
         $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
@@ -191,6 +204,10 @@ class Finance extends BaseApp {
         this.nodes[day].material.needsUpdate = true;
         this.nodes[lastDay].material = this.expenseMat;
         this.nodes[lastDay].material.needsUpdate = true;
+        this.stands[day].material = this.expenseMatSelected;
+        this.stands[day].material.needsUpdate = true;
+        this.stands[lastDay].material = this.expenseMat;
+        this.stands[lastDay].material.needsUpdate = true;
         $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
@@ -388,6 +405,8 @@ class Finance extends BaseApp {
         label.position.y = this.groundOffset + this.labelOffset + total;
         spriteManager.setTextAmount(label, total);
         this.nodes[day].position.y = this.groundOffset + total;
+        this.stands[day].scale.y = this.nodes[day].position.y - BASE_OFFSET;
+        this.stands[day].position.y = this.stands[day].scale.y / 2;
     }
 
     saveExpenses() {
