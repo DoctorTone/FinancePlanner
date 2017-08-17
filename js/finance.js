@@ -29,6 +29,8 @@ const STAND_RADIUS = 1;
 const STAND_HEIGHT = 1;
 const STAND_SCALE = 4;
 const BASE_OFFSET = 6;
+const START_WEEK_OFFSET = 7;
+const WEEK_OFFSET = 7;
 
 //Init this app from base
 class Finance extends BaseApp {
@@ -107,6 +109,8 @@ class Finance extends BaseApp {
         let standGeom = new THREE.CylinderBufferGeometry(STAND_RADIUS, STAND_RADIUS, STAND_HEIGHT);
         let i, node, stand;
         this.nodes = [];
+        this.dayLabels = [];
+        this.spendLabels = [];
         this.stands = [];
 
         let dayScale = new THREE.Vector3(30, 30, 1);
@@ -114,18 +118,24 @@ class Finance extends BaseApp {
         dayGroup.name = "dayGroup";
         for(i=0; i<this.daysThisMonth; ++i) {
             node = new THREE.Mesh(this.expenseGeom, i===this.currentDate.day ? this.expenseMatSelected : this.expenseMat);
+            node.visible = false;
             node.position.set(START_POS_X+(X_INC*i), START_POS_Y, START_POS_Z);
             this.nodes.push(node);
             dayGroup.add(node);
             pos.copy(node.position);
             pos.add(dayLabelOffset);
             label = spriteManager.create(DATES.dayNumbers[i], pos, dayScale, 32, 1, true, false);
+            label.visible = false;
             dayGroup.add(label);
+            this.dayLabels.push(label);
             pos.copy(node.position);
             pos.add(expendLabelOffset);
             label = spriteManager.create("£0.00", pos, dayScale, 32, 1, true, false);
+            label.visible = false;
+            this.spendLabels.push(label);
             //Add stand for representation as well
             stand = new THREE.Mesh(standGeom, i===this.currentDate.day ? this.expenseMatSelected : this.expenseMat);
+            stand.visible = false;
             stand.scale.y = STAND_SCALE;
             stand.position.set(START_POS_X+(X_INC*i), STAND_SCALE/2, START_POS_Z);
             this.stands.push(stand);
@@ -134,6 +144,8 @@ class Finance extends BaseApp {
         }
         this.addToScene(dayGroup);
         this.dayGroup = dayGroup;
+        //Show first week
+        this.setWeekStatus(this.currentDate.week, true);
     }
 
     update() {
@@ -149,6 +161,7 @@ class Finance extends BaseApp {
                 this.dayGroup.position.x = this.sceneMoveEnd;
                 this.moveTime = 0;
                 this.sceneMoving = false;
+                this.setWeekStatus(this.currentDate.previousWeek, false);
             }
         }
     }
@@ -165,8 +178,12 @@ class Finance extends BaseApp {
 
         let week = Math.floor(this.currentDate.day / 7);
         if(week !== this.currentDate.week) {
+            this.setWeekStatus(week, true);
+            this.currentDate.previousWeek = this.currentDate.week;
             this.moveToWeek(week, NEXT);
             this.currentDate.week = week;
+            ++week;
+            $('#weekNumber').html(week);
         }
         let day = this.currentDate.day;
         this.nodes[day].material = this.expenseMatSelected;
@@ -195,8 +212,12 @@ class Finance extends BaseApp {
 
         let week = Math.floor(this.currentDate.day / 7);
         if(week !== this.currentDate.week) {
+            this.setWeekStatus(week, true);
+            this.currentDate.previousWeek = this.currentDate.week;
             this.moveToWeek(week, PREVIOUS);
             this.currentDate.week = week;
+            ++week;
+            $('#weekNumber').html(week);
         }
 
         let day = this.currentDate.day;
@@ -228,6 +249,24 @@ class Finance extends BaseApp {
         this.sceneMoving = true;
         //DEBUG
         console.log("End = ", this.sceneMoveEnd);
+    }
+
+    setWeekStatus(week, status) {
+        let start = START_WEEK_OFFSET * week;
+        let end = start + WEEK_OFFSET;
+        if(end > this.daysThisMonth) {
+            end = this.daysThisMonth;
+        }
+        for(let i=start; i<end; ++i) {
+            this.setNodeStatus(i, status);
+        }
+    }
+
+    setNodeStatus(node, status) {
+        this.nodes[node].visible = status;
+        this.dayLabels[node].visible = status;
+        this.spendLabels[node].visible = status;
+        this.stands[node].visible = status;
     }
 
     updateExpenditure(total) {
