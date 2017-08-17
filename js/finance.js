@@ -52,6 +52,13 @@ class Finance extends BaseApp {
         //Create scene
         super.createScene();
 
+        //Get hexagon
+        let loader = new THREE.JSONLoader();
+        loader.load("models/hexagon.json", (geometry, materials) => {
+            let mesh = new THREE.Mesh(geometry, materials);
+            this.addToScene(mesh);
+        });
+
         //Floor
         let planeGeom = new THREE.PlaneBufferGeometry(FLOOR_WIDTH, FLOOR_HEIGHT, SEGMENTS, SEGMENTS);
         let planeMat = new THREE.MeshLambertMaterial( {color: 0x444444});
