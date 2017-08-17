@@ -11,6 +11,21 @@ let EXPENSE_NOTHING = 0;
 let EXPENSE_ADD = 1;
 let EXPENSE_EDIT = 2;
 const PREVIOUS = 1, NEXT = -1;
+let DATE_LABEL = {
+    X_OFFSET: 0,
+    Y_OFFSET: -15,
+    Z_OFFSET: 10
+};
+let EXPEND_LABEL = {
+    X_OFFSET: 0,
+    Y_OFFSET: 2,
+    Z_OFFSET: 0
+};
+const EXPEND_SCALE = 6;
+const START_POS_X = -105;
+const X_INC = 35;
+const START_POS_Y = 10;
+const START_POS_Z = 0;
 
 //Init this app from base
 class Finance extends BaseApp {
@@ -55,38 +70,48 @@ class Finance extends BaseApp {
         //Get hexagon
         let loader = new THREE.JSONLoader();
         loader.load("models/hexagon.json", (geometry, materials) => {
-            let mesh = new THREE.Mesh(geometry, materials);
-            this.addToScene(mesh);
+            //this.hexMesh = new THREE.Mesh(geometry, materials);
+            this.expenseGeom = geometry;
+
+            this.generateRepresentations();
+            //Initialise offsets
+            this.weeklyGap = this.nodes[10].position.x - this.nodes[3].position.x;
+            this.currentDate.position = this.nodes[3].position.x;
+            this.groundOffset = START_POS_Y;
+            this.labelOffset = EXPEND_LABEL.Y_OFFSET;
         });
 
         //Floor
+        this.addFloor();
+    }
+
+    addFloor() {
         let planeGeom = new THREE.PlaneBufferGeometry(FLOOR_WIDTH, FLOOR_HEIGHT, SEGMENTS, SEGMENTS);
         let planeMat = new THREE.MeshLambertMaterial( {color: 0x444444});
         let plane = new THREE.Mesh(planeGeom, planeMat);
         plane.rotation.x = -Math.PI/2;
         this.addToScene(plane);
+    }
 
-        //Create weeks worth of data
+    generateRepresentations() {
+        //Create representations for each day
         let label;
-        let pos = new THREE.Vector3(0, 50, -50);
-        let monthScale = new THREE.Vector3(80, 60, 1);
-        let dayLabelOffset = new THREE.Vector3(0, -15, 10);
-        let expendLabelOffset = new THREE.Vector3(0, 2, 0);
-        let sphereGeom = new THREE.SphereBufferGeometry(NODE_RADIUS, NODE_SEGMENTS, NODE_SEGMENTS);
-        this.sphereMat = new THREE.MeshPhongMaterial({color: 0xfed600});
-        this.sphereMatSelected = new THREE.MeshPhongMaterial( {color: 0xffffff, emissive: 0xfed600} );
-        let i, xStart=-105, xInc=35, yStart=10, zStart=0;
+        let pos = new THREE.Vector3();
+        let dayLabelOffset = new THREE.Vector3(DATE_LABEL.X_OFFSET, DATE_LABEL.Y_OFFSET, DATE_LABEL.Z_OFFSET);
+        let expendLabelOffset = new THREE.Vector3(EXPEND_LABEL.X_OFFSET, EXPEND_LABEL.Y_OFFSET, EXPEND_LABEL.Z_OFFSET);
+        this.expenseMat = new THREE.MeshPhongMaterial({color: 0xfed600});
+        this.expenseMatSelected = new THREE.MeshPhongMaterial( {color: 0xffffff, emissive: 0xfed600} );
+        let i;
         let node;
         this.nodes = [];
-        label = spriteManager.create("October 2016", pos, monthScale, 32, 1, true, false);
-        this.addToScene(label);
 
         let dayScale = new THREE.Vector3(30, 30, 1);
         let dayGroup = new THREE.Object3D();
         dayGroup.name = "dayGroup";
         for(i=0; i<this.daysThisMonth; ++i) {
-            node = new THREE.Mesh(sphereGeom, i===this.currentDate.day ? this.sphereMatSelected : this.sphereMat);
-            node.position.set(xStart+(xInc*i), yStart, zStart);
+            node = new THREE.Mesh(this.expenseGeom, i===this.currentDate.day ? this.expenseMatSelected : this.expenseMat);
+            node.scale.set(EXPEND_SCALE, EXPEND_SCALE, EXPEND_SCALE);
+            node.position.set(START_POS_X+(X_INC*i), START_POS_Y, START_POS_Z);
             this.nodes.push(node);
             dayGroup.add(node);
             pos.copy(node.position);
@@ -100,11 +125,6 @@ class Finance extends BaseApp {
         }
         this.addToScene(dayGroup);
         this.dayGroup = dayGroup;
-        //Gap from the middle of each week
-        this.weeklyGap = this.nodes[10].position.x - this.nodes[3].position.x;
-        this.currentDate.position = this.nodes[3].position.x;
-        this.groundOffset = yStart;
-        this.labelOffset = expendLabelOffset.y;
     }
 
     update() {
@@ -140,9 +160,9 @@ class Finance extends BaseApp {
             this.currentDate.week = week;
         }
         let day = this.currentDate.day;
-        this.nodes[day].material = this.sphereMatSelected;
+        this.nodes[day].material = this.expenseMatSelected;
         this.nodes[day].material.needsUpdate = true;
-        this.nodes[lastDay].material = this.sphereMat;
+        this.nodes[lastDay].material = this.expenseMat;
         this.nodes[lastDay].material.needsUpdate = true;
         $('#day').html(DATES.dayNumbers[day]);
 
@@ -167,9 +187,9 @@ class Finance extends BaseApp {
         }
 
         let day = this.currentDate.day;
-        this.nodes[day].material = this.sphereMatSelected;
+        this.nodes[day].material = this.expenseMatSelected;
         this.nodes[day].material.needsUpdate = true;
-        this.nodes[lastDay].material = this.sphereMat;
+        this.nodes[lastDay].material = this.expenseMat;
         this.nodes[lastDay].material.needsUpdate = true;
         $('#day').html(DATES.dayNumbers[day]);
 
@@ -364,7 +384,7 @@ class Finance extends BaseApp {
 
     updateCurrentNode(total) {
         let day = this.currentDate.day;
-        let label = spriteManager.getSpriteByIndex((day*2)+2);
+        let label = spriteManager.getSpriteByIndex((day*2)+1);
         label.position.y = this.groundOffset + this.labelOffset + total;
         spriteManager.setTextAmount(label, total);
         this.nodes[day].position.y = this.groundOffset + total;
