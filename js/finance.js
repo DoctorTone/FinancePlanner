@@ -51,6 +51,7 @@ class Finance extends BaseApp {
         this.currentDate.month = 9;
         this.currentDate.year = 2016;
         this.daysThisMonth = DATES.daysPerMonth[this.currentDate.month];
+        this.weeksThisMonth = 4;
 
         //Animation
         this.moveTime = 0;
@@ -235,6 +236,41 @@ class Finance extends BaseApp {
         this.updateExpenditure(total);
     }
 
+    nextWeek() {
+        if(this.expenseState !== EXPENSE_NOTHING) return;
+        if(this.sceneMoving) return;
+
+        this.currentDate.previousWeek = this.currentDate.week;
+        let tempWeek = this.currentDate.week;
+        if(++tempWeek > this.weeksThisMonth) {
+            tempWeek = 0;
+        }
+
+        this.setWeekStatus(tempWeek, true);
+        this.moveToWeek(tempWeek, NEXT);
+        this.currentDate.week = tempWeek;
+        ++tempWeek;
+        $('#weekNumber').html(tempWeek);
+
+    }
+
+    previousWeek() {
+        if(this.expenseState !== EXPENSE_NOTHING) return;
+        if(this.sceneMoving) return;
+
+        this.currentDate.previousWeek = this.currentDate.week;
+        let tempWeek = this.currentDate.week;
+        if(--tempWeek < 0) {
+            tempWeek = this.weeksThisMonth;
+        }
+
+        this.setWeekStatus(tempWeek, true);
+        this.moveToWeek(tempWeek, PREVIOUS);
+        this.currentDate.week = tempWeek;
+        ++tempWeek;
+        $('#weekNumber').html(tempWeek);
+    }
+
     moveToWeek(week, direction) {
         if(this.sceneMoving) return;
 
@@ -248,7 +284,7 @@ class Finance extends BaseApp {
         this.sceneMoveEnd = this.weeklyGap * -week;
         this.sceneMoving = true;
         //DEBUG
-        console.log("End = ", this.sceneMoveEnd);
+        //console.log("End = ", this.sceneMoveEnd);
     }
 
     setWeekStatus(week, status) {
@@ -508,6 +544,14 @@ $(document).ready(function() {
 
     $('#previousDay').on("click", () => {
         app.previousDay();
+    });
+
+    $('#nextWeek').on("click", () => {
+        app.nextWeek();
+    });
+
+    $('#previousWeek').on("click", () => {
+        app.previousWeek();
     });
 
     $('#addExpense').on("click", () => {
