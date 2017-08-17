@@ -187,14 +187,7 @@ class Finance extends BaseApp {
             $('#weekNumber').html(week);
         }
         let day = this.currentDate.day;
-        this.nodes[day].material = this.expenseMatSelected;
-        this.nodes[day].material.needsUpdate = true;
-        this.nodes[lastDay].material = this.expenseMat;
-        this.nodes[lastDay].material.needsUpdate = true;
-        this.stands[day].material = this.expenseMatSelected;
-        this.stands[day].material.needsUpdate = true;
-        this.stands[lastDay].material = this.expenseMat;
-        this.stands[lastDay].material.needsUpdate = true;
+        this.selectNodes(day, lastDay);
         $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
@@ -222,14 +215,7 @@ class Finance extends BaseApp {
         }
 
         let day = this.currentDate.day;
-        this.nodes[day].material = this.expenseMatSelected;
-        this.nodes[day].material.needsUpdate = true;
-        this.nodes[lastDay].material = this.expenseMat;
-        this.nodes[lastDay].material.needsUpdate = true;
-        this.stands[day].material = this.expenseMatSelected;
-        this.stands[day].material.needsUpdate = true;
-        this.stands[lastDay].material = this.expenseMat;
-        this.stands[lastDay].material.needsUpdate = true;
+        this.selectNodes(day, lastDay);
         $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
@@ -240,10 +226,17 @@ class Finance extends BaseApp {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
+        let maxDay = this.daysThisMonth - 1;
+        let lastDay = this.currentDate.day;
+        let day = lastDay + 7;
+        if(day > maxDay) {
+            day = maxDay;
+        }
         this.currentDate.previousWeek = this.currentDate.week;
         let tempWeek = this.currentDate.week;
         if(++tempWeek > this.weeksThisMonth) {
             tempWeek = 0;
+            day = 0;
         }
 
         this.setWeekStatus(tempWeek, true);
@@ -251,17 +244,28 @@ class Finance extends BaseApp {
         this.currentDate.week = tempWeek;
         ++tempWeek;
         $('#weekNumber').html(tempWeek);
+        this.selectNodes(day, lastDay);
+        this.currentDate.day = day;
+        $('#day').html(DATES.dayNumbers[day]);
 
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        this.updateExpenditure(total);
     }
 
     previousWeek() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
+        let lastDay = this.currentDate.day;
+        let day = lastDay - 7;
+        if(day < 0) {
+            day = 0;
+        }
         this.currentDate.previousWeek = this.currentDate.week;
         let tempWeek = this.currentDate.week;
         if(--tempWeek < 0) {
             tempWeek = this.weeksThisMonth;
+            day = this.daysThisMonth - 1;
         }
 
         this.setWeekStatus(tempWeek, true);
@@ -269,6 +273,12 @@ class Finance extends BaseApp {
         this.currentDate.week = tempWeek;
         ++tempWeek;
         $('#weekNumber').html(tempWeek);
+        this.selectNodes(day, lastDay);
+        this.currentDate.day = day;
+        $('#day').html(DATES.dayNumbers[day]);
+
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        this.updateExpenditure(total);
     }
 
     moveToWeek(week, direction) {
@@ -303,6 +313,17 @@ class Finance extends BaseApp {
         this.dayLabels[node].visible = status;
         this.spendLabels[node].visible = status;
         this.stands[node].visible = status;
+    }
+
+    selectNodes(nodeSelected, nodeDeselected) {
+        this.nodes[nodeSelected].material = this.expenseMatSelected;
+        this.nodes[nodeSelected].material.needsUpdate = true;
+        this.nodes[nodeDeselected].material = this.expenseMat;
+        this.nodes[nodeDeselected].material.needsUpdate = true;
+        this.stands[nodeSelected].material = this.expenseMatSelected;
+        this.stands[nodeSelected].material.needsUpdate = true;
+        this.stands[nodeDeselected].material = this.expenseMat;
+        this.stands[nodeDeselected].material.needsUpdate = true;
     }
 
     updateExpenditure(total) {
