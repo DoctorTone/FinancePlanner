@@ -5,8 +5,6 @@
 let FLOOR_WIDTH = 800;
 let FLOOR_HEIGHT = 600;
 let SEGMENTS = 8;
-let NODE_RADIUS = 5;
-let NODE_SEGMENTS = 24;
 let EXPENSE_NOTHING = 0;
 let EXPENSE_ADD = 1;
 let EXPENSE_EDIT = 2;
@@ -14,11 +12,8 @@ const PREVIOUS = 1, NEXT = -1;
 const START_POS_X = -105;
 const START_POS_Y = 10;
 const START_POS_Z = 0;
-const STAND_RADIUS = 1;
-const STAND_HEIGHT = 1;
 const STAND_SCALE = 4;
 const BASE_OFFSET = 6;
-const NUM_MONTH_GROUPS = 4;
 const MAIN_WIDTH = 300;
 const MAIN_HEIGHT = 60;
 const MAIN_DEPTH = 60;
@@ -81,17 +76,28 @@ class Finance extends BaseApp {
             repInfo.geom = this.expenseGeom;
             let monthReps = [];
             let group;
-            for(let i=0; i<1; ++i) {
+            //Group positions/rotations
+            let groupOffsets = [
+                {y: MAIN_HEIGHT/2, z: 0, rot: 0},
+                {y: 0, z: MAIN_HEIGHT/2, rot: Math.PI/2},
+                {y: -MAIN_HEIGHT/2, z: 0, rot: Math.PI},
+                {y: 0, z: -MAIN_HEIGHT/2, rot: -Math.PI/2}
+            ];
+            for(let i=0; i<MAX_GROUPS; ++i) {
                 monthReps.push(new ExpendRepresentation());
                 monthReps[i].setName("monthGroup" + i);
                 group = monthReps[i].generateRepresentations(repInfo);
                 this.root.add(group);
-                group.position.y = MAIN_HEIGHT/2;
+                group.position.y = groupOffsets[i].y;
+                group.position.z = groupOffsets[i].z;
+                group.rotation.x = groupOffsets[i].rot;
             }
             this.monthReps = monthReps;
 
             //Initialisation
-            this.monthReps[this.currentGroup].setWeekStatus(0, true);
+            for(let i=0; i<MAX_GROUPS; ++i) {
+                this.monthReps[i].setWeekStatus(0, true);
+            }
             this.weeklyGap = WEEKLY_GAP;
             this.groundOffset = START_POS_Y;
             this.labelOffset = EXPEND_LABEL.Y_OFFSET;
