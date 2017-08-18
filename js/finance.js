@@ -313,12 +313,14 @@ class Finance extends BaseApp {
         expenseInfo.item = this.currentItem;
         expenseInfo.tags = this.currentTags;
 
-        let expense = new Expense(this.currentDate, expenseInfo);
+        let group = this.monthReps[this.currentGroup];
+        let date = group.getCurrentDate();
+        let expense = new Expense(date, expenseInfo);
 
         state === EXPENSE_EDIT ? this.expenseManager.updateExpense(expense, this.expenseIndex) :
             this.expenseManager.addExpense(expense);
 
-        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        let total = this.expenseManager.getDailyTotal(date);
         this.updateCurrentNode(total);
         this.updateExpenditure(total);
         this.clearAddForm();
@@ -451,7 +453,8 @@ class Finance extends BaseApp {
     }
 
     updateCurrentNode(total) {
-        let day = this.currentDate.day;
+        let group = this.monthReps[this.currentGroup];
+        let day = group.getCurrentDay();
         let label = spriteManager.getSpriteByIndex((day*2)+1);
         label.position.y = this.groundOffset + this.labelOffset + total;
         spriteManager.setTextAmount(label, total);

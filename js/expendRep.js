@@ -55,6 +55,10 @@ class ExpendRepresentation {
         this.group.name = name;
     }
 
+    getCurrentDate() {
+        return this.currentDate;
+    }
+
     getCurrentDay() {
         return this.currentDate.day;
     }
