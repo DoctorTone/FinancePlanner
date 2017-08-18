@@ -11,30 +11,19 @@ let EXPENSE_NOTHING = 0;
 let EXPENSE_ADD = 1;
 let EXPENSE_EDIT = 2;
 const PREVIOUS = 1, NEXT = -1;
-let DATE_LABEL = {
-    X_OFFSET: 0,
-    Y_OFFSET: -15,
-    Z_OFFSET: 10
-};
-let EXPEND_LABEL = {
-    X_OFFSET: 0,
-    Y_OFFSET: 0,
-    Z_OFFSET: 0
-};
 const START_POS_X = -105;
-const X_INC = 35;
 const START_POS_Y = 10;
 const START_POS_Z = 0;
 const STAND_RADIUS = 1;
 const STAND_HEIGHT = 1;
 const STAND_SCALE = 4;
 const BASE_OFFSET = 6;
-const START_WEEK_OFFSET = 7;
-const WEEK_OFFSET = 7;
 const NUM_MONTH_GROUPS = 4;
 const MAIN_WIDTH = 300;
 const MAIN_HEIGHT = 60;
 const MAIN_DEPTH = 60;
+const MAX_GROUPS = 4;
+const WEEKLY_GAP = 245;
 
 //Init this app from base
 class Finance extends BaseApp {
@@ -48,14 +37,7 @@ class Finance extends BaseApp {
         this.expenseIndex = -1;
         this.expenseState = EXPENSE_NOTHING;
 
-        //Date info
-        this.currentDate = {};
-        this.currentDate.day = 0;
-        this.currentDate.week = 0;
-        this.currentDate.month = 9;
-        this.currentDate.year = 2016;
-        this.daysThisMonth = DATES.daysPerMonth[this.currentDate.month];
-        this.weeksThisMonth = 4;
+        this.currentGroup = 0;
 
         //Animation
         this.moveTime = 0;
@@ -95,20 +77,22 @@ class Finance extends BaseApp {
             this.root.add(bigMesh);
 
             //Container groups
-            let monthRep = {};
-            let monthGroups = [];
+            let repInfo = {};
+            repInfo.geom = this.expenseGeom;
+            let monthReps = [];
+            let group;
             for(let i=0; i<1; ++i) {
-                monthGroups.push(new THREE.Object3D());
-                monthGroups[i].name = "monthGroup" + i;
-                this.root.add(monthGroups[i]);
-                this.generateRepresentations(monthGroups[i]);
-                monthGroups[i].position.y = MAIN_HEIGHT/2;
+                monthReps.push(new ExpendRepresentation());
+                monthReps[i].setName("monthGroup" + i);
+                group = monthReps[i].generateRepresentations(repInfo);
+                this.root.add(group);
+                group.position.y = MAIN_HEIGHT/2;
             }
+            this.monthReps = monthReps;
 
             //Initialisation
-            this.setWeekStatus(this.currentDate.week, true);
-            this.weeklyGap = this.nodes[10].position.x - this.nodes[3].position.x;
-            this.currentDate.position = this.nodes[3].position.x;
+            this.monthReps[this.currentGroup].setWeekStatus(0, true);
+            this.weeklyGap = WEEKLY_GAP;
             this.groundOffset = START_POS_Y;
             this.labelOffset = EXPEND_LABEL.Y_OFFSET;
         });
@@ -125,50 +109,6 @@ class Finance extends BaseApp {
         this.addToScene(plane);
     }
 
-    generateRepresentations(group) {
-        //Create representations for each day
-        let label;
-        let pos = new THREE.Vector3();
-        let dayLabelOffset = new THREE.Vector3(DATE_LABEL.X_OFFSET, DATE_LABEL.Y_OFFSET, DATE_LABEL.Z_OFFSET);
-        let expendLabelOffset = new THREE.Vector3(EXPEND_LABEL.X_OFFSET, EXPEND_LABEL.Y_OFFSET, EXPEND_LABEL.Z_OFFSET);
-        this.expenseMat = new THREE.MeshPhongMaterial({color: 0xfed600});
-        this.expenseMatSelected = new THREE.MeshPhongMaterial( {color: 0xffffff, emissive: 0xfed600} );
-        let standGeom = new THREE.CylinderBufferGeometry(STAND_RADIUS, STAND_RADIUS, STAND_HEIGHT);
-        let i, node, stand;
-        this.nodes = [];
-        this.dayLabels = [];
-        this.spendLabels = [];
-        this.stands = [];
-
-        let dayScale = new THREE.Vector3(30, 30, 1);
-        for(i=0; i<this.daysThisMonth; ++i) {
-            node = new THREE.Mesh(this.expenseGeom, i===this.currentDate.day ? this.expenseMatSelected : this.expenseMat);
-            node.visible = false;
-            node.position.set(START_POS_X+(X_INC*i), START_POS_Y, START_POS_Z);
-            this.nodes.push(node);
-            group.add(node);
-            pos.copy(node.position);
-            pos.add(dayLabelOffset);
-            label = spriteManager.create(DATES.dayNumbers[i], pos, dayScale, 32, 1, true, false);
-            label.visible = false;
-            group.add(label);
-            this.dayLabels.push(label);
-            pos.copy(node.position);
-            pos.add(expendLabelOffset);
-            label = spriteManager.create("£0.00", pos, dayScale, 32, 1, true, false);
-            label.visible = false;
-            this.spendLabels.push(label);
-            //Add stand for representation as well
-            stand = new THREE.Mesh(standGeom, i===this.currentDate.day ? this.expenseMatSelected : this.expenseMat);
-            stand.visible = false;
-            stand.scale.y = STAND_SCALE;
-            stand.position.set(START_POS_X+(X_INC*i), STAND_SCALE/2, START_POS_Z);
-            this.stands.push(stand);
-            group.add(stand);
-            group.add(label);
-        }
-    }
-
     update() {
         super.update();
 
@@ -176,13 +116,14 @@ class Finance extends BaseApp {
         this.elapsedTime += delta;
 
         if(this.sceneMoving) {
+            let group = this.monthReps[this.currentGroup];
             this.moveTime += delta;
-            this.dayGroup.position.x += (this.moveSpeed * delta);
+            group.updateGroup(this.moveSpeed * delta);
             if(this.moveTime >= this.SCENE_MOVE_TIME) {
-                this.dayGroup.position.x = this.sceneMoveEnd;
+                group.moveGroup(this.sceneMoveEnd);
                 this.moveTime = 0;
                 this.sceneMoving = false;
-                this.setWeekStatus(this.currentDate.previousWeek, false);
+                group.setWeekStatus(group.getPreviousWeek(), false);
             }
         }
     }
@@ -191,24 +132,29 @@ class Finance extends BaseApp {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
-        let lastDay = this.currentDate.day;
-        if(++this.currentDate.day >= this.daysThisMonth) {
-            this.currentDate.day = 0;
-            lastDay = this.daysThisMonth - 1;
+        let group = this.monthReps[this.currentGroup];
+        let maxDays = group.getDaysThisMonth();
+        let currentDay = group.getCurrentDay();
+        let lastDay = currentDay;
+        if(++currentDay >= maxDays) {
+            currentDay = 0;
+            lastDay = maxDays - 1;
         }
 
-        let week = Math.floor(this.currentDate.day / 7);
-        if(week !== this.currentDate.week) {
-            this.setWeekStatus(week, true);
-            this.currentDate.previousWeek = this.currentDate.week;
+        let currentWeek = group.getCurrentWeek();
+        let week = Math.floor(currentDay / 7);
+        if(week !== currentWeek) {
+            group.setWeekStatus(week, true);
+            group.setPreviousWeek(currentWeek);
             this.moveToWeek(week, NEXT);
-            this.currentDate.week = week;
+            group.setCurrentWeek(week);
             ++week;
             $('#weekNumber').html(week);
         }
-        let day = this.currentDate.day;
-        this.selectNodes(day, lastDay);
-        $('#day').html(DATES.dayNumbers[day]);
+
+        group.setCurrentDay(currentDay);
+        group.selectNodes(currentDay, lastDay);
+        $('#day').html(DATES.dayNumbers[currentDay]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
@@ -218,25 +164,29 @@ class Finance extends BaseApp {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
-        let lastDay = this.currentDate.day;
-        if(--this.currentDate.day < 0) {
-            this.currentDate.day = this.daysThisMonth-1;
+        let group = this.monthReps[this.currentGroup];
+        let maxDays = group.getDaysThisMonth();
+        let currentDay = group.getCurrentDay();
+        let lastDay = currentDay;
+        if(--currentDay < 0) {
+            currentDay = maxDays-1;
             lastDay = 0;
         }
 
-        let week = Math.floor(this.currentDate.day / 7);
-        if(week !== this.currentDate.week) {
-            this.setWeekStatus(week, true);
-            this.currentDate.previousWeek = this.currentDate.week;
+        let currentWeek = group.getCurrentWeek();
+        let week = Math.floor(currentDay / 7);
+        if(week !== currentWeek) {
+            group.setWeekStatus(week, true);
+            group.setPreviousWeek(currentWeek);
             this.moveToWeek(week, PREVIOUS);
-            this.currentDate.week = week;
+            group.setCurrentWeek(week);
             ++week;
             $('#weekNumber').html(week);
         }
 
-        let day = this.currentDate.day;
-        this.selectNodes(day, lastDay);
-        $('#day').html(DATES.dayNumbers[day]);
+        group.setCurrentDay(currentDay);
+        group.selectNodes(currentDay, lastDay);
+        $('#day').html(DATES.dayNumbers[currentDay]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
@@ -259,7 +209,7 @@ class Finance extends BaseApp {
             day = 0;
         }
 
-        this.setWeekStatus(tempWeek, true);
+        this.monthReps[this.currentGroup].setWeekStatus(tempWeek, true);
         this.moveToWeek(tempWeek, NEXT);
         this.currentDate.week = tempWeek;
         ++tempWeek;
@@ -288,7 +238,7 @@ class Finance extends BaseApp {
             day = this.daysThisMonth - 1;
         }
 
-        this.setWeekStatus(tempWeek, true);
+        this.monthReps[this.currentGroup].setWeekStatus(tempWeek, true);
         this.moveToWeek(tempWeek, PREVIOUS);
         this.currentDate.week = tempWeek;
         ++tempWeek;
@@ -304,7 +254,9 @@ class Finance extends BaseApp {
     moveToWeek(week, direction) {
         if(this.sceneMoving) return;
 
-        let currentWeek = this.currentDate.week;
+        let group = this.monthReps[this.currentGroup];
+
+        let currentWeek = group.getCurrentWeek();
         let dir = week < currentWeek ? 1 : -1;
         if((currentWeek === 4 && week === 0) || (currentWeek === 0 && week === 4)) {
             dir = direction;
@@ -315,35 +267,6 @@ class Finance extends BaseApp {
         this.sceneMoving = true;
         //DEBUG
         //console.log("End = ", this.sceneMoveEnd);
-    }
-
-    setWeekStatus(week, status) {
-        let start = START_WEEK_OFFSET * week;
-        let end = start + WEEK_OFFSET;
-        if(end > this.daysThisMonth) {
-            end = this.daysThisMonth;
-        }
-        for(let i=start; i<end; ++i) {
-            this.setNodeStatus(i, status);
-        }
-    }
-
-    setNodeStatus(node, status) {
-        this.nodes[node].visible = status;
-        this.dayLabels[node].visible = status;
-        this.spendLabels[node].visible = status;
-        this.stands[node].visible = status;
-    }
-
-    selectNodes(nodeSelected, nodeDeselected) {
-        this.nodes[nodeSelected].material = this.expenseMatSelected;
-        this.nodes[nodeSelected].material.needsUpdate = true;
-        this.nodes[nodeDeselected].material = this.expenseMat;
-        this.nodes[nodeDeselected].material.needsUpdate = true;
-        this.stands[nodeSelected].material = this.expenseMatSelected;
-        this.stands[nodeSelected].material.needsUpdate = true;
-        this.stands[nodeDeselected].material = this.expenseMat;
-        this.stands[nodeDeselected].material.needsUpdate = true;
     }
 
     updateExpenditure(total) {
