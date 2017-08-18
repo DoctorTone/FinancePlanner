@@ -63,6 +63,10 @@ class ExpendRepresentation {
         return this.daysThisMonth;
     }
 
+    getWeeksThisMonth() {
+        return this.weeksThisMonth;
+    }
+
     getCurrentWeek() {
         return this.currentDate.week;
     }

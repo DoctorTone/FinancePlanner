@@ -196,26 +196,29 @@ class Finance extends BaseApp {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
-        let maxDay = this.daysThisMonth - 1;
-        let lastDay = this.currentDate.day;
+        let group = this.monthReps[this.currentGroup];
+        let maxDays = group.getDaysThisMonth();
+        let maxDay = maxDays - 1;
+        let lastDay = group.getCurrentDay();
         let day = lastDay + 7;
         if(day > maxDay) {
             day = maxDay;
         }
-        this.currentDate.previousWeek = this.currentDate.week;
-        let tempWeek = this.currentDate.week;
-        if(++tempWeek > this.weeksThisMonth) {
-            tempWeek = 0;
+
+        let currentWeek = group.getCurrentWeek();
+        group.setPreviousWeek(currentWeek);
+        if(++currentWeek > group.getWeeksThisMonth()) {
+            currentWeek = 0;
             day = 0;
         }
 
-        this.monthReps[this.currentGroup].setWeekStatus(tempWeek, true);
-        this.moveToWeek(tempWeek, NEXT);
-        this.currentDate.week = tempWeek;
-        ++tempWeek;
-        $('#weekNumber').html(tempWeek);
-        this.selectNodes(day, lastDay);
-        this.currentDate.day = day;
+        group.setWeekStatus(currentWeek, true);
+        this.moveToWeek(currentWeek, NEXT);
+        group.setCurrentWeek(currentWeek);
+        ++currentWeek;
+        $('#weekNumber').html(currentWeek);
+        group.selectNodes(day, lastDay);
+        group.setCurrentDay(day);
         $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
@@ -226,25 +229,28 @@ class Finance extends BaseApp {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
-        let lastDay = this.currentDate.day;
+        let group = this.monthReps[this.currentGroup];
+        let maxDays = group.getDaysThisMonth();
+        let maxDay = maxDays - 1;
+        let lastDay = group.getCurrentDay();
         let day = lastDay - 7;
         if(day < 0) {
             day = 0;
         }
-        this.currentDate.previousWeek = this.currentDate.week;
-        let tempWeek = this.currentDate.week;
-        if(--tempWeek < 0) {
-            tempWeek = this.weeksThisMonth;
-            day = this.daysThisMonth - 1;
+        let currentWeek = group.getCurrentWeek();
+        group.setPreviousWeek(currentWeek);
+        if(--currentWeek < 0) {
+            currentWeek = group.getWeeksThisMonth();
+            day = maxDay;
         }
 
-        this.monthReps[this.currentGroup].setWeekStatus(tempWeek, true);
-        this.moveToWeek(tempWeek, PREVIOUS);
-        this.currentDate.week = tempWeek;
-        ++tempWeek;
-        $('#weekNumber').html(tempWeek);
-        this.selectNodes(day, lastDay);
-        this.currentDate.day = day;
+        group.setWeekStatus(currentWeek, true);
+        this.moveToWeek(currentWeek, PREVIOUS);
+        group.setCurrentWeek(currentWeek);
+        ++currentWeek;
+        $('#weekNumber').html(currentWeek);
+        group.selectNodes(day, lastDay);
+        group.setCurrentDay(day);
         $('#day').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
