@@ -13,7 +13,6 @@ const START_POS_X = -105;
 const START_POS_Y = 10;
 const START_POS_Z = 0;
 const STAND_SCALE = 4;
-const BASE_OFFSET = 6;
 const MAIN_WIDTH = 300;
 const MAIN_HEIGHT = 60;
 const MAIN_DEPTH = 60;
@@ -175,7 +174,7 @@ class Finance extends BaseApp {
         group.selectNodes(currentDay, lastDay);
         $('#day').html(DATES.dayNumbers[currentDay]);
 
-        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
         this.updateExpenditure(total);
     }
 
@@ -207,7 +206,7 @@ class Finance extends BaseApp {
         group.selectNodes(currentDay, lastDay);
         $('#day').html(DATES.dayNumbers[currentDay]);
 
-        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
         this.updateExpenditure(total);
     }
 
@@ -240,7 +239,7 @@ class Finance extends BaseApp {
         group.setCurrentDay(day);
         $('#day').html(DATES.dayNumbers[day]);
 
-        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
         this.updateExpenditure(total);
     }
 
@@ -272,7 +271,7 @@ class Finance extends BaseApp {
         group.setCurrentDay(day);
         $('#day').html(DATES.dayNumbers[day]);
 
-        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
         this.updateExpenditure(total);
     }
 
@@ -367,7 +366,8 @@ class Finance extends BaseApp {
 
     showExpense() {
         //Show item values to edit
-        let expenses = this.expenseManager.getExpenses(this.currentDate);
+        let group = this.monthReps[this.currentGroup];
+        let expenses = this.expenseManager.getExpenses(group.getCurrentDate());
         if(!expenses) {
             alert("No expenses for that day!");
             return;
@@ -462,8 +462,9 @@ class Finance extends BaseApp {
             alert("Please select an item");
             return;
         }
-        this.expenseManager.deleteExpense(this.currentDate, this.expenseIndex);
-        let total = this.expenseManager.getDailyTotal(this.currentDate);
+        let group = this.monthReps[this.currentGroup];
+        this.expenseManager.deleteExpense(group.getCurrentDate(), this.expenseIndex);
+        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
         this.updateCurrentNode(total);
         this.updateExpenditure(total);
         $('#expenseTableContainer').hide();
@@ -473,7 +474,8 @@ class Finance extends BaseApp {
 
     populateAddForm() {
         $('#addFormTitle').html("Edit expense");
-        let expense = this.expenseManager.getExpense(this.currentDate, this.expenseIndex);
+        let group = this.monthReps[this.currentGroup];
+        let expense = this.expenseManager.getExpense(group.getCurrentDate(), this.expenseIndex);
         if(!expense) {
             console.log("No expense for that date");
             return;
@@ -489,9 +491,7 @@ class Finance extends BaseApp {
         let label = spriteManager.getSpriteByIndex((day*2)+1);
         label.position.y = this.groundOffset + this.labelOffset + total;
         spriteManager.setTextAmount(label, total);
-        this.nodes[day].position.y = this.groundOffset + total;
-        this.stands[day].scale.y = this.nodes[day].position.y - BASE_OFFSET;
-        this.stands[day].position.y = this.stands[day].scale.y / 2;
+        group.updateCurrentNode(total);
     }
 
     saveExpenses() {

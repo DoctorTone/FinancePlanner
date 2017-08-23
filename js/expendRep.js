@@ -29,6 +29,7 @@ const START_POS = new THREE.Vector3(-105, 10, 0);
 const X_INC = 35;
 const START_WEEK_OFFSET = 7;
 const WEEK_OFFSET = 7;
+const BASE_OFFSET = 6;
 
 class ExpendRepresentation {
     constructor() {
@@ -143,6 +144,13 @@ class ExpendRepresentation {
         }
 
         return this.group;
+    }
+
+    updateCurrentNode(total) {
+        let day = this.currentDate.day;
+        this.nodes[day].position.y = START_POS.y + total;
+        this.stands[day].scale.y = this.nodes[day].position.y - BASE_OFFSET;
+        this.stands[day].position.y = this.stands[day].scale.y / 2;
     }
 
     updateGroup(offset) {
