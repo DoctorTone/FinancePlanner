@@ -38,6 +38,9 @@ class Finance extends BaseApp {
         this.moveTime = 0;
         this.sceneMoving = false;
         this.SCENE_MOVE_TIME = 2;
+        this.SCENE_ROTATE_INC = Math.PI/2;
+        this.SCENE_ROTATE_TIME = 2;
+        this.sceneRotating = false;
     }
 
     init(container) {
@@ -130,6 +133,16 @@ class Finance extends BaseApp {
                 this.moveTime = 0;
                 this.sceneMoving = false;
                 group.setWeekStatus(group.getPreviousWeek(), false);
+            }
+        }
+
+        if(this.sceneRotating) {
+            this.moveTime += delta;
+            this.root.rotation.x += (this.rotateSpeed * delta);
+            if(this.moveTime >= this.SCENE_ROTATE_TIME) {
+                this.moveTime = 0;
+                this.sceneRotating = false;
+                this.root.rotation.x = this.sceneRotateEnd;
             }
         }
     }
@@ -279,6 +292,24 @@ class Finance extends BaseApp {
         this.sceneMoving = true;
         //DEBUG
         //console.log("End = ", this.sceneMoveEnd);
+    }
+
+    nextMonth() {
+        if(this.expenseState !== EXPENSE_NOTHING) return;
+        if(this.sceneMoving) return;
+
+        this.rotateSpeed = this.SCENE_ROTATE_INC / this.SCENE_ROTATE_TIME;
+        this.sceneRotateEnd = this.root.rotation.x + this.SCENE_ROTATE_INC;
+        this.sceneRotating = true;
+    }
+
+    previousMonth() {
+        if(this.expenseState !== EXPENSE_NOTHING) return;
+        if(this.sceneMoving) return;
+
+        this.rotateSpeed = -this.SCENE_ROTATE_INC / this.SCENE_ROTATE_TIME;
+        this.sceneRotateEnd = this.root.rotation.x - this.SCENE_ROTATE_INC;
+        this.sceneRotating = true;
     }
 
     updateExpenditure(total) {
@@ -531,6 +562,14 @@ $(document).ready(function() {
 
     $('#previousWeek').on("click", () => {
         app.previousWeek();
+    });
+
+    $('#nextMonth').on("click", () => {
+        app.nextMonth();
+    });
+
+    $('#previousMonth').on("click", () => {
+        app.previousMonth();
     });
 
     $('#addExpense').on("click", () => {
