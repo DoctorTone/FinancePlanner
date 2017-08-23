@@ -49,6 +49,9 @@ class ExpendRepresentation {
         this.currentDate.year = 2016;
         this.daysThisMonth = DATES.daysPerMonth[this.currentDate.month];
         this.weeksThisMonth = 4;
+
+        //Node info
+        this.selectedNode = 0;
     }
 
     setName(name) {
@@ -100,6 +103,10 @@ class ExpendRepresentation {
         this.currentDate.month = month;
     }
 
+    setCurrentDate(date) {
+        this.currentDate = date;
+    }
+
     generateRepresentations(repInfo) {
         //Create representations for each day
         let label;
@@ -117,7 +124,7 @@ class ExpendRepresentation {
         let geom = repInfo.geom;
 
         for(i=0; i<this.daysPerMonth; ++i) {
-            node = new THREE.Mesh(geom, i===this.currentDay ? this.expenseMatSelected : this.expenseMat);
+            node = new THREE.Mesh(geom, i===this.selectedNode ? this.expenseMatSelected : this.expenseMat);
             node.visible = false;
             node.position.set(START_POS_X+(X_INC*i), START_POS_Y, START_POS_Z);
             this.nodes.push(node);
@@ -170,6 +177,26 @@ class ExpendRepresentation {
         this.stands[nodeSelected].material.needsUpdate = true;
         this.stands[nodeDeselected].material = this.expenseMat;
         this.stands[nodeDeselected].material.needsUpdate = true;
+
+        this.selectedNode = nodeSelected;
+    }
+
+    clearSelection() {
+        this.nodes[this.selectedNode].material = this.expenseMat;
+        this.nodes[this.selectedNode].material.needsUpdate = true;
+        this.stands[this.selectedNode].material = this.expenseMat;
+        this.stands[this.selectedNode].material.needsUpdate = true;
+        this.selectedNode = -1;
+    }
+
+    setSelection(node) {
+        this.nodes[node].material = this.expenseMatSelected;
+        this.nodes[node].material.needsUpdate = true;
+        this.stands[node].material = this.expenseMatSelected;
+        this.stands[node].material.needsUpdate = true;
+        this.selectedNode = node;
+        //DEBUG
+        console.log("Selected ", this.group.name);
     }
 
     setNodeStatus(node, status) {

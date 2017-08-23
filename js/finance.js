@@ -99,7 +99,9 @@ class Finance extends BaseApp {
             //Initialisation
             for(let i=0; i<MAX_GROUPS; ++i) {
                 this.monthReps[i].setWeekStatus(0, true);
+                this.monthReps[i].clearSelection();
             }
+            this.monthReps[0].setSelection(0);
             this.weeklyGap = WEEKLY_GAP;
             this.groundOffset = START_POS_Y;
             this.labelOffset = EXPEND_LABEL.Y_OFFSET;
@@ -297,18 +299,40 @@ class Finance extends BaseApp {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
-        this.rotateSpeed = this.SCENE_ROTATE_INC / this.SCENE_ROTATE_TIME;
-        this.sceneRotateEnd = this.root.rotation.x + this.SCENE_ROTATE_INC;
+        this.rotateSpeed = -this.SCENE_ROTATE_INC / this.SCENE_ROTATE_TIME;
+        this.sceneRotateEnd = this.root.rotation.x - this.SCENE_ROTATE_INC;
         this.sceneRotating = true;
+
+        let previousGroup = this.monthReps[this.currentGroup];
+        let previousDate = previousGroup.getCurrentDate();
+        previousGroup.clearSelection();
+        previousDate.month++;
+        if(++this.currentGroup >= MAX_GROUPS) {
+            this.currentGroup = 0;
+        }
+        let currentGroup = this.monthReps[this.currentGroup];
+        currentGroup.setCurrentDate(previousDate);
+        currentGroup.setSelection(previousDate.day);
     }
 
     previousMonth() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
-        this.rotateSpeed = -this.SCENE_ROTATE_INC / this.SCENE_ROTATE_TIME;
-        this.sceneRotateEnd = this.root.rotation.x - this.SCENE_ROTATE_INC;
+        this.rotateSpeed = this.SCENE_ROTATE_INC / this.SCENE_ROTATE_TIME;
+        this.sceneRotateEnd = this.root.rotation.x + this.SCENE_ROTATE_INC;
         this.sceneRotating = true;
+
+        let previousGroup = this.monthReps[this.currentGroup];
+        let previousDate = previousGroup.getCurrentDate();
+        previousGroup.clearSelection();
+        previousDate.month--;
+        if(--this.currentGroup < 0) {
+            this.currentGroup = MAX_GROUPS-1;
+        }
+        let currentGroup = this.monthReps[this.currentGroup];
+        currentGroup.setCurrentDate(previousDate);
+        currentGroup.setSelection(previousDate.day);
     }
 
     updateExpenditure(total) {
