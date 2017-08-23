@@ -313,6 +313,9 @@ class Finance extends BaseApp {
         let currentGroup = this.monthReps[this.currentGroup];
         currentGroup.setCurrentDate(previousDate);
         currentGroup.setSelection(previousDate.day);
+
+        let total = this.expenseManager.getDailyTotal(currentGroup.getCurrentDate());
+        this.updateExpenditure(total);
     }
 
     previousMonth() {
@@ -333,6 +336,9 @@ class Finance extends BaseApp {
         let currentGroup = this.monthReps[this.currentGroup];
         currentGroup.setCurrentDate(previousDate);
         currentGroup.setSelection(previousDate.day);
+
+        let total = this.expenseManager.getDailyTotal(currentGroup.getCurrentDate());
+        this.updateExpenditure(total);
     }
 
     updateExpenditure(total) {
