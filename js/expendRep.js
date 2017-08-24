@@ -195,8 +195,6 @@ class ExpendRepresentation {
         this.stands[node].material = this.expenseMatSelected;
         this.stands[node].material.needsUpdate = true;
         this.selectedNode = node;
-        //DEBUG
-        console.log("Selected ", this.group.name);
     }
 
     setNodeStatus(node, status) {

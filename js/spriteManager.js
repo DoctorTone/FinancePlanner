@@ -19,6 +19,8 @@ var spriteManager = (function () {
     var labels = [];
     var labelNames = [];
 
+    const DAYS_PER_MONTH = 31;
+
     return {
         create: function(name, position, scale, fontSize, opacity, visible, rect) {
             //Create label
@@ -131,6 +133,17 @@ var spriteManager = (function () {
             }
 
             return null;
+        },
+
+        getSpriteByDate: function(day, group) {
+            let index = group * DAYS_PER_MONTH * 2;
+            index += ((day * 2) + 1);
+            if(index >= labels.length) {
+                console.log("Invalid sprite index");
+                return;
+            }
+
+            return labels[index];
         },
 
         setText: function(sprite, text) {

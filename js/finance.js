@@ -518,7 +518,7 @@ class Finance extends BaseApp {
     updateCurrentNode(total) {
         let group = this.monthReps[this.currentGroup];
         let day = group.getCurrentDay();
-        let label = spriteManager.getSpriteByIndex((day*2)+1);
+        let label = spriteManager.getSpriteByDate(day, this.currentGroup);
         label.position.y = this.groundOffset + this.labelOffset + total;
         spriteManager.setTextAmount(label, total);
         group.updateCurrentNode(total);
