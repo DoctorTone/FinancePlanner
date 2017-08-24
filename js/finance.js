@@ -68,16 +68,24 @@ class Finance extends BaseApp {
                 Ground: '#5f5f5f'
             };
             let labelConfig = {
-                height: 1,
-                heightRange: [0.5, 3],
-                width: 1,
-                widthRange: [0.5, 3]
+                dateHeight: 1,
+                dateHeightRange: [0.5, 3],
+                dateWidth: 1,
+                dateWidthRange: [0.5, 3],
+                amountHeight: 1,
+                amountHeightRange: [0.5, 3],
+                amountWidth: 1,
+                amountWidthRange: [0.5, 3],
+            };
+            let nodeConfig = {
+                nodeScale: 1,
+                nodeScaleRange: [0.1, 10]
             };
 
             let controlKit = new ControlKit();
 
-            controlKit.addPanel( {width: 200} )
-                .addGroup({label: "Appearance", enable: false})
+            controlKit.addPanel( {width: 200, fixed: true, opacity: 1.0} )
+                .addGroup({label: "Appearance", enable: false })
                 .addColor(appearanceConfig, "Back", {
                     colorMode: "hex", onChange: () => {
                         this.onBackgroundColourChanged(appearanceConfig.Back);
@@ -94,11 +102,22 @@ class Finance extends BaseApp {
                     }
                 })
                 .addGroup({label: "Dates", enable: false})
-                .addSlider(labelConfig, "height", "heightRange", { label: "Height", dp: 1, onChange: () => {
-                    this.onLabelScale(Y_AXIS, labelConfig.height);
+                .addSlider(labelConfig, "dateHeight", "dateHeightRange", { label: "Height", dp: 1, onChange: () => {
+                    this.onDateLabelScale(Y_AXIS, labelConfig.dateHeight);
                 }})
-                .addSlider(labelConfig, "width", "widthRange", { label: "Width", dp: 1, onChange: () => {
-                    this.onLabelScale(X_AXIS, labelConfig.width);
+                .addSlider(labelConfig, "dateWidth", "dateWidthRange", { label: "Width", dp: 1, onChange: () => {
+                    this.onDateLabelScale(X_AXIS, labelConfig.dateWidth);
+                }})
+                .addGroup({label: "Amounts", enable: false})
+                .addSlider(labelConfig, "amountHeight", "amountHeightRange", { label: "Height", dp: 1, onChange: () => {
+                    this.onAmountLabelScale(Y_AXIS, labelConfig.amountHeight);
+                }})
+                .addSlider(labelConfig, "amountWidth", "amountWidthRange", { label: "Width", dp: 1, onChange: () => {
+                    this.onAmountLabelScale(X_AXIS, labelConfig.amountWidth);
+                }})
+                .addGroup({label: "Nodes", enable: false})
+                .addSlider(nodeConfig, "nodeScale", "nodeScaleRange", { label: "Height", dp: 1, onChange: () => {
+                    this.nodeHeightChanged(nodeConfig.nodeScale);
                 }})
         });
     }
@@ -119,20 +138,52 @@ class Finance extends BaseApp {
         this.bigMesh.material.color.setStyle(colour);
     }
 
-    onLabelScale(axis, scale) {
-        let group = this.monthReps[0];
+    onDateLabelScale(axis, scale) {
+        let i, group;
         switch(axis) {
             case X_AXIS:
-                group.setLabelWidth(scale);
+                for(i=0; i<MAX_GROUPS; ++i) {
+                    group = this.monthReps[i];
+                    group.setDateLabelWidth(scale);
+                }
                 break;
 
             case Y_AXIS:
-                group.setLabelHeight(scale);
+                for(i=0; i<MAX_GROUPS; ++i) {
+                    group = this.monthReps[i];
+                    group.setDateLabelHeight(scale);
+                }
                 break;
 
             default:
                 break;
         }
+    }
+
+    onAmountLabelScale(axis, scale) {
+        let i, group;
+        switch(axis) {
+            case X_AXIS:
+                for(i=0; i<MAX_GROUPS; ++i) {
+                    group = this.monthReps[i];
+                    group.setAmountLabelWidth(scale);
+                }
+                break;
+
+            case Y_AXIS:
+                for(i=0; i<MAX_GROUPS; ++i) {
+                    group = this.monthReps[i];
+                    group.setAmountLabelHeight(scale);
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    nodeHeightChanged(scale) {
+
     }
 
     createScene() {

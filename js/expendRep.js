@@ -224,15 +224,27 @@ class ExpendRepresentation {
         }
     }
 
-    setLabelHeight(scale) {
+    setDateLabelHeight(scale) {
         for(let i=0, numLabels=this.dayLabels.length; i<numLabels; ++i) {
             this.dayLabels[i].scale.y = LABEL_SCALE.y * scale;
         }
     }
 
-    setLabelWidth(scale) {
+    setDateLabelWidth(scale) {
         for(let i=0, numLabels=this.dayLabels.length; i<numLabels; ++i) {
             this.dayLabels[i].scale.x = LABEL_SCALE.x * scale;
+        }
+    }
+
+    setAmountLabelHeight(scale) {
+        for(let i=0, numLabels=this.spendLabels.length; i<numLabels; ++i) {
+            this.spendLabels[i].scale.y = LABEL_SCALE.y * scale;
+        }
+    }
+
+    setAmountLabelWidth(scale) {
+        for(let i=0, numLabels=this.spendLabels.length; i<numLabels; ++i) {
+            this.spendLabels[i].scale.x = LABEL_SCALE.x * scale;
         }
     }
 }
