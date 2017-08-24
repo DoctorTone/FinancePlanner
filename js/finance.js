@@ -112,7 +112,7 @@ class Finance extends BaseApp {
 
             //Initialisation
             for(let i=0; i<MAX_GROUPS; ++i) {
-                this.monthReps[i].setWeekStatus(currentDate.week, true);
+                this.monthReps[i].showWeek(currentDate.week, true);
                 this.monthReps[i].clearSelection();
             }
             this.monthReps[0].setSelection(currentDate.day);
@@ -154,7 +154,7 @@ class Finance extends BaseApp {
                 let previousWeek = group.getPreviousWeek();
                 for(let i=0; i<MAX_GROUPS; ++i) {
                     group = this.monthReps[i];
-                    group.setWeekStatus(previousWeek, false);
+                    group.showWeek(previousWeek, false);
                 }
 
             }
@@ -194,7 +194,7 @@ class Finance extends BaseApp {
         let currentWeek = group.getCurrentWeek();
         let week = Math.floor(currentDay / 7);
         if(week !== currentWeek) {
-            group.setWeekStatus(week, true);
+            group.showWeek(week, true);
             group.setPreviousWeek(currentWeek);
             this.moveToWeek(week, NEXT);
             group.setCurrentWeek(week);
@@ -226,7 +226,7 @@ class Finance extends BaseApp {
         let currentWeek = group.getCurrentWeek();
         let week = Math.floor(currentDay / 7);
         if(week !== currentWeek) {
-            group.setWeekStatus(week, true);
+            group.showWeek(week, true);
             group.setPreviousWeek(currentWeek);
             this.moveToWeek(week, PREVIOUS);
             group.setCurrentWeek(week);
@@ -312,7 +312,7 @@ class Finance extends BaseApp {
         let group;
         for(let i=0; i<MAX_GROUPS; ++i) {
             group = this.monthReps[i];
-            group.setWeekStatus(week, true);
+            group.showWeek(week, true);
         }
 
         group = this.monthReps[this.currentGroup];
@@ -570,15 +570,19 @@ class Finance extends BaseApp {
             buttonElem.html("Week view");
             for(let i=0; i<MAX_GROUPS; ++i) {
                 group = this.monthReps[i];
-                group.setWeekStatus(-1, true);
+                group.showAllWeeks(true);
             }
             this.topGroup.position.x = -this.weeklyGap * 1.75;
+            this.camera.position.set(0, 360, 860);
+            let lookAt = new THREE.Vector3(0, 286, 0);
+            this.controls.setLookAt(lookAt);
         } else {
             let currentWeek = this.monthReps[this.currentGroup].getCurrentWeek();
             buttonElem.html("Month view");
             for(let i=0; i<MAX_GROUPS; ++i) {
                 group = this.monthReps[i];
-                group.setWeekStatus(group.getCurrentWeek(), true);
+                group.showAllWeeks(false);
+                group.showWeek(group.getCurrentWeek(), true);
             }
             this.topGroup.position.x = -this.weeklyGap * currentWeek;
         }

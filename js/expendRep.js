@@ -200,22 +200,19 @@ class ExpendRepresentation {
         this.stands[node].visible = status;
     }
 
-    setWeekStatus(week, status) {
-        let start, end;
-        //Clear everything first
+    showAllWeeks(status) {
         for(let i=0; i<this.daysThisMonth; ++i) {
-            this.setNodeStatus(i, false);
+            this.setNodeStatus(i, status);
         }
+    }
 
-        if(week < 0) {
-            start = 0;
+    showWeek(week, status) {
+        let start, end;
+
+        start = START_WEEK_OFFSET * week;
+        end = start + WEEK_OFFSET;
+        if(end > this.daysThisMonth) {
             end = this.daysThisMonth;
-        } else {
-            start = START_WEEK_OFFSET * week;
-            end = start + WEEK_OFFSET;
-            if(end > this.daysThisMonth) {
-                end = this.daysThisMonth;
-            }
         }
 
         for(let i=start; i<end; ++i) {
