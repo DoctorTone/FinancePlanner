@@ -194,9 +194,11 @@ class Finance extends BaseApp {
         let currentWeek = group.getCurrentWeek();
         let week = Math.floor(currentDay / 7);
         if(week !== currentWeek) {
-            group.showWeek(week, true);
+            if(!this.monthView) {
+                group.showWeek(week, true);
+                this.moveToWeek(week, NEXT);
+            }
             group.setPreviousWeek(currentWeek);
-            this.moveToWeek(week, NEXT);
             group.setCurrentWeek(week);
             ++week;
             $('#weekNumber').html(week);
@@ -226,9 +228,11 @@ class Finance extends BaseApp {
         let currentWeek = group.getCurrentWeek();
         let week = Math.floor(currentDay / 7);
         if(week !== currentWeek) {
-            group.showWeek(week, true);
+            if(!this.monthView) {
+                group.showWeek(week, true);
+                this.moveToWeek(week, PREVIOUS);
+            }
             group.setPreviousWeek(currentWeek);
-            this.moveToWeek(week, PREVIOUS);
             group.setCurrentWeek(week);
             ++week;
             $('#weekNumber').html(week);
@@ -262,7 +266,9 @@ class Finance extends BaseApp {
             day = 0;
         }
 
-        this.moveToWeek(currentWeek, NEXT);
+        if(!this.monthView) {
+            this.moveToWeek(currentWeek, NEXT);
+        }
         group.setCurrentWeek(currentWeek);
         ++currentWeek;
         $('#weekNumber').html(currentWeek);
@@ -293,7 +299,9 @@ class Finance extends BaseApp {
             day = maxDay;
         }
 
-        this.moveToWeek(currentWeek, PREVIOUS);
+        if(!this.monthView) {
+            this.moveToWeek(currentWeek, PREVIOUS);
+        }
         group.setCurrentWeek(currentWeek);
         ++currentWeek;
         $('#weekNumber').html(currentWeek);
