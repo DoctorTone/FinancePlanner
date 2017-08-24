@@ -32,7 +32,7 @@ const WEEK_OFFSET = 7;
 const BASE_OFFSET = 6;
 
 class ExpendRepresentation {
-    constructor() {
+    constructor(date) {
         this.daysPerMonth = 31;
         this.currentDay = 0;
         this.group = new THREE.Object3D();
@@ -42,11 +42,7 @@ class ExpendRepresentation {
         this.stands = [];
 
         //Date info
-        this.currentDate = {};
-        this.currentDate.day = 0;
-        this.currentDate.week = 0;
-        this.currentDate.month = 9;
-        this.currentDate.year = 2016;
+        this.currentDate = date;
         this.daysThisMonth = DATES.daysPerMonth[this.currentDate.month];
         this.weeksThisMonth = 4;
 

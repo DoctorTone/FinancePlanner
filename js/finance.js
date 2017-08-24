@@ -88,8 +88,16 @@ class Finance extends BaseApp {
                 {y: -MAIN_HEIGHT/2, z: 0, rot: Math.PI},
                 {y: 0, z: -MAIN_HEIGHT/2, rot: -Math.PI/2}
             ];
+            //Set today's date
+            let date = new Date();
+            let currentDate = {};
+            currentDate.day = date.getDate() - 1;
+            currentDate.week = Math.floor(currentDate.day / 7);
+            currentDate.month = date.getMonth();
+            currentDate.year = date.getFullYear();
+
             for(let i=0; i<MAX_GROUPS; ++i) {
-                monthReps.push(new ExpendRepresentation());
+                monthReps.push(new ExpendRepresentation(currentDate));
                 monthReps[i].setName("monthGroup" + i);
                 group = monthReps[i].generateRepresentations(repInfo);
                 this.topGroup.add(group);
@@ -101,13 +109,14 @@ class Finance extends BaseApp {
 
             //Initialisation
             for(let i=0; i<MAX_GROUPS; ++i) {
-                this.monthReps[i].setWeekStatus(0, true);
+                this.monthReps[i].setWeekStatus(currentDate.week, true);
                 this.monthReps[i].clearSelection();
             }
-            this.monthReps[0].setSelection(0);
+            this.monthReps[0].setSelection(currentDate.day);
             this.weeklyGap = WEEKLY_GAP;
             this.groundOffset = START_POS_Y;
             this.labelOffset = EXPEND_LABEL.Y_OFFSET;
+            this.topGroup.position.x = this.weeklyGap * -currentDate.week;
         });
 
         //Floor

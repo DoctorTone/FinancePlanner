@@ -20,12 +20,12 @@ body {
     border-radius: 10px;
     padding: 1%;
 }
-#expenseInfo {
+#dateSelector {
     top:1%;
     right:2%;
     width: 15%;
 }
-#expenseInfo p {
+#dateSelector p {
     text-align: center;
 }
 #addFormContainer {
