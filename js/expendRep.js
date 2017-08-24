@@ -201,11 +201,23 @@ class ExpendRepresentation {
     }
 
     setWeekStatus(week, status) {
-        let start = START_WEEK_OFFSET * week;
-        let end = start + WEEK_OFFSET;
-        if(end > this.daysThisMonth) {
-            end = this.daysThisMonth;
+        let start, end;
+        //Clear everything first
+        for(let i=0; i<this.daysThisMonth; ++i) {
+            this.setNodeStatus(i, false);
         }
+
+        if(week < 0) {
+            start = 0;
+            end = this.daysThisMonth;
+        } else {
+            start = START_WEEK_OFFSET * week;
+            end = start + WEEK_OFFSET;
+            if(end > this.daysThisMonth) {
+                end = this.daysThisMonth;
+            }
+        }
+
         for(let i=start; i<end; ++i) {
             this.setNodeStatus(i, status);
         }

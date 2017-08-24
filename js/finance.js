@@ -13,7 +13,7 @@ const START_POS_X = -105;
 const START_POS_Y = 10;
 const START_POS_Z = 0;
 const STAND_SCALE = 4;
-const MAIN_WIDTH = 300;
+const MAIN_WIDTH = 1200;
 const MAIN_HEIGHT = 60;
 const MAIN_DEPTH = 60;
 const MAX_GROUPS = 4;
@@ -40,6 +40,9 @@ class Finance extends BaseApp {
         this.SCENE_ROTATE_INC = Math.PI/2;
         this.SCENE_ROTATE_TIME = 2;
         this.sceneRotating = false;
+
+        //Views
+        this.monthView = false;
     }
 
     init(container) {
@@ -559,6 +562,28 @@ class Finance extends BaseApp {
         group.updateCurrentNode(total);
     }
 
+    toggleView() {
+        this.monthView = !this.monthView;
+        let buttonElem = $('#toggleView');
+        let group;
+        if(this.monthView) {
+            buttonElem.html("Week view");
+            for(let i=0; i<MAX_GROUPS; ++i) {
+                group = this.monthReps[i];
+                group.setWeekStatus(-1, true);
+            }
+            this.topGroup.position.x = -this.weeklyGap * 1.75;
+        } else {
+            let currentWeek = this.monthReps[this.currentGroup].getCurrentWeek();
+            buttonElem.html("Month view");
+            for(let i=0; i<MAX_GROUPS; ++i) {
+                group = this.monthReps[i];
+                group.setWeekStatus(group.getCurrentWeek(), true);
+            }
+            this.topGroup.position.x = -this.weeklyGap * currentWeek;
+        }
+    }
+
     saveExpenses() {
         let expenseJSON = this.expenseManager.getAllExpensesJSON();
         //DEBUG
@@ -679,6 +704,10 @@ $(document).ready(function() {
 
     $('#loadFile').on("change", evt => {
         app.loadExpenses(evt);
+    });
+
+    $('#toggleView').on("click", () => {
+        app.toggleView();
     });
 
     app.run();

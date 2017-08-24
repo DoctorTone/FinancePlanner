@@ -21,7 +21,7 @@
     <script type="text/javascript" src="js/baseApp.js?v=0.9"></script>
     <script type="text/javascript" src="js/expense.js?v=0.2"></script>
     <script type="text/javascript" src="js/expenseManager.js?v=0.3"></script>
-    <script type="text/javascript" src="js/expendRep.js?v=0.2"></script>
+    <script type="text/javascript" src="js/expendRep.js?v=0.3"></script>
     <script type="text/javascript" src="js/finance.js?v=0.25"></script>
 </head>
 <body>
@@ -54,6 +54,9 @@
             <span id="loadFile" class="btn btn-primary btn-file">Load<input type="file"></span>
             <button id="saveExpenses" type="button" class="btn btn-primary">Save</button>
         </div>
+        <div>
+            <button type="button" id="toggleView" class="btn btn-primary">Month view</button>
+        </div>
     </div>
 </div>
 
@@ -62,6 +65,8 @@
     <p>Week <span id="weekNumber"></span></p>
     <p>Month <span id="monthNumber"></span></p>
     <p>Year <span id="yearNumber"></span></p>
+    <p>Expenditure: Day <span id="expenditure"></span></p>
+    <p>Expenditure: Month <span></span></p>
 </div>
 
 <div id="addFormContainer" class="infoPanel noDisplay">

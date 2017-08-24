@@ -17,7 +17,9 @@ body {
 .infoPanel {
     position: absolute;
     background-color: lightgrey;
-    border-radius: 10px;
+    /*border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;*/
+    border-radius: 20px;
     padding: 1%;
 }
 #dateSelector {
