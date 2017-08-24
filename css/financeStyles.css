@@ -34,6 +34,11 @@ body {
     width: 30%;
     z-index: 1;
 }
+#expenseInfo {
+    top: 1%;
+    left: 1%;
+    width: 15%;
+}
 .title {
     margin-bottom: 2%;
 }

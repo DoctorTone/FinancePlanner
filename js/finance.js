@@ -193,7 +193,7 @@ class Finance extends BaseApp {
 
         group.setCurrentDay(currentDay);
         group.selectNodes(currentDay, lastDay);
-        $('#day').html(DATES.dayNumbers[currentDay]);
+        $('#dayNumber').html(DATES.dayNumbers[currentDay]);
 
         let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
         this.updateExpenditure(total);
@@ -225,7 +225,7 @@ class Finance extends BaseApp {
 
         group.setCurrentDay(currentDay);
         group.selectNodes(currentDay, lastDay);
-        $('#day').html(DATES.dayNumbers[currentDay]);
+        $('#dayNumber').html(DATES.dayNumbers[currentDay]);
 
         let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
         this.updateExpenditure(total);
@@ -320,7 +320,7 @@ class Finance extends BaseApp {
 
     nextMonth() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
-        if(this.sceneMoving) return;
+        if(this.sceneMoving || this.sceneRotating) return;
 
         this.rotateSpeed = -this.SCENE_ROTATE_INC / this.SCENE_ROTATE_TIME;
         this.sceneRotateEnd = this.root.rotation.x - this.SCENE_ROTATE_INC;
@@ -337,13 +337,15 @@ class Finance extends BaseApp {
         currentGroup.setCurrentDate(previousDate);
         currentGroup.setSelection(previousDate.day);
 
+        $('#monthNumber').html(DATES.monthNames[previousDate.month]);
+
         let total = this.expenseManager.getDailyTotal(currentGroup.getCurrentDate());
         this.updateExpenditure(total);
     }
 
     previousMonth() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
-        if(this.sceneMoving) return;
+        if(this.sceneMoving || this.sceneRotating) return;
 
         this.rotateSpeed = this.SCENE_ROTATE_INC / this.SCENE_ROTATE_TIME;
         this.sceneRotateEnd = this.root.rotation.x + this.SCENE_ROTATE_INC;
@@ -359,6 +361,8 @@ class Finance extends BaseApp {
         let currentGroup = this.monthReps[this.currentGroup];
         currentGroup.setCurrentDate(previousDate);
         currentGroup.setSelection(previousDate.day);
+
+        $('#monthNumber').html(DATES.monthNames[previousDate.month]);
 
         let total = this.expenseManager.getDailyTotal(currentGroup.getCurrentDate());
         this.updateExpenditure(total);
