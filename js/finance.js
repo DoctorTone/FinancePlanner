@@ -117,6 +117,7 @@ class Finance extends BaseApp {
             this.groundOffset = START_POS_Y;
             this.labelOffset = EXPEND_LABEL.Y_OFFSET;
             this.topGroup.position.x = this.weeklyGap * -currentDate.week;
+            this.updateDateInfo(currentDate);
         });
 
         //Floor
@@ -165,6 +166,13 @@ class Finance extends BaseApp {
                 this.root.rotation.x = this.sceneRotateEnd;
             }
         }
+    }
+
+    updateDateInfo(date) {
+        $('#dayNumber').html(DATES.dayNumbers[date.day]);
+        $('#weekNumber').html(date.week + 1);
+        $('#monthNumber').html(DATES.monthNames[date.month]);
+        $('#yearNumber').html(date.year);
     }
 
     nextDay() {
@@ -257,7 +265,7 @@ class Finance extends BaseApp {
         $('#weekNumber').html(currentWeek);
         group.selectNodes(day, lastDay);
         group.setCurrentDay(day);
-        $('#day').html(DATES.dayNumbers[day]);
+        $('#dayNumber').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
         this.updateExpenditure(total);
@@ -288,7 +296,7 @@ class Finance extends BaseApp {
         $('#weekNumber').html(currentWeek);
         group.selectNodes(day, lastDay);
         group.setCurrentDay(day);
-        $('#day').html(DATES.dayNumbers[day]);
+        $('#dayNumber').html(DATES.dayNumbers[day]);
 
         let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
         this.updateExpenditure(total);
