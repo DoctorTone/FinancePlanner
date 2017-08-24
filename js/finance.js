@@ -20,6 +20,8 @@ const MAX_GROUPS = 4;
 const WEEKLY_GAP = 245;
 const DEFAULT_CAM_POS = new THREE.Vector3(0, 100, 160);
 const DEFAULT_LOOKAT_POS = new THREE.Vector3(0, 85, 0);
+const X_AXIS = 0;
+const Y_AXIS = 1;
 
 //Init this app from base
 class Finance extends BaseApp {
@@ -65,6 +67,12 @@ class Finance extends BaseApp {
                 Node: '#fed600',
                 Ground: '#5f5f5f'
             };
+            let labelConfig = {
+                height: 1,
+                heightRange: [0.5, 3],
+                width: 1,
+                widthRange: [0.5, 3]
+            };
 
             let controlKit = new ControlKit();
 
@@ -85,6 +93,13 @@ class Finance extends BaseApp {
                         this.onGroundColourChanged(appearanceConfig.Ground);
                     }
                 })
+                .addGroup({label: "Dates", enable: false})
+                .addSlider(labelConfig, "height", "heightRange", { label: "Height", dp: 1, onChange: () => {
+                    this.onLabelScale(Y_AXIS, labelConfig.height);
+                }})
+                .addSlider(labelConfig, "width", "widthRange", { label: "Width", dp: 1, onChange: () => {
+                    this.onLabelScale(X_AXIS, labelConfig.width);
+                }})
         });
     }
 
@@ -102,6 +117,22 @@ class Finance extends BaseApp {
 
     onGroundColourChanged(colour) {
         this.bigMesh.material.color.setStyle(colour);
+    }
+
+    onLabelScale(axis, scale) {
+        let group = this.monthReps[0];
+        switch(axis) {
+            case X_AXIS:
+                group.setLabelWidth(scale);
+                break;
+
+            case Y_AXIS:
+                group.setLabelHeight(scale);
+                break;
+
+            default:
+                break;
+        }
     }
 
     createScene() {

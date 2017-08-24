@@ -223,4 +223,16 @@ class ExpendRepresentation {
             this.setNodeStatus(i, status);
         }
     }
+
+    setLabelHeight(scale) {
+        for(let i=0, numLabels=this.dayLabels.length; i<numLabels; ++i) {
+            this.dayLabels[i].scale.y = LABEL_SCALE.y * scale;
+        }
+    }
+
+    setLabelWidth(scale) {
+        for(let i=0, numLabels=this.dayLabels.length; i<numLabels; ++i) {
+            this.dayLabels[i].scale.x = LABEL_SCALE.x * scale;
+        }
+    }
 }
