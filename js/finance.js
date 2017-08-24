@@ -60,6 +60,9 @@ class Finance extends BaseApp {
         this.root = new THREE.Object3D();
         this.root.name = "rootGroup";
         this.addToScene(this.root);
+        this.topGroup = new THREE.Object3D();
+        this.topGroup.name = "topGroup";
+        this.root.add(this.topGroup);
 
         //Get hexagon
         let loader = new THREE.JSONLoader();
@@ -89,7 +92,7 @@ class Finance extends BaseApp {
                 monthReps.push(new ExpendRepresentation());
                 monthReps[i].setName("monthGroup" + i);
                 group = monthReps[i].generateRepresentations(repInfo);
-                this.root.add(group);
+                this.topGroup.add(group);
                 group.position.y = groupOffsets[i].y;
                 group.position.z = groupOffsets[i].z;
                 group.rotation.x = groupOffsets[i].rot;
@@ -128,12 +131,19 @@ class Finance extends BaseApp {
         if(this.sceneMoving) {
             let group = this.monthReps[this.currentGroup];
             this.moveTime += delta;
-            group.updateGroup(this.moveSpeed * delta);
+            //group.updateGroup(this.moveSpeed * delta);
+            this.topGroup.position.x += (this.moveSpeed * delta);
             if(this.moveTime >= this.SCENE_MOVE_TIME) {
-                group.moveGroup(this.sceneMoveEnd);
+                //group.moveGroup(this.sceneMoveEnd);
+                this.topGroup.position.x = this.sceneMoveEnd;
                 this.moveTime = 0;
                 this.sceneMoving = false;
-                group.setWeekStatus(group.getPreviousWeek(), false);
+                let previousWeek = group.getPreviousWeek();
+                for(let i=0; i<MAX_GROUPS; ++i) {
+                    group = this.monthReps[i];
+                    group.setWeekStatus(previousWeek, false);
+                }
+
             }
         }
 
@@ -232,7 +242,6 @@ class Finance extends BaseApp {
             day = 0;
         }
 
-        group.setWeekStatus(currentWeek, true);
         this.moveToWeek(currentWeek, NEXT);
         group.setCurrentWeek(currentWeek);
         ++currentWeek;
@@ -264,7 +273,6 @@ class Finance extends BaseApp {
             day = maxDay;
         }
 
-        group.setWeekStatus(currentWeek, true);
         this.moveToWeek(currentWeek, PREVIOUS);
         group.setCurrentWeek(currentWeek);
         ++currentWeek;
@@ -280,8 +288,14 @@ class Finance extends BaseApp {
     moveToWeek(week, direction) {
         if(this.sceneMoving) return;
 
-        let group = this.monthReps[this.currentGroup];
+        //Do for all groups
+        let group;
+        for(let i=0; i<MAX_GROUPS; ++i) {
+            group = this.monthReps[i];
+            group.setWeekStatus(week, true);
+        }
 
+        group = this.monthReps[this.currentGroup];
         let currentWeek = group.getCurrentWeek();
         let dir = week < currentWeek ? 1 : -1;
         if((currentWeek === 4 && week === 0) || (currentWeek === 0 && week === 4)) {
