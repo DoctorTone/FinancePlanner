@@ -57,6 +57,53 @@ class Finance extends BaseApp {
         this.expenseManager = new ExpenseManager();
     }
 
+    createGUI() {
+        //Create GUI - controlKit
+        window.addEventListener('load', () => {
+            let appearanceConfig = {
+                Back: '#000000',
+                Node: '#fed600',
+                Ground: '#5f5f5f'
+            };
+
+            let controlKit = new ControlKit();
+
+            controlKit.addPanel( {width: 200} )
+                .addGroup({label: "Appearance", enable: false})
+                .addColor(appearanceConfig, "Back", {
+                    colorMode: "hex", onChange: () => {
+                        this.onBackgroundColourChanged(appearanceConfig.Back);
+                    }
+                })
+                .addColor(appearanceConfig, "Node", {
+                    colorMode: "hex", onChange: () => {
+                        this.onNodeColourChanged(appearanceConfig.Node);
+                    }
+                })
+                .addColor(appearanceConfig, "Ground", {
+                    colorMode: "hex", onChange: () => {
+                        this.onGroundColourChanged(appearanceConfig.Ground);
+                    }
+                })
+        });
+    }
+
+    onBackgroundColourChanged(colour) {
+        this.renderer.setClearColor(colour, 1.0);
+    }
+
+    onNodeColourChanged(colour) {
+        let group;
+        for(let i=0; i<MAX_GROUPS; ++i) {
+            group = this.monthReps[i];
+            group.setExpenseColour(colour);
+        }
+    }
+
+    onGroundColourChanged(colour) {
+        this.bigMesh.material.color.setStyle(colour);
+    }
+
     createScene() {
         //Create scene
         super.createScene();
@@ -80,6 +127,7 @@ class Finance extends BaseApp {
             let bigMat = new THREE.MeshLambertMaterial( {color: 0x5f5f5f} );
             let bigMesh = new THREE.Mesh(bigGeom, bigMat);
             this.root.add(bigMesh);
+            this.bigMesh = bigMesh;
 
             //Container groups
             let repInfo = {};
@@ -651,7 +699,7 @@ $(document).ready(function() {
     let app = new Finance();
     app.init(container);
     app.createScene();
-    //app.createGUI();
+    app.createGUI();
 
     //GUI callbacks
     $('#nextDay').on("click", () => {

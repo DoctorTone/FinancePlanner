@@ -103,6 +103,10 @@ class ExpendRepresentation {
         this.currentDate = date;
     }
 
+    setExpenseColour(colour) {
+        this.expenseMat.color.setStyle(colour);
+    }
+
     generateRepresentations(repInfo) {
         //Create representations for each day
         let label;
