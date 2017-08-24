@@ -18,6 +18,8 @@ const MAIN_HEIGHT = 60;
 const MAIN_DEPTH = 60;
 const MAX_GROUPS = 4;
 const WEEKLY_GAP = 245;
+const DEFAULT_CAM_POS = new THREE.Vector3(0, 100, 160);
+const DEFAULT_LOOKAT_POS = new THREE.Vector3(0, 85, 0);
 
 //Init this app from base
 class Finance extends BaseApp {
@@ -593,6 +595,8 @@ class Finance extends BaseApp {
                 group.showWeek(group.getCurrentWeek(), true);
             }
             this.topGroup.position.x = -this.weeklyGap * currentWeek;
+            this.camera.position.copy(DEFAULT_CAM_POS);
+            this.controls.setLookAt(DEFAULT_LOOKAT_POS);
         }
     }
 
