@@ -251,12 +251,19 @@ class Finance extends BaseApp {
                 this.monthReps[i].showWeek(currentDate.week, true);
                 this.monthReps[i].clearSelection();
             }
-            this.monthReps[0].setSelection(currentDate.day);
+            group = this.monthReps[0];
+            group.setSelection(currentDate.day);
             this.weeklyGap = WEEKLY_GAP;
             this.groundOffset = START_POS_Y;
             this.labelOffset = EXPEND_LABEL.Y_OFFSET;
             this.topGroup.position.x = this.weeklyGap * -currentDate.week;
             this.updateDateInfo(currentDate);
+            //Set initial total
+            currentDate = group.getCurrentDate();
+            let total = this.expenseManager.getDailyTotal(currentDate);
+            this.updateExpenditure(total);
+            total = this.expenseManager.getMonthlyTotal(currentDate);
+            this.updateMonthlyExpenditure(total);
         });
 
         //Floor
@@ -494,8 +501,11 @@ class Finance extends BaseApp {
 
         $('#monthNumber').html(DATES.monthNames[previousDate.month]);
 
-        let total = this.expenseManager.getDailyTotal(currentGroup.getCurrentDate());
+        let currentDate = currentGroup.getCurrentDate();
+        let total = this.expenseManager.getDailyTotal(currentDate);
         this.updateExpenditure(total);
+        total = this.expenseManager.getMonthlyTotal(currentDate);
+        this.updateMonthlyExpenditure(total);
     }
 
     previousMonth() {
@@ -519,12 +529,19 @@ class Finance extends BaseApp {
 
         $('#monthNumber').html(DATES.monthNames[previousDate.month]);
 
-        let total = this.expenseManager.getDailyTotal(currentGroup.getCurrentDate());
+        let currentDate = currentGroup.getCurrentDate();
+        let total = this.expenseManager.getDailyTotal(currentDate);
         this.updateExpenditure(total);
+        total = this.expenseManager.getMonthlyTotal(currentDate);
+        this.updateMonthlyExpenditure(total);
     }
 
     updateExpenditure(total) {
-        $('#expenditure').html(total.toFixed(2));
+        $('#dailyExpenditure').html(total.toFixed(2));
+    }
+
+    updateMonthlyExpenditure(total) {
+        $('#monthlyExpenditure').html(total.toFixed(2));
     }
 
     addExpense() {
@@ -565,6 +582,8 @@ class Finance extends BaseApp {
         let total = this.expenseManager.getDailyTotal(date);
         this.updateCurrentNode(total);
         this.updateExpenditure(total);
+        total = this.expenseManager.getMonthlyTotal(date);
+        this.updateMonthlyExpenditure(total);
         this.clearAddForm();
         if(state === EXPENSE_EDIT) {
             //Update expenses
@@ -676,9 +695,13 @@ class Finance extends BaseApp {
         }
         let group = this.monthReps[this.currentGroup];
         this.expenseManager.deleteExpense(group.getCurrentDate(), this.expenseIndex);
-        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
+        let currentDate = group.getCurrentDate();
+        let total = this.expenseManager.getDailyTotal(currentDate);
         this.updateCurrentNode(total);
         this.updateExpenditure(total);
+        total = this.expenseManager.getMonthlyTotal(currentDate);
+        this.updateMonthlyExpenditure(total);
+
         $('#expenseTableContainer').hide();
         this.showExpense();
         this.expenseIndex = -1;

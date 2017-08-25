@@ -78,6 +78,22 @@ class ExpenseManager {
         return total;
     }
 
+    getMonthlyTotal(date) {
+        let currentExpense, currentDate;
+        let total = 0;
+        for(let i=0, numExpenses=this.expenses.length; i<numExpenses; ++i) {
+            currentExpense = this.expenses[i];
+            for(let j=0, numDays=currentExpense.length; j<numDays; ++j) {
+                currentDate = currentExpense[j].getDate();
+                if(currentDate.year === date.year && currentDate.month === date.month) {
+                    total += currentExpense[j].getTotal();
+                }
+            }
+        }
+
+        return total;
+    }
+
     getAllExpensesJSON() {
         //Convert array to JSON
         return JSON.stringify(this.expenses);
