@@ -149,7 +149,7 @@ class Finance extends BaseApp {
                 break;
 
             case Y_AXIS:
-                for(i=0; i<1; ++i) {
+                for(i=0; i<MAX_GROUPS; ++i) {
                     group = this.monthReps[i];
                     group.setDateLabelHeight(scale);
                 }
@@ -184,7 +184,7 @@ class Finance extends BaseApp {
 
     nodeHeightChanged(scale) {
         let group;
-        for(let i=0; i,MAX_GROUPS; ++i) {
+        for(let i=0; i<MAX_GROUPS; ++i) {
             group = this.monthReps[i];
             group.setStandHeight(scale);
         }
@@ -701,7 +701,7 @@ class Finance extends BaseApp {
         let group = this.monthReps[this.currentGroup];
         let day = group.getCurrentDay();
         let label = spriteManager.getSpriteByDate(day, this.currentGroup);
-        label.position.y = this.groundOffset + this.labelOffset + total;
+        label.position.y = this.labelOffset + total;
         spriteManager.setTextAmount(label, total);
         group.updateCurrentNode(total);
     }

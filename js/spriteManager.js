@@ -159,7 +159,7 @@ var spriteManager = (function () {
             var context = canvas.getContext('2d');
             var metrics = context.measureText( text );
             var textWidth = metrics.width;
-            var offset = (canvasWidth - (textWidth + defaultBorderThickness))/2;
+            var offset = (CANVAS_WIDTH - (textWidth + defaultBorderThickness))/2;
 
             context.clearRect(0, 0, canvas.width, canvas.height);
             context.fillText(text, defaultBorderThickness + offset, currentFontSize + defaultBorderThickness);
@@ -178,7 +178,7 @@ var spriteManager = (function () {
             var context = canvas.getContext('2d');
             var metrics = context.measureText( amount );
             var textWidth = metrics.width;
-            var offset = (canvasWidth - (textWidth + defaultBorderThickness))/2;
+            var offset = (CANVAS_WIDTH - (textWidth + defaultBorderThickness))/2;
 
             context.clearRect(0, 0, canvas.width, canvas.height);
             context.fillText(amount, defaultBorderThickness + offset, currentFontSize + defaultBorderThickness);

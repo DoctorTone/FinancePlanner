@@ -225,9 +225,8 @@ class ExpendRepresentation {
     }
 
     setDateLabelHeight(scale) {
-        let newScale = LABEL_SCALE.y * scale;
         for(let i=0, numLabels=this.dayLabels.length; i<numLabels; ++i) {
-            this.dayLabels[i].scale.y = newScale;
+            this.dayLabels[i].scale.y = LABEL_SCALE.y * scale;
         }
     }
 
@@ -250,8 +249,10 @@ class ExpendRepresentation {
     }
 
     setStandHeight(scale) {
+        let newScale = STAND_SCALE * scale;
         for(let i=0, numStands=this.stands.length; i<numStands; ++i) {
-            this.stands[i].scale.y = STAND_SCALE * scale;
+            this.stands[i].scale.y = newScale;
+            this.stands[i].position.y = newScale/2;
         }
     }
 }
