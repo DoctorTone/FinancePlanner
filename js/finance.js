@@ -23,6 +23,19 @@ const DEFAULT_LOOKAT_POS = new THREE.Vector3(0, 85, 0);
 const X_AXIS = 0;
 const Y_AXIS = 1;
 
+function isMultipleWords(text) {
+    let result;
+    let separators = [' ', ',', '#'];
+    for(let i=0, numResults=separators.length; i<numResults; ++i) {
+        result = text.split(separators[i]);
+        if(result.length > 1) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 //Init this app from base
 class Finance extends BaseApp {
     constructor() {
@@ -645,7 +658,7 @@ class Finance extends BaseApp {
         let form = document.forms["addExpenseForm"];
         let amount = form["amount"].value;
         let item = form["item"].value;
-        let tags = form["tags"].value;
+        let category = form["tags"].value;
         let amountElem = $('#inputAmount');
         let errorElem = $('#errorText');
 
@@ -659,6 +672,12 @@ class Finance extends BaseApp {
                 amountElem.addClass("has-error");
                 errorElem.html("Invalid number!");
             } else {
+                //Only enter one category
+                if(isMultipleWords(category)) {
+                    errorElem.html("Only one category allowed!");
+                    errorElem.show();
+                    return false;
+                }
                 amountElem.removeClass("has-error");
                 errorElem.html("No item text!");
                 errorElem.hide();
@@ -668,7 +687,7 @@ class Finance extends BaseApp {
                     $('#addFormContainer').hide();
                     this.currentAmount = amount;
                     this.currentItem = item;
-                    this.currentTags = tags;
+                    this.currentTags = category;
                     return true;
                 }
             }
