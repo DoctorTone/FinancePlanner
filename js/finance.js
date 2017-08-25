@@ -70,6 +70,9 @@ class Finance extends BaseApp {
 
         //Expenses
         this.expenseManager = new ExpenseManager();
+
+        //Load any config
+        this.bgColour = localStorage.getItem("financeConfig");
     }
 
     createGUI() {
@@ -97,41 +100,45 @@ class Finance extends BaseApp {
 
             let controlKit = new ControlKit();
 
-            controlKit.addPanel( {width: 200, fixed: true, opacity: 1.0} )
-                .addGroup({label: "Appearance", enable: false })
-                .addColor(appearanceConfig, "Back", {
-                    colorMode: "hex", onChange: () => {
-                        this.onBackgroundColourChanged(appearanceConfig.Back);
-                    }
-                })
-                .addColor(appearanceConfig, "Node", {
-                    colorMode: "hex", onChange: () => {
-                        this.onNodeColourChanged(appearanceConfig.Node);
-                    }
-                })
-                .addColor(appearanceConfig, "Ground", {
-                    colorMode: "hex", onChange: () => {
-                        this.onGroundColourChanged(appearanceConfig.Ground);
-                    }
-                })
-                .addGroup({label: "Dates", enable: false})
-                .addSlider(labelConfig, "dateHeight", "dateHeightRange", { label: "Height", dp: 1, onChange: () => {
-                    this.onDateLabelScale(Y_AXIS, labelConfig.dateHeight);
-                }})
-                .addSlider(labelConfig, "dateWidth", "dateWidthRange", { label: "Width", dp: 1, onChange: () => {
-                    this.onDateLabelScale(X_AXIS, labelConfig.dateWidth);
-                }})
-                .addGroup({label: "Amounts", enable: false})
-                .addSlider(labelConfig, "amountHeight", "amountHeightRange", { label: "Height", dp: 1, onChange: () => {
-                    this.onAmountLabelScale(Y_AXIS, labelConfig.amountHeight);
-                }})
-                .addSlider(labelConfig, "amountWidth", "amountWidthRange", { label: "Width", dp: 1, onChange: () => {
-                    this.onAmountLabelScale(X_AXIS, labelConfig.amountWidth);
-                }})
-                .addGroup({label: "Nodes", enable: false})
-                .addSlider(nodeConfig, "nodeScale", "nodeScaleRange", { label: "Height", dp: 1, onChange: () => {
-                    this.nodeHeightChanged(nodeConfig.nodeScale);
-                }})
+            controlKit.addPanel( {label: "Configure", width: 200, fixed: true, opacity: 1.0} )
+                .addSubGroup({label: "Appearance", enable: false })
+                    .addColor(appearanceConfig, "Back", {
+                        colorMode: "hex", onChange: () => {
+                            this.onBackgroundColourChanged(appearanceConfig.Back);
+                        }
+                    })
+                    .addColor(appearanceConfig, "Node", {
+                        colorMode: "hex", onChange: () => {
+                            this.onNodeColourChanged(appearanceConfig.Node);
+                        }
+                    })
+                    .addColor(appearanceConfig, "Ground", {
+                        colorMode: "hex", onChange: () => {
+                            this.onGroundColourChanged(appearanceConfig.Ground);
+                        }
+                    })
+                .addSubGroup({label: "Dates", enable: false})
+                    .addSlider(labelConfig, "dateHeight", "dateHeightRange", { label: "Height", dp: 1, onChange: () => {
+                        this.onDateLabelScale(Y_AXIS, labelConfig.dateHeight);
+                    }})
+                    .addSlider(labelConfig, "dateWidth", "dateWidthRange", { label: "Width", dp: 1, onChange: () => {
+                        this.onDateLabelScale(X_AXIS, labelConfig.dateWidth);
+                    }})
+                .addSubGroup({label: "Amounts", enable: false})
+                    .addSlider(labelConfig, "amountHeight", "amountHeightRange", { label: "Height", dp: 1, onChange: () => {
+                        this.onAmountLabelScale(Y_AXIS, labelConfig.amountHeight);
+                    }})
+                    .addSlider(labelConfig, "amountWidth", "amountWidthRange", { label: "Width", dp: 1, onChange: () => {
+                        this.onAmountLabelScale(X_AXIS, labelConfig.amountWidth);
+                    }})
+                .addSubGroup({label: "Nodes", enable: false})
+                    .addSlider(nodeConfig, "nodeScale", "nodeScaleRange", { label: "Height", dp: 1, onChange: () => {
+                        this.nodeHeightChanged(nodeConfig.nodeScale);
+                    }})
+                .addSubGroup({label: "Preferences"})
+                    .addButton("Save", () => {
+                        this.savePreferences(appearanceConfig);
+                    })
         });
     }
 
@@ -203,10 +210,29 @@ class Finance extends BaseApp {
         }
     }
 
+    savePreferences(config) {
+        let baseName = "financeConfig";
+        for(let prop in config) {
+            localStorage.setItem(baseName+prop, config.prop);
+        }
+        localStorage.setItem(baseName+"Saved", "Saved");
+        this.baseName = baseName;
+    }
+
+    getPreferences() {
+        let config = localStorage.getItem(this.baseName+"Saved");
+        if(!config) return config;
+        let configuration = {};
+    }
+
     createScene() {
         //Create scene
         super.createScene();
 
+        //Load in any saved preferences
+        if(this.bgColour) {
+            this.renderer.setClearColor(this.bgColour, 1.0);
+        }
         //Main root group
         this.root = new THREE.Object3D();
         this.root.name = "rootGroup";
