@@ -6,12 +6,12 @@
 //Constants
 const DATE_LABEL = {
     X_OFFSET: 0,
-    Y_OFFSET: -15,
+    Y_OFFSET: -5,
     Z_OFFSET: 10
 };
 const EXPEND_LABEL = {
     X_OFFSET: 0,
-    Y_OFFSET: 0,
+    Y_OFFSET: 11,
     Z_OFFSET: 0
 };
 const LABEL_SCALE = new THREE.Vector3(30, 30, 1);
@@ -225,8 +225,9 @@ class ExpendRepresentation {
     }
 
     setDateLabelHeight(scale) {
+        let newScale = LABEL_SCALE.y * scale;
         for(let i=0, numLabels=this.dayLabels.length; i<numLabels; ++i) {
-            this.dayLabels[i].scale.y = LABEL_SCALE.y * scale;
+            this.dayLabels[i].scale.y = newScale;
         }
     }
 
@@ -245,6 +246,12 @@ class ExpendRepresentation {
     setAmountLabelWidth(scale) {
         for(let i=0, numLabels=this.spendLabels.length; i<numLabels; ++i) {
             this.spendLabels[i].scale.x = LABEL_SCALE.x * scale;
+        }
+    }
+
+    setStandHeight(scale) {
+        for(let i=0, numStands=this.stands.length; i<numStands; ++i) {
+            this.stands[i].scale.y = STAND_SCALE * scale;
         }
     }
 }

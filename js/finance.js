@@ -149,7 +149,7 @@ class Finance extends BaseApp {
                 break;
 
             case Y_AXIS:
-                for(i=0; i<MAX_GROUPS; ++i) {
+                for(i=0; i<1; ++i) {
                     group = this.monthReps[i];
                     group.setDateLabelHeight(scale);
                 }
@@ -183,7 +183,11 @@ class Finance extends BaseApp {
     }
 
     nodeHeightChanged(scale) {
-
+        let group;
+        for(let i=0; i,MAX_GROUPS; ++i) {
+            group = this.monthReps[i];
+            group.setStandHeight(scale);
+        }
     }
 
     createScene() {

@@ -13,7 +13,8 @@ var spriteManager = (function () {
     var defaultFontSize = 24;
     var defaultVisibility = false;
     var defaultRadius = 20;
-    var canvasWidth = 400;
+    const CANVAS_WIDTH = 400;
+    const CANVAS_HEIGHT = 150;
     var currentFontSize;
 
     var labels = [];
@@ -27,14 +28,16 @@ var spriteManager = (function () {
             currentFontSize = fontSize;
             var canvas = document.createElement('canvas');
             var spriteName = ' ' + name + ' ';
-            canvas.width = canvasWidth;
+            canvas.width = CANVAS_WIDTH;
+            canvas.height = CANVAS_HEIGHT;
 
             var context = canvas.getContext('2d');
             context.font = fontSize + "px " + defaultFontFace;
 
 
             var metrics = context.measureText( spriteName );
-            var textWidth = metrics.width;
+            let textWidth = metrics.width;
+            let textHeight = metrics.height;
 
             //Background
             context.fillStyle = backgroundColour;
@@ -51,7 +54,7 @@ var spriteManager = (function () {
 
             //Text
             context.fillStyle = textColour;
-            context.fillText( spriteName, defaultBorderThickness + offset, fontSize + defaultBorderThickness);
+            context.fillText( spriteName, defaultBorderThickness + offset, CANVAS_HEIGHT/2 + fontSize/2);
 
             // canvas contents will be used for a texture
             var texture = new THREE.Texture(canvas);
@@ -74,7 +77,7 @@ var spriteManager = (function () {
             sprite.visible = visible;
 
             //var offset = (canvas.width - textWidth) / 80;
-            sprite.position.set(position.x, position.y, position.z);
+            sprite.position.copy(position);
             sprite.scale.set(scale.x, scale.y, 1);
 
             return sprite;
