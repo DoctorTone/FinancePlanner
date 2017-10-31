@@ -8,7 +8,7 @@ body {
 .noDisplay {
     display: none;
 }
-.centre {
+.centred {
     text-align: center;
 }
 .rightShift {
@@ -23,12 +23,26 @@ body {
     padding: 1%;
 }
 #dateSelector {
-    top:1%;
-    right:2%;
+    top:5%;
+    right: 1%;
+    width: 10%;
+}
+#months button {
+    width: 25%;
+    padding: 0;
+}
+#months img {
+    width: 85%;
+}
+#editSelector {
+    top: 40%;
+    right: 2%;
     width: 15%;
 }
-#dateSelector p {
-    text-align: center;
+#fileSelector {
+    bottom: 20%;
+    right: 2%;
+    width: 15%;
 }
 #addFormContainer {
     top:10%;

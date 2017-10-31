@@ -100,7 +100,7 @@ class Finance extends BaseApp {
 
             let controlKit = new ControlKit();
 
-            controlKit.addPanel( {label: "Configure", width: 200, fixed: true, opacity: 1.0} )
+            controlKit.addPanel( {label: "Configure", width: 200, enable: false} )
                 .addSubGroup({label: "Appearance", enable: false })
                     .addColor(appearanceConfig, "Back", {
                         colorMode: "hex", onChange: () => {

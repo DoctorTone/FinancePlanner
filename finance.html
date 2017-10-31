@@ -31,16 +31,20 @@
 </div>
 
 <div id="dateSelector" class="infoPanel">
-    <div class="centre">
-        Date Selector
-        <div>
+    <p>Date</p>
+    <div class="centred">
+        <div id="months">
             <div>
-                <button id="previousMonth" type="button" class="btn btn-primary"><</button><span>Month</span><button id="nextMonth" type="button" class="btn btn-primary">></button>
+                <button id="previousMonth" type="button" class="btn btn-primary"><img src="images/leftWhite.png"></button>
+                <span>Month</span>
+                <button id="nextMonth" type="button" class="btn btn-primary"><img src="images/rightWhite.png"></button>
             </div>
         </div>
         <div>
             <div>
-                <button id="previousWeek" type="button" class="btn btn-primary"><</button><span>Week</span><button id="nextWeek" type="button" class="btn btn-primary">></button>
+                <button id="previousWeek" type="button" class="btn btn-primary"><img src="images/leftWhite.png"></button>
+                <span>Week</span>
+                <button id="nextWeek" type="button" class="btn btn-primary"><img src="images/rightWhite.png"></button>
             </div>
         </div>
         <div>
@@ -49,15 +53,23 @@
             </div>
         </div>
         <div>
-            <button id="addExpense" type="button" class="btn btn-primary">Add</button> <button id="editExpense" type="button" class="btn btn-primary">Edit</button>
-        </div>
-        <div>
-            <span id="loadFile" class="btn btn-primary btn-file">Load<input type="file"></span>
-            <button id="saveExpenses" type="button" class="btn btn-primary">Save</button>
-        </div>
-        <div>
             <button type="button" id="toggleView" class="btn btn-primary">Month view</button>
         </div>
+    </div>
+</div>
+
+<div id="editSelector" class="infoPanel">
+    <p>Details</p>
+    <div>
+        <button id="addExpense" type="button" class="btn btn-primary">Add</button> <button id="editExpense" type="button" class="btn btn-primary">Edit</button>
+    </div>
+</div>
+
+<div id="fileSelector" class="infoPanel">
+    <p>File</p>
+    <div>
+        <span id="loadFile" class="btn btn-primary btn-file">Load<input type="file"></span>
+        <button id="saveExpenses" type="button" class="btn btn-primary">Save</button>
     </div>
 </div>
 
