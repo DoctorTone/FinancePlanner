@@ -22,16 +22,8 @@ body {
     border-radius: 20px;
     padding: 1%;
 }
-.no-gutters {
-    margin-left: 0;
-    margin-right: 0;
-}
-.no-gutters > [class^="col-"] {
-    padding-right: 0;
-    padding-left: 0;
-}
 #dateSelector {
-    top:5%;
+    top:7.5%;
     right: 1%;
     width: 10%;
 }
@@ -42,15 +34,22 @@ body {
 .selector img {
     width: 85%;
 }
+.selector span {
+    display: inline-block;
+    width: 33.3%;
+}
+.selector div {
+    margin-bottom: 2%;
+}
 #editSelector {
-    top: 40%;
-    right: 2%;
-    width: 15%;
+    top: 35%;
+    right: 1%;
+    width: 10%;
 }
 #fileSelector {
-    bottom: 20%;
-    right: 2%;
-    width: 15%;
+    top: 50%;
+    right: 1%;
+    width: 10%;
 }
 #addFormContainer {
     top:10%;
