@@ -22,16 +22,24 @@ body {
     border-radius: 20px;
     padding: 1%;
 }
+.no-gutters {
+    margin-left: 0;
+    margin-right: 0;
+}
+.no-gutters > [class^="col-"] {
+    padding-right: 0;
+    padding-left: 0;
+}
 #dateSelector {
     top:5%;
     right: 1%;
     width: 10%;
 }
-#months button {
+.selector button {
     width: 25%;
     padding: 0;
 }
-#months img {
+.selector img {
     width: 85%;
 }
 #editSelector {
