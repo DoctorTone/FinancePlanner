@@ -848,6 +848,11 @@ class Finance extends BaseApp {
 }
 
 $(document).ready(function() {
+    //Check for webgl support
+    if(!Detector.webgl) {
+        $('#notSupported').show();
+        return;
+    }
     //Initialise app
     let container = document.getElementById("WebGL-output");
     let app = new Finance();
