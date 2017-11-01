@@ -22,6 +22,7 @@ const DEFAULT_CAM_POS = new THREE.Vector3(0, 100, 160);
 const DEFAULT_LOOKAT_POS = new THREE.Vector3(0, 85, 0);
 const X_AXIS = 0;
 const Y_AXIS = 1;
+const ZOOM_SPEED = 20;
 
 function isMultipleWords(text) {
     let result;
@@ -60,6 +61,10 @@ class Finance extends BaseApp {
 
         //Views
         this.monthView = false;
+
+        //Zoom controls
+        this.zoomingOut = false;
+        this.zoomingIn = false;
     }
 
     init(container) {
@@ -350,6 +355,14 @@ class Finance extends BaseApp {
                 this.sceneRotating = false;
                 this.root.rotation.x = this.sceneRotateEnd;
             }
+        }
+
+        if(this.zoomingOut) {
+            this.root.position.z -= ZOOM_SPEED * delta;
+        }
+
+        if(this.zoomingIn) {
+            this.root.position.z += ZOOM_SPEED * delta;
         }
     }
 
@@ -845,6 +858,14 @@ class Finance extends BaseApp {
             this.updateCurrentNode(total);
         });
     }
+
+    zoomOut(zoom) {
+        this.zoomingOut = zoom;
+    }
+
+    zoomIn(zoom) {
+        this.zoomingIn = zoom;
+    }
 }
 
 $(document).ready(function() {
@@ -931,6 +952,40 @@ $(document).ready(function() {
 
     $('#toggleView').on("click", () => {
         app.toggleView();
+    });
+
+    let zoomOutElement = $('#zoomOut');
+    let zoomInElement = $('#zoomIn');
+    zoomOutElement.on("mousedown", () => {
+        app.zoomOut(true);
+    });
+
+    zoomOutElement.on("mouseup", () => {
+        app.zoomOut(false);
+    });
+
+    zoomOutElement.on("touchstart", () => {
+        app.zoomOut(true);
+    });
+
+    zoomOutElement.on("touchend", () => {
+        app.zoomOut(false);
+    });
+
+    zoomInElement.on("mousedown", () => {
+        app.zoomIn(true);
+    });
+
+    zoomInElement.on("mouseup", () => {
+        app.zoomIn(false);
+    });
+
+    zoomInElement.on("touchstart", () => {
+        app.zoomIn(true);
+    });
+
+    zoomInElement.on("touchend", () => {
+        app.zoomIn(false);
     });
 
     app.run();
