@@ -866,6 +866,14 @@ class Finance extends BaseApp {
     zoomIn(zoom) {
         this.zoomingIn = zoom;
     }
+
+    stopNotifications(elemList) {
+        for(let i=0, numElems=elemList.length; i<numElems; ++i) {
+            $('#' + elemList[i]).contextmenu(() => {
+                return false;
+            });
+        }
+    }
 }
 
 $(document).ready(function() {
@@ -987,6 +995,9 @@ $(document).ready(function() {
     zoomInElement.on("touchend", () => {
         app.zoomIn(false);
     });
+
+    let elemList = ["zoomControls", "dateSelector", "editSelector", "fileSelector"];
+    app.stopNotifications(elemList);
 
     app.run();
 });
