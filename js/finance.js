@@ -657,7 +657,7 @@ class Finance extends BaseApp {
         expenseInfo.tags = this.currentTags;
 
         let group = this.monthReps[this.currentGroup];
-        let date = group.getCurrentDate();
+        let date = this.currentDate;
         let expense = new Expense(date, expenseInfo);
 
         state === EXPENSE_EDIT ? this.expenseManager.updateExpense(expense, this.expenseIndex) :
@@ -834,14 +834,13 @@ class Finance extends BaseApp {
             let lookAt = new THREE.Vector3(0, 286, 0);
             this.controls.setLookAt(lookAt);
         } else {
-            let currentWeek = this.monthReps[this.currentGroup].getCurrentWeek();
             buttonElem.html("Month view");
             for(let i=0; i<MAX_GROUPS; ++i) {
                 group = this.monthReps[i];
                 group.showAllWeeks(this.currentDate, false);
                 group.showWeek(this.currentDate.month, this.currentDate.week, true);
             }
-            this.topGroup.position.x = -this.weeklyGap * currentWeek;
+            this.topGroup.position.x = -this.weeklyGap * this.currentDate.week;
             this.camera.position.copy(DEFAULT_CAM_POS);
             this.controls.setLookAt(DEFAULT_LOOKAT_POS);
         }
