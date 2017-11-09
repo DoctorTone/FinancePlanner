@@ -167,11 +167,10 @@ class ExpendRepresentation {
         }
     }
 
-    showWeek(date, status) {
+    showWeek(month, week, status) {
         let start, end;
 
-        let daysThisMonth = DATES.daysPerMonth[date.month];
-        let week = date.week;
+        let daysThisMonth = DATES.daysPerMonth[month];
         start = START_WEEK_OFFSET * week;
         end = start + WEEK_OFFSET;
         if(end > daysThisMonth) {

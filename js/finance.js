@@ -337,7 +337,7 @@ class Finance extends BaseApp {
 
             //Initialisation
             for(let i=0; i<MAX_GROUPS; ++i) {
-                this.monthReps[i].showWeek(currentDate, true);
+                this.monthReps[i].showWeek(currentDate.month, currentDate.week, true);
                 this.monthReps[i].clearSelection();
             }
             group = this.monthReps[0];
@@ -384,7 +384,7 @@ class Finance extends BaseApp {
                 this.sceneMoving = false;
                 for(let i=0; i<MAX_GROUPS; ++i) {
                     group = this.monthReps[i];
-                    group.showWeek(this.currentDate, false);
+                    group.showWeek(this.currentDate.month, this.previousWeek, false);
                 }
 
             }
@@ -433,7 +433,7 @@ class Finance extends BaseApp {
         let week = Math.floor(currentDay / 7);
         if(week !== currentWeek) {
             if(!this.monthView) {
-                group.showWeek(this.currentDate, true);
+                group.showWeek(this.currentDate.month,this.currentDate.week, true);
                 this.moveToWeek(week, NEXT);
             }
             ++week;
@@ -465,7 +465,7 @@ class Finance extends BaseApp {
         let week = Math.floor(currentDay / 7);
         if(week !== currentWeek) {
             if(!this.monthView) {
-                group.showWeek(this.currentDate, true);
+                group.showWeek(this.currentDate.month, this.currentDate.week, true);
                 this.moveToWeek(week, PREVIOUS);
             }
             ++week;
@@ -480,12 +480,12 @@ class Finance extends BaseApp {
         this.updateExpenditure(total);
     }
 
-    nextWeek() {
+    gotoNextWeek() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
         let group = this.monthReps[this.currentGroup];
-        let maxDays = group.getDaysThisMonth();
+        let maxDays = DATES.daysPerMonth[this.currentDate.month];
         let maxDay = maxDays - 1;
         let lastDay = group.getCurrentDay();
         let day = lastDay + 7;
@@ -493,18 +493,17 @@ class Finance extends BaseApp {
             day = maxDay;
         }
 
-        let currentWeek = this.currentDate.week;
         let weeksThisMonth = DATES.weeksPerMonth[this.currentDate.month];
-        if(++currentWeek > weeksThisMonth) {
-            currentWeek = 0;
-            day = 0;
+        this.previousWeek = this.currentDate.week;
+        if(++this.currentDate.week > weeksThisMonth) {
+            this.currentDate.week = 0;
+            this.currentDate.day = 0;
         }
 
         if(!this.monthView) {
-            this.moveToWeek(currentWeek, NEXT);
+            this.moveToWeek(this.currentDate.week, NEXT);
         }
-        ++currentWeek;
-        $('#weekNumber').html(currentWeek);
+        $('#weekNumber').html(this.currentDate.week);
         group.selectNodes(day, lastDay);
         group.setCurrentDay(day);
         $('#dayNumber').html(DATES.dayNumbers[day]);
@@ -513,7 +512,7 @@ class Finance extends BaseApp {
         this.updateExpenditure(total);
     }
 
-    previousWeek() {
+    gotoPreviousWeek() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving) return;
 
@@ -525,17 +524,16 @@ class Finance extends BaseApp {
         if(day < 0) {
             day = 0;
         }
-        let currentWeek = this.currentDate.week;
-        if(--currentWeek < 0) {
-            currentWeek = DATES.weeksPerMonth[this.currentDate.month];
-            day = maxDay;
+        this.previousWeek = this.currentDate.week;
+        if(--this.currentDate.week < 0) {
+            this.currentDate.week = DATES.weeksPerMonth[this.currentDate.month];
+            this.currentDate.day = maxDay;
         }
 
         if(!this.monthView) {
-            this.moveToWeek(currentWeek, PREVIOUS);
+            this.moveToWeek(this.currentDate.week, PREVIOUS);
         }
-        ++currentWeek;
-        $('#weekNumber').html(currentWeek);
+        $('#weekNumber').html(this.currentDate.week);
         group.selectNodes(day, lastDay);
         group.setCurrentDay(day);
         $('#dayNumber').html(DATES.dayNumbers[day]);
@@ -551,17 +549,11 @@ class Finance extends BaseApp {
         let group;
         for(let i=0; i<MAX_GROUPS; ++i) {
             group = this.monthReps[i];
-            group.showWeek(this.currentDate, true);
+            group.showWeek(this.currentDate.month, this.currentDate.week, true);
         }
 
-        group = this.monthReps[this.currentGroup];
-        let currentWeek = this.currentDate.week;
-        let dir = week < currentWeek ? 1 : -1;
-        if((currentWeek === 4 && week === 0) || (currentWeek === 0 && week === 4)) {
-            dir = direction;
-        }
         this.moveSpeed = this.weeklyGap / this.SCENE_MOVE_TIME;
-        this.moveSpeed *= dir;
+        this.moveSpeed *= direction;
         this.sceneMoveEnd = this.weeklyGap * -week;
         this.sceneMoving = true;
         //DEBUG
@@ -843,7 +835,7 @@ class Finance extends BaseApp {
             for(let i=0; i<MAX_GROUPS; ++i) {
                 group = this.monthReps[i];
                 group.showAllWeeks(this.currentDate, false);
-                group.showWeek(this.currentDate, true);
+                group.showWeek(this.currentDate.month, this.currentDate.week, true);
             }
             this.topGroup.position.x = -this.weeklyGap * currentWeek;
             this.camera.position.copy(DEFAULT_CAM_POS);
@@ -934,11 +926,11 @@ $(document).ready(function() {
     });
 
     $('#nextWeek').on("click", () => {
-        app.nextWeek();
+        app.gotoNextWeek();
     });
 
     $('#previousWeek').on("click", () => {
-        app.previousWeek();
+        app.gotoPreviousWeek();
     });
 
     $('#nextMonth').on("click", () => {
