@@ -487,7 +487,7 @@ class Finance extends BaseApp {
         let group = this.monthReps[this.currentGroup];
         let maxDays = DATES.daysPerMonth[this.currentDate.month];
         let maxDay = maxDays - 1;
-        let lastDay = group.getCurrentDay();
+        let lastDay = this.currentDate.day;
         let day = lastDay + 7;
         if(day > maxDay) {
             day = maxDay;
@@ -520,7 +520,7 @@ class Finance extends BaseApp {
         let group = this.monthReps[this.currentGroup];
         let maxDays = DATES.daysPerMonth[this.currentDate.month];
         let maxDay = maxDays - 1;
-        let lastDay = group.getCurrentDay();
+        let lastDay = this.currentDate.day;
         let day = lastDay - 7;
         if(day < 0) {
             day = maxDay;
