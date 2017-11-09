@@ -150,6 +150,7 @@ class ExpendRepresentation {
         this.stands[node].material = this.expenseMatSelected;
         this.stands[node].material.needsUpdate = true;
         this.selectedNode = node;
+        this.currentDay = node;
     }
 
     setNodeStatus(node, status) {
@@ -170,6 +171,7 @@ class ExpendRepresentation {
         let start, end;
 
         let daysThisMonth = DATES.daysPerMonth[date.month];
+        let week = date.week;
         start = START_WEEK_OFFSET * week;
         end = start + WEEK_OFFSET;
         if(end > daysThisMonth) {

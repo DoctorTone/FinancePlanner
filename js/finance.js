@@ -421,7 +421,7 @@ class Finance extends BaseApp {
         if(this.sceneMoving) return;
 
         let group = this.monthReps[this.currentGroup];
-        let maxDays = group.getDaysThisMonth();
+        let maxDays = DATES.daysPerMonth[this.currentDate.month];
         let currentDay = group.getCurrentDay();
         let lastDay = currentDay;
         if(++currentDay >= maxDays) {
@@ -436,8 +436,6 @@ class Finance extends BaseApp {
                 group.showWeek(this.currentDate, true);
                 this.moveToWeek(week, NEXT);
             }
-            group.setPreviousWeek(currentWeek);
-            group.setCurrentWeek(week);
             ++week;
             $('#weekNumber').html(week);
         }
@@ -446,7 +444,7 @@ class Finance extends BaseApp {
         group.selectNodes(currentDay, lastDay);
         $('#dayNumber').html(DATES.dayNumbers[currentDay]);
 
-        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
     }
 
@@ -455,7 +453,7 @@ class Finance extends BaseApp {
         if(this.sceneMoving) return;
 
         let group = this.monthReps[this.currentGroup];
-        let maxDays = group.getDaysThisMonth();
+        let maxDays = DATES.daysPerMonth[this.currentDate.month];
         let currentDay = group.getCurrentDay();
         let lastDay = currentDay;
         if(--currentDay < 0) {
@@ -470,8 +468,6 @@ class Finance extends BaseApp {
                 group.showWeek(this.currentDate, true);
                 this.moveToWeek(week, PREVIOUS);
             }
-            group.setPreviousWeek(currentWeek);
-            group.setCurrentWeek(week);
             ++week;
             $('#weekNumber').html(week);
         }
@@ -480,7 +476,7 @@ class Finance extends BaseApp {
         group.selectNodes(currentDay, lastDay);
         $('#dayNumber').html(DATES.dayNumbers[currentDay]);
 
-        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
     }
 
