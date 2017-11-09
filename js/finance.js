@@ -522,11 +522,11 @@ class Finance extends BaseApp {
         let lastDay = group.getCurrentDay();
         let day = lastDay - 7;
         if(day < 0) {
-            day = 0;
+            day = maxDay;
         }
         this.previousWeek = this.currentDate.week;
         if(--this.currentDate.week < 0) {
-            this.currentDate.week = DATES.weeksPerMonth[this.currentDate.month];
+            this.currentDate.week = DATES.weeksPerMonth[this.currentDate.month] -1;
             this.currentDate.day = maxDay;
         }
 
