@@ -154,7 +154,7 @@ body {
 #instructions {
     bottom: 1%;
     left: 1%;
-    width: 10%;
+    width: 3.5%;
     -webkit-touch-callout: none;
 }
 #instructions img {
@@ -174,9 +174,9 @@ body {
     width: 15%;
 }
 #copyright {
-    left: 15%;
-    bottom: 1.5%;
+    left: 6%;
+    bottom: 1%;
     color: white;
-    font-size: 3.5vw;
+    font-size: 1vw;
     -webkit-touch-callout: none;
 }
