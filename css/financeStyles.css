@@ -22,6 +22,13 @@ body {
     border-radius: 20px;
     padding: 1%;
 }
+.infoPanelDark {
+    position: absolute;
+    background-color: #676767;
+    border-radius: 20px;
+    padding: 1%;
+    color: white;
+}
 #dateSelector {
     top:7.5%;
     right: 1%;
