@@ -424,25 +424,25 @@ class Finance extends BaseApp {
         let maxDays = DATES.daysPerMonth[this.currentDate.month];
         let currentDay = group.getCurrentDay();
         let lastDay = currentDay;
-        if(++currentDay >= maxDays) {
-            currentDay = 0;
+        if(++this.currentDate.day >= maxDays) {
+            this.currentDate.day = 0;
             lastDay = maxDays - 1;
         }
 
         let currentWeek = this.currentDate.week;
-        let week = Math.floor(currentDay / 7);
+        let week = Math.floor(this.currentDate.day / 7);
         if(week !== currentWeek) {
             if(!this.monthView) {
-                group.showWeek(this.currentDate.month,this.currentDate.week, true);
+                this.currentDate.week = week;
+                group.showWeek(this.currentDate.month, this.currentDate.week, true);
                 this.moveToWeek(week, NEXT);
             }
-            ++week;
             $('#weekNumber').html(week);
         }
 
-        group.setCurrentDay(currentDay);
-        group.selectNodes(currentDay, lastDay);
-        $('#dayNumber').html(DATES.dayNumbers[currentDay]);
+        group.setCurrentDay(this.currentDate.day);
+        group.selectNodes(this.currentDate.day, lastDay);
+        $('#dayNumber').html(DATES.dayNumbers[this.currentDate.day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
@@ -456,25 +456,25 @@ class Finance extends BaseApp {
         let maxDays = DATES.daysPerMonth[this.currentDate.month];
         let currentDay = group.getCurrentDay();
         let lastDay = currentDay;
-        if(--currentDay < 0) {
-            currentDay = maxDays-1;
+        if(--this.currentDate.day < 0) {
+            this.currentDate.day = maxDays-1;
             lastDay = 0;
         }
 
         let currentWeek = this.currentDate.week;
-        let week = Math.floor(currentDay / 7);
+        let week = Math.floor(this.currentDate.day / 7);
         if(week !== currentWeek) {
             if(!this.monthView) {
+                this.currentDate.week = week;
                 group.showWeek(this.currentDate.month, this.currentDate.week, true);
                 this.moveToWeek(week, PREVIOUS);
             }
-            ++week;
             $('#weekNumber').html(week);
         }
 
-        group.setCurrentDay(currentDay);
-        group.selectNodes(currentDay, lastDay);
-        $('#dayNumber').html(DATES.dayNumbers[currentDay]);
+        group.setCurrentDay(this.currentDate.day);
+        group.selectNodes(this.currentDate.day, lastDay);
+        $('#dayNumber').html(DATES.dayNumbers[this.currentDate.day]);
 
         let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
