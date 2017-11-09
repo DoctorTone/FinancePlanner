@@ -30,6 +30,9 @@ DATES.dayNames = [
 DATES.daysPerMonth = [
         31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
     ];
+DATES.weeksPerMonth = [
+        5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5
+        ];
 DATES.dayNumbers = [
         "1st",
         "2nd",

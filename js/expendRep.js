@@ -32,7 +32,7 @@ const WEEK_OFFSET = 7;
 const BASE_OFFSET = 6;
 
 class ExpendRepresentation {
-    constructor(date) {
+    constructor() {
         this.daysPerMonth = 31;
         this.currentDay = 0;
         this.group = new THREE.Object3D();
@@ -40,11 +40,6 @@ class ExpendRepresentation {
         this.dayLabels = [];
         this.spendLabels = [];
         this.stands = [];
-
-        //Date info
-        this.currentDate = date;
-        this.daysThisMonth = DATES.daysPerMonth[this.currentDate.month];
-        this.weeksThisMonth = 4;
 
         //Node info
         this.selectedNode = 0;
@@ -55,52 +50,12 @@ class ExpendRepresentation {
         this.group.name = name;
     }
 
-    getCurrentDate() {
-        return this.currentDate;
-    }
-
     getCurrentDay() {
-        return this.currentDate.day;
-    }
-
-    getDaysThisMonth() {
-        return this.daysThisMonth;
-    }
-
-    getWeeksThisMonth() {
-        return this.weeksThisMonth;
-    }
-
-    getCurrentWeek() {
-        return this.currentDate.week;
-    }
-
-    getPreviousWeek() {
-        return this.currentDate.previousWeek;
-    }
-
-    getCurrentMonth() {
-        return this.currentDate.month;
+        return this.currentDay;
     }
 
     setCurrentDay(day) {
-        this.currentDate.day = day;
-    }
-
-    setCurrentWeek(week) {
-        this.currentDate.week = week;
-    }
-
-    setPreviousWeek(week) {
-        this.currentDate.previousWeek = week;
-    }
-
-    setCurrentMonth(month) {
-        this.currentDate.month = month;
-    }
-
-    setCurrentDate(date) {
-        this.currentDate = date;
+        this.currentDay = day;
     }
 
     setExpenseColour(colour) {
@@ -154,7 +109,7 @@ class ExpendRepresentation {
     }
 
     updateCurrentNode(total) {
-        let day = this.currentDate.day;
+        let day = this.currentDay;
         this.nodes[day].position.y = START_POS.y + total;
         this.stands[day].scale.y = this.nodes[day].position.y - BASE_OFFSET;
         this.stands[day].position.y = this.stands[day].scale.y / 2;
@@ -204,19 +159,21 @@ class ExpendRepresentation {
         this.stands[node].visible = status;
     }
 
-    showAllWeeks(status) {
-        for(let i=0; i<this.daysThisMonth; ++i) {
+    showAllWeeks(date, status) {
+        let daysThisMonth = DATES.daysPerMonth[date.month];
+        for(let i=0; i<daysThisMonth; ++i) {
             this.setNodeStatus(i, status);
         }
     }
 
-    showWeek(week, status) {
+    showWeek(date, status) {
         let start, end;
 
+        let daysThisMonth = DATES.daysPerMonth[date.month];
         start = START_WEEK_OFFSET * week;
         end = start + WEEK_OFFSET;
-        if(end > this.daysThisMonth) {
-            end = this.daysThisMonth;
+        if(end > daysThisMonth) {
+            end = daysThisMonth;
         }
 
         for(let i=start; i<end; ++i) {

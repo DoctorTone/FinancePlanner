@@ -24,6 +24,18 @@ const X_AXIS = 0;
 const Y_AXIS = 1;
 const ZOOM_SPEED = 20;
 
+let appearanceConfig = {
+    Back: '#7d818c',
+    Node: '#fed600',
+    Ground: '#5f5f5f'
+};
+
+let saveConfig = {
+    Back: '#7d818c',
+    Node: '#fed600',
+    Ground: '#5f5f5f'
+};
+
 function isMultipleWords(text) {
     let result;
     let separators = [' ', ',', '#'];
@@ -51,6 +63,8 @@ class Finance extends BaseApp {
 
         this.currentGroup = 0;
 
+        this.baseName = "financeVizConfig";
+
         //Animation
         this.moveTime = 0;
         this.sceneMoving = false;
@@ -72,6 +86,22 @@ class Finance extends BaseApp {
     init(container) {
         super.init(container);
 
+        //Load any preferences
+        let prefs = localStorage.getItem(this.baseName + "Saved");
+        if(prefs) {
+            let value;
+            for(let prop in appearanceConfig) {
+                value = localStorage.getItem(this.baseName + prop);
+                if(value) {
+                    this.setGUI(prop,value);
+                }
+            }
+            let colour = localStorage.getItem(this.baseName + "Back");
+            if(colour) {
+                this.renderer.setClearColor(colour, 1.0);
+            }
+        }
+
         //Data loading
         this.dataLoader = new DataJSONLoader();
 
@@ -85,11 +115,6 @@ class Finance extends BaseApp {
     createGUI() {
         //Create GUI - controlKit
         window.addEventListener('load', () => {
-            let appearanceConfig = {
-                Back: '#000000',
-                Node: '#fed600',
-                Ground: '#5f5f5f'
-            };
             let labelConfig = {
                 dateHeight: 1,
                 dateHeightRange: [0.5, 3],
@@ -148,7 +173,12 @@ class Finance extends BaseApp {
                     }})
                 .addSubGroup({label: "Preferences"})
                     .addButton("Save", () => {
-                        this.savePreferences(appearanceConfig);
+                        for(let prop in saveConfig) {
+                            if(prop in appearanceConfig) {
+                                saveConfig[prop] = appearanceConfig[prop];
+                            }
+                        }
+                        this.savePreferences(saveConfig);
                     })
         });
     }
@@ -222,13 +252,20 @@ class Finance extends BaseApp {
     }
 
     savePreferences(config) {
-        let baseName = "financeConfig";
         for(let prop in config) {
-            localStorage.setItem(baseName+prop, config.prop);
+            localStorage.setItem(this.baseName+prop, config[prop]);
         }
-        localStorage.setItem(baseName+"Saved", "Saved");
-        this.baseName = baseName;
+        localStorage.setItem(this.baseName+"Saved", "Saved");
         this.displayMessage("Preferences saved");
+    }
+
+    setGUI(prop, value) {
+        let newValue = parseFloat(value);
+        if(isNaN(newValue)) {
+            appearanceConfig[prop] = value;
+            return;
+        }
+        appearanceConfig[prop] = newValue;
     }
 
     getPreferences() {
@@ -285,9 +322,10 @@ class Finance extends BaseApp {
             currentDate.week = Math.floor(currentDate.day / 7);
             currentDate.month = date.getMonth();
             currentDate.year = date.getFullYear();
+            this.currentDate = currentDate;
 
             for(let i=0; i<MAX_GROUPS; ++i) {
-                monthReps.push(new ExpendRepresentation(currentDate));
+                monthReps.push(new ExpendRepresentation());
                 monthReps[i].setName("monthGroup" + i);
                 group = monthReps[i].generateRepresentations(repInfo);
                 this.topGroup.add(group);
@@ -299,7 +337,7 @@ class Finance extends BaseApp {
 
             //Initialisation
             for(let i=0; i<MAX_GROUPS; ++i) {
-                this.monthReps[i].showWeek(currentDate.week, true);
+                this.monthReps[i].showWeek(currentDate, true);
                 this.monthReps[i].clearSelection();
             }
             group = this.monthReps[0];
@@ -310,7 +348,6 @@ class Finance extends BaseApp {
             this.topGroup.position.x = this.weeklyGap * -currentDate.week;
             this.updateDateInfo(currentDate);
             //Set initial total
-            currentDate = group.getCurrentDate();
             let total = this.expenseManager.getDailyTotal(currentDate);
             this.updateExpenditure(total);
             total = this.expenseManager.getMonthlyTotal(currentDate);
@@ -345,10 +382,9 @@ class Finance extends BaseApp {
                 this.topGroup.position.x = this.sceneMoveEnd;
                 this.moveTime = 0;
                 this.sceneMoving = false;
-                let previousWeek = group.getPreviousWeek();
                 for(let i=0; i<MAX_GROUPS; ++i) {
                     group = this.monthReps[i];
-                    group.showWeek(previousWeek, false);
+                    group.showWeek(this.currentDate, false);
                 }
 
             }
@@ -393,11 +429,11 @@ class Finance extends BaseApp {
             lastDay = maxDays - 1;
         }
 
-        let currentWeek = group.getCurrentWeek();
+        let currentWeek = this.currentDate.week;
         let week = Math.floor(currentDay / 7);
         if(week !== currentWeek) {
             if(!this.monthView) {
-                group.showWeek(week, true);
+                group.showWeek(this.currentDate, true);
                 this.moveToWeek(week, NEXT);
             }
             group.setPreviousWeek(currentWeek);
@@ -427,11 +463,11 @@ class Finance extends BaseApp {
             lastDay = 0;
         }
 
-        let currentWeek = group.getCurrentWeek();
+        let currentWeek = this.currentDate.week;
         let week = Math.floor(currentDay / 7);
         if(week !== currentWeek) {
             if(!this.monthView) {
-                group.showWeek(week, true);
+                group.showWeek(this.currentDate, true);
                 this.moveToWeek(week, PREVIOUS);
             }
             group.setPreviousWeek(currentWeek);
@@ -461,9 +497,9 @@ class Finance extends BaseApp {
             day = maxDay;
         }
 
-        let currentWeek = group.getCurrentWeek();
-        group.setPreviousWeek(currentWeek);
-        if(++currentWeek > group.getWeeksThisMonth()) {
+        let currentWeek = this.currentDate.week;
+        let weeksThisMonth = DATES.weeksPerMonth[this.currentDate.month];
+        if(++currentWeek > weeksThisMonth) {
             currentWeek = 0;
             day = 0;
         }
@@ -471,14 +507,13 @@ class Finance extends BaseApp {
         if(!this.monthView) {
             this.moveToWeek(currentWeek, NEXT);
         }
-        group.setCurrentWeek(currentWeek);
         ++currentWeek;
         $('#weekNumber').html(currentWeek);
         group.selectNodes(day, lastDay);
         group.setCurrentDay(day);
         $('#dayNumber').html(DATES.dayNumbers[day]);
 
-        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
     }
 
@@ -487,31 +522,29 @@ class Finance extends BaseApp {
         if(this.sceneMoving) return;
 
         let group = this.monthReps[this.currentGroup];
-        let maxDays = group.getDaysThisMonth();
+        let maxDays = DATES.daysPerMonth[this.currentDate.month];
         let maxDay = maxDays - 1;
         let lastDay = group.getCurrentDay();
         let day = lastDay - 7;
         if(day < 0) {
             day = 0;
         }
-        let currentWeek = group.getCurrentWeek();
-        group.setPreviousWeek(currentWeek);
+        let currentWeek = this.currentDate.week;
         if(--currentWeek < 0) {
-            currentWeek = group.getWeeksThisMonth();
+            currentWeek = DATES.weeksPerMonth[this.currentDate.month];
             day = maxDay;
         }
 
         if(!this.monthView) {
             this.moveToWeek(currentWeek, PREVIOUS);
         }
-        group.setCurrentWeek(currentWeek);
         ++currentWeek;
         $('#weekNumber').html(currentWeek);
         group.selectNodes(day, lastDay);
         group.setCurrentDay(day);
         $('#dayNumber').html(DATES.dayNumbers[day]);
 
-        let total = this.expenseManager.getDailyTotal(group.getCurrentDate());
+        let total = this.expenseManager.getDailyTotal(this.currentDate);
         this.updateExpenditure(total);
     }
 
@@ -522,11 +555,11 @@ class Finance extends BaseApp {
         let group;
         for(let i=0; i<MAX_GROUPS; ++i) {
             group = this.monthReps[i];
-            group.showWeek(week, true);
+            group.showWeek(this.currentDate, true);
         }
 
         group = this.monthReps[this.currentGroup];
-        let currentWeek = group.getCurrentWeek();
+        let currentWeek = this.currentDate.week;
         let dir = week < currentWeek ? 1 : -1;
         if((currentWeek === 4 && week === 0) || (currentWeek === 0 && week === 4)) {
             dir = direction;
@@ -548,19 +581,19 @@ class Finance extends BaseApp {
         this.sceneRotating = true;
 
         let previousGroup = this.monthReps[this.currentGroup];
-        let previousDate = previousGroup.getCurrentDate();
+        let previousDate = this.currentDate;
         previousGroup.clearSelection();
         previousDate.month++;
         if(++this.currentGroup >= MAX_GROUPS) {
             this.currentGroup = 0;
         }
         let currentGroup = this.monthReps[this.currentGroup];
-        currentGroup.setCurrentDate(previousDate);
+        currentGroup.setCurrentDay(previousDate.day);
         currentGroup.setSelection(previousDate.day);
 
         $('#monthNumber').html(DATES.monthNames[previousDate.month]);
 
-        let currentDate = currentGroup.getCurrentDate();
+        let currentDate = this.currentDate;
         let total = this.expenseManager.getDailyTotal(currentDate);
         this.updateExpenditure(total);
         total = this.expenseManager.getMonthlyTotal(currentDate);
@@ -576,19 +609,19 @@ class Finance extends BaseApp {
         this.sceneRotating = true;
 
         let previousGroup = this.monthReps[this.currentGroup];
-        let previousDate = previousGroup.getCurrentDate();
+        let previousDate = this.currentDate;
         previousGroup.clearSelection();
         previousDate.month--;
         if(--this.currentGroup < 0) {
             this.currentGroup = MAX_GROUPS-1;
         }
         let currentGroup = this.monthReps[this.currentGroup];
-        currentGroup.setCurrentDate(previousDate);
+        currentGroup.setCurrentDay(previousDate.day);
         currentGroup.setSelection(previousDate.day);
 
         $('#monthNumber').html(DATES.monthNames[previousDate.month]);
 
-        let currentDate = currentGroup.getCurrentDate();
+        let currentDate = this.currentDate;
         let total = this.expenseManager.getDailyTotal(currentDate);
         this.updateExpenditure(total);
         total = this.expenseManager.getMonthlyTotal(currentDate);
@@ -802,7 +835,7 @@ class Finance extends BaseApp {
             buttonElem.html("Week view");
             for(let i=0; i<MAX_GROUPS; ++i) {
                 group = this.monthReps[i];
-                group.showAllWeeks(true);
+                group.showAllWeeks(this.currentDate, true);
             }
             this.topGroup.position.x = -this.weeklyGap * 1.75;
             this.camera.position.set(0, 360, 860);
@@ -813,8 +846,8 @@ class Finance extends BaseApp {
             buttonElem.html("Month view");
             for(let i=0; i<MAX_GROUPS; ++i) {
                 group = this.monthReps[i];
-                group.showAllWeeks(false);
-                group.showWeek(group.getCurrentWeek(), true);
+                group.showAllWeeks(this.currentDate, false);
+                group.showWeek(this.currentDate, true);
             }
             this.topGroup.position.x = -this.weeklyGap * currentWeek;
             this.camera.position.copy(DEFAULT_CAM_POS);
