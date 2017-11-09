@@ -433,7 +433,8 @@ class Finance extends BaseApp {
                 this.moveToWeek(week, NEXT);
             }
             this.currentDate.week = week;
-            $('#weekNumber').html(week);
+            let weekNumber = week + 1;
+            $('#weekNumber').html(weekNumber);
         }
 
         group.setCurrentDay(this.currentDate.day);
@@ -465,7 +466,8 @@ class Finance extends BaseApp {
                 this.moveToWeek(week, PREVIOUS);
             }
             this.currentDate.week = week;
-            $('#weekNumber').html(week);
+            let weekNumber = week + 1;
+            $('#weekNumber').html(weekNumber);
         }
 
         group.setCurrentDay(this.currentDate.day);
@@ -500,7 +502,8 @@ class Finance extends BaseApp {
         if(!this.monthView) {
             this.moveToWeek(this.currentDate.week, NEXT);
         }
-        $('#weekNumber').html(this.currentDate.week);
+        let weekNumber = this.currentDate.week + 1;
+        $('#weekNumber').html(weekNumber);
         group.selectNodes(this.currentDate.day, lastDay);
         group.setCurrentDay(this.currentDate.day);
         $('#dayNumber').html(DATES.dayNumbers[this.currentDate.day]);
@@ -531,7 +534,8 @@ class Finance extends BaseApp {
         if(!this.monthView) {
             this.moveToWeek(this.currentDate.week, PREVIOUS);
         }
-        $('#weekNumber').html(this.currentDate.week);
+        let weekNumber = this.currentDate.week + 1;
+        $('#weekNumber').html(weekNumber);
         group.selectNodes(this.currentDate.day, lastDay);
         group.setCurrentDay(this.currentDate.day);
         $('#dayNumber').html(DATES.dayNumbers[this.currentDate.day]);
