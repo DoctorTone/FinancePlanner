@@ -16,9 +16,10 @@ body {
 }
 .infoPanel {
     position: absolute;
+}
+.infoPanelLight {
+    position: absolute;
     background-color: lightgrey;
-    /*border-top-left-radius: 20px;
-    border-bottom-right-radius: 20px;*/
     border-radius: 20px;
     padding: 1%;
 }
@@ -33,6 +34,7 @@ body {
     top:7.5%;
     right: 1%;
     width: 10%;
+    -webkit-touch-callout: none;
 }
 .selector button {
     width: 25%;
@@ -52,16 +54,19 @@ body {
     top: 35%;
     right: 1%;
     width: 10%;
+    -webkit-touch-callout: none;
 }
 #fileSelector {
     top: 50%;
     right: 1%;
     width: 10%;
+    -webkit-touch-callout: none;
 }
 #zoomControls {
     top: 65%;
     right: 2%;
     width: 7.5%;
+    -webkit-touch-callout: none;
 }
 #zoomControls button {
     width: 45%;
@@ -75,14 +80,17 @@ body {
     left:35%;
     width: 30%;
     z-index: 1;
+    -webkit-touch-callout: none;
 }
 #expenseInfo {
     top: 1%;
     left: 1%;
     width: 15%;
+    -webkit-touch-callout: none;
 }
 .title {
     margin-bottom: 2%;
+    -webkit-touch-callout: none;
 }
 #addFormTitle {
     font-size: 1.2vw;
@@ -96,6 +104,7 @@ body {
     left:35%;
     width: 30%;
     z-index: 0;
+    -webkit-touch-callout: none;
 }
 .selected {
     background-color: red;
@@ -134,4 +143,40 @@ body {
     bottom: 2.5%;
     color: white;
     font-size: 2.5vw;
+    -webkit-touch-callout: none;
+}
+#guiWidth {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20%;
+}
+#instructions {
+    bottom: 1%;
+    left: 1%;
+    width: 10%;
+    -webkit-touch-callout: none;
+}
+#instructions img {
+    width: 100%;
+}
+#message {
+    bottom: 10%;
+    width: 60%;
+    left: 20%;
+    font-size: 4vw;
+    color: white;
+    background-color: #3e3e3e;
+    border-radius: 15px;
+    padding: 1%;
+}
+#message img {
+    width: 15%;
+}
+#copyright {
+    left: 15%;
+    bottom: 1.5%;
+    color: white;
+    font-size: 3.5vw;
+    -webkit-touch-callout: none;
 }

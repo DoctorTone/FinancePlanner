@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
-    
+
     <title>Finance Planner</title>
 
     <link rel="stylesheet" href="css/bootstrap.css?v=0.1">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css?v=0.1">
-    <link href="css/financeStyles.css?v=0.7" rel="stylesheet" type="text/css">
+    <link href="css/financeStyles.css?v=0.8" rel="stylesheet" type="text/css">
 
     <script type="text/javascript" src="js/jquery-1.11.2.min.js"></script>
     <script type="text/javascript" src="js/three86.js"></script>
@@ -29,11 +29,14 @@
     <script type="text/javascript" src="js/finance.js?v=0.1"></script>
 </head>
 <body>
+<div id="guiWidth" class="noDisplay">
+    <p>dummy</p>
+</div>
 <div id="WebGL-output">
 
 </div>
 
-<div id="dateSelector" class="infoPanel">
+<div id="dateSelector" class="infoPanelLight">
     <p>Date</p>
     <div class="centred selector">
         <div>
@@ -57,14 +60,14 @@
     </div>
 </div>
 
-<div id="editSelector" class="infoPanel">
+<div id="editSelector" class="infoPanelLight">
     <p>Details</p>
     <div class="centred">
         <button id="addExpense" type="button" class="btn btn-primary">Add</button> <button id="editExpense" type="button" class="btn btn-primary">Edit</button>
     </div>
 </div>
 
-<div id="fileSelector" class="infoPanel">
+<div id="fileSelector" class="infoPanelLight">
     <p>File</p>
     <div class="centred">
         <span id="loadFile" class="btn btn-primary btn-file">Load<input type="file"></span>
@@ -72,7 +75,7 @@
     </div>
 </div>
 
-<div id="zoomControls" class="infoPanel">
+<div id="zoomControls" class="infoPanelLight">
     <p>Zoom</p>
     <div class="centred">
         <button id="zoomOut" type="button" class="btn btn-primary"><img src="images/minus.png"></button>
@@ -89,7 +92,7 @@
     <p>Expenditure : Month <span id="monthlyExpenditure"></span></p>
 </div>
 
-<div id="addFormContainer" class="infoPanel noDisplay">
+<div id="addFormContainer" class="infoPanelLight noDisplay">
     <div class="title">
         <span id="addFormTitle">Add Expense</span><span id="errorText" class="noDisplay"></span>
     </div>
@@ -124,7 +127,7 @@
     </form>
 </div>
 
-<div id="expenseTableContainer" class="infoPanel noDisplay">
+<div id="expenseTableContainer" class="infoPanelLight noDisplay">
     <table id="expenseTable" class="table">
         <thead>
             <tr>
@@ -141,6 +144,22 @@
         <button id="deleteItem" type="button">Delete</button>
         <button id="OK" type="button">OK</button>
     </div>
+</div>
+
+<div id="instructions" class="infoPanel">
+    <img src="images/info.png">
+</div>
+
+<div id="message" class="infoPanel centred noDisplay">
+    <p>
+        <img src="images/messenger.png"><span id="content"></span>
+    </p>
+</div>
+
+<div id="copyright" class="infoPanel centred">
+    <p>
+        &copy; DRT Software Ltd, 2017
+    </p>
 </div>
 
 <div id="notSupported" class="infoPanel centred noDisplay">

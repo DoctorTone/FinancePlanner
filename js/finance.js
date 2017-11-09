@@ -65,6 +65,8 @@ class Finance extends BaseApp {
         //Zoom controls
         this.zoomingOut = false;
         this.zoomingIn = false;
+
+        this.messageTimer = 3 * 1000;
     }
 
     init(container) {
@@ -105,7 +107,11 @@ class Finance extends BaseApp {
 
             let controlKit = new ControlKit();
 
-            controlKit.addPanel( {label: "Configure", width: 200, enable: false} )
+            let guiWidth = $('#guiWidth').css("width");
+            guiWidth = parseInt(guiWidth, 10);
+            if(!guiWidth) guiWidth = window.innerWidth * 0.1;
+
+            controlKit.addPanel( {label: "Configure", width: guiWidth, enable: false} )
                 .addSubGroup({label: "Appearance", enable: false })
                     .addColor(appearanceConfig, "Back", {
                         colorMode: "hex", onChange: () => {
@@ -222,6 +228,7 @@ class Finance extends BaseApp {
         }
         localStorage.setItem(baseName+"Saved", "Saved");
         this.baseName = baseName;
+        this.displayMessage("Preferences saved");
     }
 
     getPreferences() {
@@ -843,17 +850,8 @@ class Finance extends BaseApp {
         this.dataLoader.load(fileUrl, data => {
             this.expenseManager.loadExpenses(data);
             //Update expenditure
-            //DEBUG
-            //Fix for whole month
-            let total;
-            for(let i=1; i<3; ++i) {
-                this.currentDate.day = i;
-                total = this.expenseManager.getDailyTotal(this.currentDate);
-                this.updateCurrentNode(total);
-            }
-            //Do first day expenditure
             this.currentDate.day = 0;
-            total = this.expenseManager.getDailyTotal(this.currentDate);
+            let total = this.expenseManager.getDailyTotal(this.currentDate);
             this.updateExpenditure(total);
             this.updateCurrentNode(total);
         });
@@ -865,6 +863,14 @@ class Finance extends BaseApp {
 
     zoomIn(zoom) {
         this.zoomingIn = zoom;
+    }
+
+    displayMessage(msg) {
+        $('#content').html(msg);
+        $('#message').show();
+        setTimeout( () => {
+            $('#message').hide();
+        }, this.messageTimer);
     }
 
     stopNotifications(elemList) {
@@ -996,7 +1002,7 @@ $(document).ready(function() {
         app.zoomIn(false);
     });
 
-    let elemList = ["zoomControls", "dateSelector", "editSelector", "fileSelector"];
+    let elemList = ["zoomControls", "dateSelector", "editSelector", "fileSelector", "expenseInfo", "instructions", "copyright"];
     app.stopNotifications(elemList);
 
     app.run();
