@@ -31,9 +31,9 @@ let appearanceConfig = {
 };
 
 let saveConfig = {
-    Back: '#7d818c',
-    Node: '#fed600',
-    Ground: '#5f5f5f'
+    Back: appearanceConfig.Back,
+    Node: appearanceConfig.Node,
+    Ground: appearanceConfig.Ground
 };
 
 function isMultipleWords(text) {
@@ -278,10 +278,6 @@ class Finance extends BaseApp {
         //Create scene
         super.createScene();
 
-        //Load in any saved preferences
-        if(this.bgColour) {
-            this.renderer.setClearColor(this.bgColour, 1.0);
-        }
         //Main root group
         this.root = new THREE.Object3D();
         this.root.name = "rootGroup";
