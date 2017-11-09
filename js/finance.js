@@ -422,8 +422,7 @@ class Finance extends BaseApp {
 
         let group = this.monthReps[this.currentGroup];
         let maxDays = DATES.daysPerMonth[this.currentDate.month];
-        let currentDay = group.getCurrentDay();
-        let lastDay = currentDay;
+        let lastDay = this.currentDate.day;
         if(++this.currentDate.day >= maxDays) {
             this.currentDate.day = 0;
             lastDay = maxDays - 1;
@@ -434,10 +433,10 @@ class Finance extends BaseApp {
         if(week !== currentWeek) {
             if(!this.monthView) {
                 this.previousWeek = currentWeek;
-                this.currentDate.week = week;
-                group.showWeek(this.currentDate.month, this.currentDate.week, true);
+                group.showWeek(this.currentDate.month, week, true);
                 this.moveToWeek(week, NEXT);
             }
+            this.currentDate.week = week;
             $('#weekNumber').html(week);
         }
 
@@ -455,8 +454,7 @@ class Finance extends BaseApp {
 
         let group = this.monthReps[this.currentGroup];
         let maxDays = DATES.daysPerMonth[this.currentDate.month];
-        let currentDay = group.getCurrentDay();
-        let lastDay = currentDay;
+        let lastDay = this.currentDate.day;
         if(--this.currentDate.day < 0) {
             this.currentDate.day = maxDays-1;
             lastDay = 0;
@@ -467,10 +465,10 @@ class Finance extends BaseApp {
         if(week !== currentWeek) {
             if(!this.monthView) {
                 this.previousWeek = currentWeek;
-                this.currentDate.week = week;
-                group.showWeek(this.currentDate.month, this.currentDate.week, true);
+                group.showWeek(this.currentDate.month, week, true);
                 this.moveToWeek(week, PREVIOUS);
             }
+            this.currentDate.week = week;
             $('#weekNumber').html(week);
         }
 
