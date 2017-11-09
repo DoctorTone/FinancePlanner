@@ -108,8 +108,8 @@ class ExpendRepresentation {
         return this.group;
     }
 
-    updateCurrentNode(total) {
-        let day = this.currentDay;
+    updateNode(date, total) {
+        let day = date.day;
         this.nodes[day].position.y = START_POS.y + total;
         this.stands[day].scale.y = this.nodes[day].position.y - BASE_OFFSET;
         this.stands[day].position.y = this.stands[day].scale.y / 2;

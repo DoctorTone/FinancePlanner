@@ -664,7 +664,7 @@ class Finance extends BaseApp {
             this.expenseManager.addExpense(expense);
 
         let total = this.expenseManager.getDailyTotal(date);
-        this.updateCurrentNode(total);
+        this.updateNode(date, total);
         this.updateExpenditure(total);
         total = this.expenseManager.getMonthlyTotal(date);
         this.updateMonthlyExpenditure(total);
@@ -784,10 +784,10 @@ class Finance extends BaseApp {
             return;
         }
         let group = this.monthReps[this.currentGroup];
-        this.expenseManager.deleteExpense(group.getCurrentDate(), this.expenseIndex);
-        let currentDate = group.getCurrentDate();
+        let currentDate = this.currentDate;
+        this.expenseManager.deleteExpense(currentDate, this.expenseIndex);
         let total = this.expenseManager.getDailyTotal(currentDate);
-        this.updateCurrentNode(total);
+        this.updateNode(currentDate, total);
         this.updateExpenditure(total);
         total = this.expenseManager.getMonthlyTotal(currentDate);
         this.updateMonthlyExpenditure(total);
@@ -810,13 +810,12 @@ class Finance extends BaseApp {
         $('#tags').val(expense.priceInfo.tags);
     }
 
-    updateCurrentNode(total) {
+    updateNode(date, total) {
         let group = this.monthReps[this.currentGroup];
-        let day = group.getCurrentDay();
-        let label = spriteManager.getSpriteByDate(day, this.currentGroup);
+        let label = spriteManager.getSpriteByDate(date.day, this.currentGroup);
         label.position.y = this.labelOffset + total;
         spriteManager.setTextAmount(label, total);
-        group.updateCurrentNode(total);
+        group.updateNode(date, total);
     }
 
     toggleView() {
@@ -872,12 +871,22 @@ class Finance extends BaseApp {
 
         let fileUrl = window.URL.createObjectURL(dataFile);
         this.dataLoader.load(fileUrl, data => {
-            this.expenseManager.loadExpenses(data);
-            //Update expenditure
-            this.currentDate.day = 0;
-            let total = this.expenseManager.getDailyTotal(this.currentDate);
-            this.updateExpenditure(total);
-            this.updateCurrentNode(total);
+            let expenses = this.expenseManager.loadExpenses(data);
+            if(expenses) {
+                //Update expenditure
+                let currentExpense, total, date;
+                for(let i=0, numExpenses = expenses.length; i<numExpenses; ++i) {
+                    currentExpense = expenses[i];
+                    date = currentExpense[0].date;
+                    total = this.expenseManager.getDailyTotal(date);
+                    this.updateNode(date, total);
+                }
+                //Update current date and month
+                total = this.expenseManager.getDailyTotal(this.currentDate);
+                this.updateExpenditure(total);
+                total = this.expenseManager.getMonthlyTotal(this.currentDate);
+                this.updateMonthlyExpenditure(total);
+            }
         });
     }
 

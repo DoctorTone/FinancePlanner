@@ -113,6 +113,8 @@ class ExpenseManager {
                 this.expenses[i].push(new Expense(currentExpense[j].date, expenseInfo));
             }
         }
+
+        return this.expenses.length !== 0 ? this.expenses : undefined;
     }
 }
 
