@@ -571,17 +571,17 @@ class Finance extends BaseApp {
         this.sceneRotating = true;
 
         let previousGroup = this.monthReps[this.currentGroup];
-        let previousDate = this.currentDate;
         previousGroup.clearSelection();
-        previousDate.month++;
+        this.currentDate.month++;
         if(++this.currentGroup >= MAX_GROUPS) {
             this.currentGroup = 0;
         }
         let currentGroup = this.monthReps[this.currentGroup];
-        currentGroup.setCurrentDay(previousDate.day);
-        currentGroup.setSelection(previousDate.day);
+        currentGroup.showWeek(this.currentDate.month, this.currentDate.week, true);
+        currentGroup.setCurrentDay(this.currentDate.day);
+        currentGroup.setSelection(this.currentDate.day);
 
-        $('#monthNumber').html(DATES.monthNames[previousDate.month]);
+        $('#monthNumber').html(DATES.monthNames[this.currentDate.month]);
 
         let currentDate = this.currentDate;
         let total = this.expenseManager.getDailyTotal(currentDate);
@@ -599,17 +599,17 @@ class Finance extends BaseApp {
         this.sceneRotating = true;
 
         let previousGroup = this.monthReps[this.currentGroup];
-        let previousDate = this.currentDate;
         previousGroup.clearSelection();
-        previousDate.month--;
+        this.currentDate.month--;
         if(--this.currentGroup < 0) {
             this.currentGroup = MAX_GROUPS-1;
         }
         let currentGroup = this.monthReps[this.currentGroup];
-        currentGroup.setCurrentDay(previousDate.day);
-        currentGroup.setSelection(previousDate.day);
+        currentGroup.showWeek(this.currentDate.month, this.currentDate.week, true);
+        currentGroup.setCurrentDay(this.currentDate.day);
+        currentGroup.setSelection(this.currentDate.day);
 
-        $('#monthNumber').html(DATES.monthNames[previousDate.month]);
+        $('#monthNumber').html(DATES.monthNames[this.currentDate.month]);
 
         let currentDate = this.currentDate;
         let total = this.expenseManager.getDailyTotal(currentDate);
