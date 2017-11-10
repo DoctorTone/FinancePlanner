@@ -35,6 +35,7 @@ class ExpendRepresentation {
     constructor() {
         this.daysPerMonth = 31;
         this.currentDay = 0;
+        this.month;
         this.group = new THREE.Object3D();
         this.nodes = [];
         this.dayLabels = [];
@@ -56,6 +57,14 @@ class ExpendRepresentation {
 
     setCurrentDay(day) {
         this.currentDay = day;
+    }
+
+    setMonth(month) {
+        this.month = month;
+    }
+
+    getMonth() {
+        return this.month;
     }
 
     setExpenseColour(colour) {

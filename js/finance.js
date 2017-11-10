@@ -323,6 +323,7 @@ class Finance extends BaseApp {
             for(let i=0; i<MAX_GROUPS; ++i) {
                 monthReps.push(new ExpendRepresentation());
                 monthReps[i].setName("monthGroup" + i);
+                monthReps[i].setMonth(currentDate.month - i);
                 group = monthReps[i].generateRepresentations(repInfo);
                 this.topGroup.add(group);
                 group.position.y = groupOffsets[i].y;
@@ -562,7 +563,7 @@ class Finance extends BaseApp {
         //console.log("End = ", this.sceneMoveEnd);
     }
 
-    nextMonth() {
+    previousMonth() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving || this.sceneRotating) return;
 
@@ -572,11 +573,13 @@ class Finance extends BaseApp {
 
         let previousGroup = this.monthReps[this.currentGroup];
         previousGroup.clearSelection();
-        this.currentDate.month++;
         if(++this.currentGroup >= MAX_GROUPS) {
             this.currentGroup = 0;
         }
+
         let currentGroup = this.monthReps[this.currentGroup];
+        //Get month from group as we're only showing certain months
+        this.currentDate.month = currentGroup.getMonth();
         currentGroup.showWeek(this.currentDate.month, this.currentDate.week, true);
         let maxDays = DATES.daysPerMonth[this.currentDate.month]-1;
         if(this.currentDate.day >= maxDays) {
@@ -597,7 +600,7 @@ class Finance extends BaseApp {
         this.updateMonthlyExpenditure(total);
     }
 
-    previousMonth() {
+    nextMonth() {
         if(this.expenseState !== EXPENSE_NOTHING) return;
         if(this.sceneMoving || this.sceneRotating) return;
 
@@ -612,6 +615,8 @@ class Finance extends BaseApp {
             this.currentGroup = MAX_GROUPS-1;
         }
         let currentGroup = this.monthReps[this.currentGroup];
+        //Get month from group as we're only showing certain months
+        this.currentDate.month = currentGroup.getMonth();
         currentGroup.showWeek(this.currentDate.month, this.currentDate.week, true);
         let maxDays = DATES.daysPerMonth[this.currentDate.month]-1;
         if(this.currentDate.day >= maxDays) {
