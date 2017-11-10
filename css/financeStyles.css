@@ -21,7 +21,10 @@ body {
     position: absolute;
     background-color: lightgrey;
     border-radius: 20px;
-    padding: 1%;
+    padding: 0.5% 1% 1% 1%;
+}
+.infoPanelLight p {
+    font-weight: bold;
 }
 .infoPanelDark {
     position: absolute;
