@@ -183,3 +183,39 @@ body {
 #copyright p {
     font-size: 2.75vw;
 }
+/* Media queries */
+@media (min-width: 568px) {
+    #expenseInfo {
+        width: 30%;
+    }
+    #dateSelector {
+        width: 20%;
+    }
+    #editSelector {
+        width: 20%;
+        top: 55%;
+    }
+    #zoomControls {
+        width: 12.5%;
+        bottom: 0.5%;
+        right: 0.5%;
+        top: auto;
+    }
+    #fileSelector {
+        width: 25%;
+        top: 0.5%;
+        right: 22.5%;
+    }
+    #fileSelector p {
+        margin: 0;
+    }
+    #instructions {
+        width: 7.5%;
+    }
+    #copyright {
+        left: 10%;
+    }
+    #copyright p {
+        font-size: 2vw;
+    }
+}
