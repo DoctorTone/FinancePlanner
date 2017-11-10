@@ -30,6 +30,7 @@ class BaseApp {
         this.clock.start();
         this.raycaster = new THREE.Raycaster();
         this.objectsPicked = false;
+        this.orientation = PORTRAIT;
     }
 
     init(container) {
@@ -40,6 +41,14 @@ class BaseApp {
         //this.stats = initStats();
         this.statsShowing = false;
         //$("#Stats-output").hide();
+    }
+
+    setMode(mode) {
+        this.orientation = mode;
+    }
+
+    getMode() {
+        return this.orientation;
     }
 
     createRenderer() {
@@ -118,6 +127,7 @@ class BaseApp {
         this.camera.updateProjectionMatrix();
 
         this.renderer.setSize( window.innerWidth, window.innerHeight);
+        this.fitToScreen();
     }
 
     createScene() {

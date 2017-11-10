@@ -75,6 +75,10 @@ class Finance extends BaseApp {
 
         //Views
         this.monthView = false;
+        this.portraitCamOffset = new THREE.Vector3(0, 745, 2300);
+        this.portraitLookAtOffset = new THREE.Vector3(0, 785, 0);
+        this.landscapeCamOffset = new THREE.Vector3(0, 430, 875);
+        this.landscapeLookAtOffset = new THREE.Vector3(0, 310, 0);
 
         //Zoom controls
         this.zoomingOut = false;
@@ -368,8 +372,10 @@ class Finance extends BaseApp {
     fitToScreen() {
         //If in portrait mode then move camera
         if(window.innerHeight > window.innerWidth) {
+            this.setMode(PORTRAIT);
             this.setCamera(PORTRAIT);
         } else {
+            this.setMode(LANDSCAPE);
             this.setCamera(LANDSCAPE);
         }
     }
@@ -852,7 +858,7 @@ class Finance extends BaseApp {
     toggleView() {
         this.monthView = !this.monthView;
         let buttonElem = $('#toggleView');
-        let group;
+        let group, mode = this.getMode();
         if(this.monthView) {
             buttonElem.html("Week view");
             for(let i=0; i<MAX_GROUPS; ++i) {
@@ -860,9 +866,13 @@ class Finance extends BaseApp {
                 group.showAllWeeks(this.currentDate, true);
             }
             this.topGroup.position.x = -this.weeklyGap * 1.75;
-            this.camera.position.set(0, 745, 2300);
-            let lookAt = new THREE.Vector3(0, 785, 0);
-            this.controls.setLookAt(lookAt);
+            if(mode === PORTRAIT) {
+                this.camera.position.copy(this.portraitCamOffset);
+                this.controls.setLookAt(this.portraitLookAtOffset);
+            } else {
+                this.camera.position.copy(this.landscapeCamOffset);
+                this.controls.setLookAt(this.landscapeLookAtOffset);
+            }
         } else {
             buttonElem.html("Month view");
             for(let i=0; i<MAX_GROUPS; ++i) {
@@ -871,8 +881,7 @@ class Finance extends BaseApp {
                 group.showWeek(this.currentDate.month, this.currentDate.week, true);
             }
             this.topGroup.position.x = -this.weeklyGap * this.currentDate.week;
-            this.camera.position.copy(DEFAULT_CAM_POS);
-            this.controls.setLookAt(DEFAULT_LOOKAT_POS);
+            this.fitToScreen();
         }
     }
 
