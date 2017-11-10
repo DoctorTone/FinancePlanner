@@ -22,6 +22,7 @@ class ExpenseManager {
         let currentExpense, currentDate;
         for(let i=0, numExpenses=this.expenses.length; i<numExpenses; ++i) {
             currentExpense = this.expenses[i];
+            if(currentExpense.length === 0) continue;
             currentDate = currentExpense[0].getDate();
             if(currentDate.year === date.year && currentDate.month === date.month && currentDate.day === date.day) {
                 return i;

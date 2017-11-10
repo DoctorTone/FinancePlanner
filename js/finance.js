@@ -702,7 +702,7 @@ class Finance extends BaseApp {
     showExpense() {
         //Show item values to edit
         let group = this.monthReps[this.currentGroup];
-        let expenses = this.expenseManager.getExpenses(group.getCurrentDate());
+        let expenses = this.expenseManager.getExpenses(this.currentDate);
         if(!expenses) {
             alert("No expenses for that day!");
             return;
@@ -803,24 +803,23 @@ class Finance extends BaseApp {
             alert("Please select an item");
             return;
         }
-        let group = this.monthReps[this.currentGroup];
         let currentDate = this.currentDate;
         this.expenseManager.deleteExpense(currentDate, this.expenseIndex);
-        let total = this.expenseManager.getDailyTotal(currentDate);
-        this.updateNode(currentDate, total);
-        this.updateExpenditure(total);
-        total = this.expenseManager.getMonthlyTotal(currentDate);
-        this.updateMonthlyExpenditure(total);
-
+        let dailyTotal = this.expenseManager.getDailyTotal(currentDate);
+        this.updateNode(currentDate, dailyTotal);
+        this.updateExpenditure(dailyTotal);
+        let monthlyTotal = this.expenseManager.getMonthlyTotal(currentDate);
+        this.updateMonthlyExpenditure(monthlyTotal);
         $('#expenseTableContainer').hide();
-        this.showExpense();
+        if(dailyTotal) {
+            this.showExpense();
+        }
         this.expenseIndex = -1;
     }
 
     populateAddForm() {
         $('#addFormTitle').html("Edit expense");
-        let group = this.monthReps[this.currentGroup];
-        let expense = this.expenseManager.getExpense(group.getCurrentDate(), this.expenseIndex);
+        let expense = this.expenseManager.getExpense(this.currentDate, this.expenseIndex);
         if(!expense) {
             console.log("No expense for that date");
             return;

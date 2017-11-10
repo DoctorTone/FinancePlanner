@@ -80,9 +80,9 @@ body {
     width: 90%;
 }
 #addFormContainer {
-    top:10%;
-    left:35%;
-    width: 30%;
+    top: 10%;
+    left: 20%;
+    width: 60%;
     z-index: 1;
     -webkit-touch-callout: none;
 }
@@ -105,11 +105,14 @@ body {
     color: red;
 }
 #expenseTableContainer {
-    top:10%;
-    left:35%;
-    width: 30%;
+    top: 10%;
+    left: 12.5%;
+    width: 75%;
     z-index: 0;
     -webkit-touch-callout: none;
+}
+#expenseTableContainer #options {
+    padding-left: 15%;
 }
 .selected {
     background-color: red;
