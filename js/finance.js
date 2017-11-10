@@ -18,8 +18,8 @@ const MAIN_HEIGHT = 60;
 const MAIN_DEPTH = 60;
 const MAX_GROUPS = 4;
 const WEEKLY_GAP = 245;
-const DEFAULT_CAM_POS = new THREE.Vector3(0, 100, 160);
-const DEFAULT_LOOKAT_POS = new THREE.Vector3(0, 85, 0);
+const DEFAULT_CAM_POS = new THREE.Vector3(0, 230, 500);
+const DEFAULT_LOOKAT_POS = new THREE.Vector3(0, 200, 0);
 const X_AXIS = 0;
 const Y_AXIS = 1;
 const ZOOM_SPEED = 20;
@@ -849,8 +849,8 @@ class Finance extends BaseApp {
                 group.showAllWeeks(this.currentDate, true);
             }
             this.topGroup.position.x = -this.weeklyGap * 1.75;
-            this.camera.position.set(0, 360, 860);
-            let lookAt = new THREE.Vector3(0, 286, 0);
+            this.camera.position.set(0, 745, 2300);
+            let lookAt = new THREE.Vector3(0, 785, 0);
             this.controls.setLookAt(lookAt);
         } else {
             buttonElem.html("Month view");
