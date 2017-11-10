@@ -185,15 +185,22 @@ body {
 }
 /* Media queries */
 @media (min-width: 568px) {
+    #controlKit {
+        display: none;
+    }
     #expenseInfo {
         width: 30%;
     }
     #dateSelector {
+        top: 0.5%;
         width: 20%;
+    }
+    #dateSelector p {
+        margin: 0;
     }
     #editSelector {
         width: 20%;
-        top: 55%;
+        top: 55.5%;
     }
     #editSelector p {
         margin: 0;
@@ -223,5 +230,16 @@ body {
     }
     #copyright p {
         font-size: 2vw;
+    }
+    #addFormContainer {
+        top: 0.5%;
+        left: 27.5%;
+        width: 45%;
+    }
+    .form-group {
+        margin-bottom: 1%;
+    }
+    #addFormTitle {
+        font-size: 3.5vw;
     }
 }
