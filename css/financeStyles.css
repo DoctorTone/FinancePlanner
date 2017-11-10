@@ -248,18 +248,18 @@ body {
         display: block;
     }
     #guiWidth {
-        width: 30%;
+        width: 37.5%;
     }
     #dateSelector {
         top: 5%;
         width: 25%;
     }
     #editSelector {
-        top: 25%;
+        top: 28%;
         width: 20%;
     }
     #fileSelector {
-        top: 35%;
+        top: 40%;
         right: 0.5%;
         width: 25%;
     }
@@ -278,6 +278,32 @@ body {
     #addFormContainer {
         width: 60%;
         left: 20%;
+        top: 15%;
+    }
+}
+@media (min-width: 768px) {
+    #expenseInfo {
+        width: 20%;
+    }
+    #dateSelector {
+        width: 17.5%;
+    }
+    #editSelector {
+        top: 45%;
+        width: 15%;
+    }
+    #zoomControls {
+        width: 10%;
+    }
+    #fileSelector {
+        width: 15%;
+    }
+    #fileSelector p {
+        padding: 0;
+    }
+    #expenseTableContainer {
+        width: 50%;
+        left: 25%;
         top: 15%;
     }
 }
