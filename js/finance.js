@@ -578,6 +578,13 @@ class Finance extends BaseApp {
         }
         let currentGroup = this.monthReps[this.currentGroup];
         currentGroup.showWeek(this.currentDate.month, this.currentDate.week, true);
+        let maxDays = DATES.daysPerMonth[this.currentDate.month]-1;
+        if(this.currentDate.day >= maxDays) {
+            this.currentDate.day = maxDays;
+            $('#dayNumber').html(DATES.dayNumbers[this.currentDate.day]);
+            let total = this.expenseManager.getDailyTotal(this.currentDate);
+            this.updateExpenditure(total);
+        }
         currentGroup.setCurrentDay(this.currentDate.day);
         currentGroup.setSelection(this.currentDate.day);
 
@@ -606,6 +613,16 @@ class Finance extends BaseApp {
         }
         let currentGroup = this.monthReps[this.currentGroup];
         currentGroup.showWeek(this.currentDate.month, this.currentDate.week, true);
+        let maxDays = DATES.daysPerMonth[this.currentDate.month]-1;
+        if(this.currentDate.day >= maxDays) {
+            this.currentDate.day = maxDays;
+            $('#dayNumber').html(DATES.dayNumbers[this.currentDate.day]);
+            let total = this.expenseManager.getDailyTotal(this.currentDate);
+            this.updateExpenditure(total);
+        }
+        if(this.currentDate.day > DATES.daysPerMonth[this.currentDate.month]) {
+            --this.currentDate.day;
+        }
         currentGroup.setCurrentDay(this.currentDate.day);
         currentGroup.setSelection(this.currentDate.day);
 
