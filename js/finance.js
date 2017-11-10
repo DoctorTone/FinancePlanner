@@ -650,6 +650,7 @@ class Finance extends BaseApp {
 
     addExpense() {
         this.expenseState = EXPENSE_ADD;
+        $('#errorText').html("");
         $('#addFormContainer').show();
     }
 
