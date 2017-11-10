@@ -195,11 +195,17 @@ body {
         width: 20%;
         top: 55%;
     }
+    #editSelector p {
+        margin: 0;
+    }
     #zoomControls {
         width: 12.5%;
         bottom: 0.5%;
         right: 0.5%;
         top: auto;
+    }
+    #zoomControls p {
+        margin: 0;
     }
     #fileSelector {
         width: 25%;

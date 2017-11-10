@@ -278,6 +278,8 @@ class Finance extends BaseApp {
         //Create scene
         super.createScene();
 
+        this.fitToScreen();
+
         //Main root group
         this.root = new THREE.Object3D();
         this.root.name = "rootGroup";
@@ -361,6 +363,15 @@ class Finance extends BaseApp {
         let plane = new THREE.Mesh(planeGeom, planeMat);
         plane.rotation.x = -Math.PI/2;
         this.addToScene(plane);
+    }
+
+    fitToScreen() {
+        //If in portrait mode then move camera
+        if(window.innerHeight > window.innerWidth) {
+            this.setCamera(PORTRAIT);
+        } else {
+            this.setCamera(LANDSCAPE);
+        }
     }
 
     update() {

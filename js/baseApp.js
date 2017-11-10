@@ -2,6 +2,12 @@
  * Created by atg on 14/05/2014.
  */
 //Common baseline for visualisation app
+const PORTRAIT = 0;
+const LANDSCAPE = 1;
+const CAM_POS_PORTRAIT_X = 0, CAM_POS_PORTRAIT_Y = 230, CAM_POS_PORTRAIT_Z = 500;
+const CAM_POS_LANDSCAPE_X = 0, CAM_POS_LANDSCAPE_Y = 125, CAM_POS_LANDSCAPE_Z = 265;
+const LOOK_POS_PORTRAIT_X = 0, LOOK_POS_PORTRAIT_Y = 200, LOOK_POS_PORTRAIT_Z = 0;
+const LOOK_POS_LANDSCAPE_X = 0, LOOK_POS_LANDSCAPE_Y = 110, LOOK_POS_LANDSCAPE_Z = 0;
 
 class BaseApp {
     constructor() {
@@ -147,11 +153,13 @@ class BaseApp {
     }
 
     createCamera() {
-        const CAM_X = 0, CAM_Y = 230, CAM_Z = 500;
-        const NEAR_PLANE = 0.1, FAR_PLANE = 5000;
-        this.defaultCamPos = new THREE.Vector3(CAM_X, CAM_Y, CAM_Z);
+        let camPortrait = new THREE.Vector3(CAM_POS_PORTRAIT_X, CAM_POS_PORTRAIT_Y, CAM_POS_PORTRAIT_Z);
+        let camLandscape = new THREE.Vector3(CAM_POS_LANDSCAPE_X, CAM_POS_LANDSCAPE_Y, CAM_POS_LANDSCAPE_Z);
+        const NEAR_PLANE = 0.1, FAR_PLANE = 20000;
         this.camera = new THREE.PerspectiveCamera(45, this.container.clientWidth / window.innerHeight, NEAR_PLANE, FAR_PLANE );
-        this.camera.position.copy(this.defaultCamPos);
+        this.camera.position.copy(camPortrait);
+        this.camPortrait = camPortrait;
+        this.camLandscape = camLandscape;
     }
 
     createControls() {
@@ -172,14 +180,19 @@ class BaseApp {
 
         this.controls.keys = [ 65, 83, 68 ];
 
-        const LOOK_X = 0, LOOK_Y = 200, LOOK_Z = 0;
-        let lookAt = new THREE.Vector3(LOOK_X, LOOK_Y, LOOK_Z);
-        this.controls.setLookAt(lookAt);
+        let lookAtPortrait = new THREE.Vector3(LOOK_POS_PORTRAIT_X, LOOK_POS_PORTRAIT_Y, LOOK_POS_PORTRAIT_Z);
+        let lookAtLandscape = new THREE.Vector3(LOOK_POS_LANDSCAPE_X, LOOK_POS_LANDSCAPE_Y, LOOK_POS_LANDSCAPE_Z);
+
+        this.controls.setLookAt(lookAtPortrait);
+        this.lookAtPortrait = lookAtPortrait;
+        this.lookAtLandscape = lookAtLandscape;
     }
 
-    setCamera(cameraProp) {
-        this.camera.position.set(cameraProp[0].x, cameraProp[0].y, cameraProp[0].z);
-        this.controls.setLookAt(cameraProp[1]);
+    setCamera(mode) {
+        let camPos = mode === PORTRAIT ? this.camPortrait : this.camLandscape;
+        this.camera.position.copy(camPos);
+        let lookAt = mode === PORTRAIT ? this.lookAtPortrait : this.lookAtLandscape;
+        this.controls.setLookAt(lookAt);
     }
 
     update() {
