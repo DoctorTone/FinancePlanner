@@ -66,14 +66,15 @@ gulp.task("copy", function() {
 });
 
 gulp.task("concatJS", function() {
-    gulp.src(["build/js/three86.min.js", "build/js/Detector.min.js", "build/js/jquery-1.11.2.min.js", "build/js/TrackballControls.min.js", "build/js/bootstrap.min.js", "build/js/baseApp.min.js", "build/js/dataLoader.min.js",
-        "build/js/spriteManager.min.js", "build/js/visNode.min.js", "build/js/spriteManager.min.js", "build/js/controlKit.min.js", "build/js/visual.min.js"])
+    gulp.src(["build/js/jquery-1.11.2.min.js", "build/js/three86.min.js", "build/js/TrackballControls.min.js", "build/js/TrackballControls.min.js", "build/js/detector.min.js", "build/js/bootstrap.min.js", "build/js/spriteManager.min.js",
+        "build/js/dateInfo.min.js", "build/js/FileSaver.min.js", "build/js/dataJSONLoader.min.js", "build/js/baseApp.min.js", "build/js/expense.min.js", "build/js/controlKit.min.js",
+        "build/js/expenseManager.min.js", "build/js/expendRep.min.js", "build/js/finance.min.js"])
         .pipe(concat("build.min.js"))
         .pipe(gulp.dest("dist/js/"));
 });
 
 gulp.task("concatCSS", function() {
-    gulp.src(["build/css/visStyles.min.css", "build/css/bootstrap.min.css", "build/css/bootstrap-theme.min.css"])
+    gulp.src(["build/css/financeStyles.min.css", "build/css/bootstrap.min.css", "build/css/bootstrap-theme.min.css"])
         .pipe(concat("build.min.css"))
         .pipe(gulp.dest("dist/css/"));
 });

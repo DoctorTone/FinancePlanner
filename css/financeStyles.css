@@ -55,19 +55,19 @@ body {
     margin-bottom: 2%;
 }
 #editSelector {
-    top: 35%;
+    top: 39%;
     right: 1%;
     width: 40%;
     -webkit-touch-callout: none;
 }
 #fileSelector {
-    top: 47.5%;
+    top: 53.5%;
     right: 1%;
     width: 40%;
     -webkit-touch-callout: none;
 }
 #zoomControls {
-    top: 60%;
+    top: 68%;
     right: 2%;
     width: 20%;
     -webkit-touch-callout: none;
