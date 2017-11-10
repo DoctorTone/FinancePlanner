@@ -25,6 +25,7 @@ body {
 }
 .infoPanelLight p {
     font-weight: bold;
+    padding-left: 5%;
 }
 .infoPanelDark {
     position: absolute;
@@ -36,7 +37,7 @@ body {
 #dateSelector {
     top:7.5%;
     right: 1%;
-    width: 10%;
+    width: 40%;
     -webkit-touch-callout: none;
 }
 .selector button {
@@ -56,19 +57,19 @@ body {
 #editSelector {
     top: 35%;
     right: 1%;
-    width: 10%;
+    width: 40%;
     -webkit-touch-callout: none;
 }
 #fileSelector {
-    top: 50%;
+    top: 47.5%;
     right: 1%;
-    width: 10%;
+    width: 40%;
     -webkit-touch-callout: none;
 }
 #zoomControls {
-    top: 65%;
+    top: 60%;
     right: 2%;
-    width: 7.5%;
+    width: 20%;
     -webkit-touch-callout: none;
 }
 #zoomControls button {
@@ -88,7 +89,8 @@ body {
 #expenseInfo {
     top: 1%;
     left: 1%;
-    width: 15%;
+    width: 50%;
+    padding-left: 2.5%;
     -webkit-touch-callout: none;
 }
 .title {
