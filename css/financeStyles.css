@@ -340,6 +340,9 @@ body {
     }
 }
 @media (min-width: 1200px) {
+    #guiWidth {
+        width: 25%;
+    }
     #dateSelector {
         width: 15%;
     }
@@ -348,5 +351,46 @@ body {
     }
     #fileSelector {
         width: 12.5%;
+    }
+}
+@media (min-width: 1680px) {
+    #guiWidth {
+        width: 20%;
+    }
+    #expenseInfo {
+        width: 15%;
+    }
+    #dateSelector {
+        width: 10%;
+        right: 0.5%;
+    }
+    #editSelector {
+        width: 10%;
+        top: 27.5%;
+        right: 0.5%;
+    }
+    #fileSelector {
+        right: 0.5%;
+        width: 10%;
+        top: 37.5%;
+    }
+    #zoomControls {
+        width: 7.5%;
+    }
+    #zoomControls p {
+        font-size: 1vw;
+    }
+    #addFormContainer {
+        width: 30%;
+        left: 35%;
+        top: 10%;
+    }
+    #addFormTitle {
+        font-size: 2vw;
+    }
+    #expenseTableContainer {
+        width: 30%;
+        left: 35%;
+        top: 15%;
     }
 }
