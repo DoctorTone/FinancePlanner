@@ -309,12 +309,13 @@ body {
 }
 @media (min-width: 768px) and (orientation: portrait) {
     #editSelector {
-        top: 22.5%;
+        top: 23.5%;
         width: 17.5%;
     }
     #fileSelector {
         width: 17.5%;
         top: 32.5%;
+        right: 1.0%;
     }
     #zoomControls {
         width: 12.5%;
@@ -332,6 +333,6 @@ body {
     }
     #fileSelector {
         top: 50%;
-        right: 0.5%;
+        right: 1%;
     }
 }
