@@ -11,10 +11,10 @@ const DATE_LABEL = {
 };
 const EXPEND_LABEL = {
     X_OFFSET: 0,
-    Y_OFFSET: 11,
+    Y_OFFSET: 13.5,
     Z_OFFSET: 0
 };
-const LABEL_SCALE = new THREE.Vector3(30, 30, 1);
+const LABEL_SCALE = new THREE.Vector3(45, 45, 1);
 const EXPENSE_COLOURS = {
     DEFAULT: 0xfed600,
     SELECTED: 0xffffff,
@@ -30,6 +30,7 @@ const X_INC = 35;
 const START_WEEK_OFFSET = 7;
 const WEEK_OFFSET = 7;
 const BASE_OFFSET = 6;
+const NODE_SCALE = 1.5;
 
 class ExpendRepresentation {
     constructor() {
@@ -91,6 +92,7 @@ class ExpendRepresentation {
             node = new THREE.Mesh(geom, i===this.selectedNode ? this.expenseMatSelected : this.expenseMat);
             node.visible = false;
             node.position.set(START_POS_X+(X_INC*i), START_POS_Y, START_POS_Z);
+            node.scale.set(NODE_SCALE, NODE_SCALE, NODE_SCALE);
             this.nodes.push(node);
             this.group.add(node);
             pos.copy(node.position);
