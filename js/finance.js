@@ -961,6 +961,10 @@ $(document).ready(function() {
         $('#notSupported').show();
         return;
     }
+
+    //Show general info
+    $('#mainModal').modal();
+
     //Initialise app
     let container = document.getElementById("WebGL-output");
     let app = new Finance();
@@ -1077,6 +1081,10 @@ $(document).ready(function() {
 
     let elemList = ["zoomControls", "dateSelector", "editSelector", "fileSelector", "expenseInfo", "instructions", "copyright"];
     app.stopNotifications(elemList);
+
+    $('#instructions').on("click", () => {
+        $('#myModal').modal();
+    });
 
     app.run();
 });
