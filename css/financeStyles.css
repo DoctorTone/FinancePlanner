@@ -355,7 +355,7 @@ body {
 }
 @media (min-width: 1680px) {
     #guiWidth {
-        width: 20%;
+        width: 17.5%;
     }
     #expenseInfo {
         width: 15%;
@@ -366,7 +366,7 @@ body {
     }
     #editSelector {
         width: 10%;
-        top: 27.5%;
+        top: 28.5%;
         right: 0.5%;
     }
     #fileSelector {
@@ -374,23 +374,40 @@ body {
         width: 10%;
         top: 37.5%;
     }
+    #fileSelector p {
+        padding-left: 5%;
+    }
     #zoomControls {
-        width: 7.5%;
+        width: 6.5%;
     }
     #zoomControls p {
         font-size: 1vw;
+    }
+    #zoomControls button {
+        width: 40%;
     }
     #addFormContainer {
         width: 30%;
         left: 35%;
         top: 10%;
+        padding-right: 1%;
     }
     #addFormTitle {
         font-size: 2vw;
+        padding-left: 1%;
     }
     #expenseTableContainer {
         width: 30%;
         left: 35%;
         top: 15%;
+    }
+    .infoPanelLight {
+        padding: 0.5% 0;
+    }
+    #instructions {
+        width: 5%;
+    }
+    #copyright p {
+        font-size: 1vw;
     }
 }
