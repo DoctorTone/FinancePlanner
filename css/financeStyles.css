@@ -307,6 +307,19 @@ body {
         top: 15%;
     }
 }
+@media (min-width: 768px) and (orientation: portrait) {
+    #editSelector {
+        top: 22.5%;
+        width: 17.5%;
+    }
+    #fileSelector {
+        width: 17.5%;
+        top: 32.5%;
+    }
+    #zoomControls {
+        width: 12.5%;
+    }
+}
 @media (min-width: 992px) {
     #controlKit {
         display: block;
