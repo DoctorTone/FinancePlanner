@@ -308,6 +308,9 @@ body {
     }
 }
 @media (min-width: 768px) and (orientation: portrait) {
+    #expenseInfo {
+        width: 25%;
+    }
     #editSelector {
         top: 23.5%;
         width: 17.5%;
