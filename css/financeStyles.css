@@ -307,3 +307,18 @@ body {
         top: 15%;
     }
 }
+@media (min-width: 992px) {
+    #controlKit {
+        display: block;
+    }
+    #dateSelector {
+        top: 5%;
+    }
+    #editSelector {
+        top: 35%;
+    }
+    #fileSelector {
+        top: 50%;
+        right: 0.5%;
+    }
+}
