@@ -1037,7 +1037,11 @@ $(document).ready(function() {
         app.saveExpenses();
     });
 
-    $('#loadFile').on("change", evt => {
+    $('#loadFile').on("click", evt => {
+        $('#loadFileType').trigger('click');
+    });
+
+    $('#loadFileType').on("change", evt => {
         app.loadExpenses(evt);
     });
 
