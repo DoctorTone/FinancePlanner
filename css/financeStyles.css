@@ -128,14 +128,17 @@ body {
     z-index: 100;
 }
 #notSupported {
-    top: 20%;
+    top: 40%;
     left: 12.5%;
     width: 75%;
     background-color: #3e3e3e;
     color: white;
-    font-size: 1.25vw;
+    font-size: 2.5vw;
     border-radius: 15px;
     padding: 1%;
+}
+#notSupported p img {
+    width: 25%;
 }
 #guiWidth {
     position: absolute;
@@ -233,6 +236,13 @@ body {
     #addFormTitle {
         font-size: 3.5vw;
     }
+    #notSupported {
+        top: 35%;
+        font-size: 2.25vw;
+    }
+    #notSupported p img {
+        width: 20%;
+    }
 }
 @media (min-width: 568px) and (orientation: portrait) {
     #controlKit {
@@ -270,6 +280,13 @@ body {
         width: 60%;
         left: 20%;
         top: 15%;
+    }
+    #notSupported {
+        top: 35%;
+        font-size: 2.5vw;
+    }
+    #notSupported p img {
+        width: 25%;
     }
 }
 @media (min-width: 768px) {
@@ -314,6 +331,13 @@ body {
     #zoomControls {
         width: 12.5%;
     }
+    #notSupported {
+        top: 35%;
+        font-size: 2.75vw;
+    }
+    #notSupported p img {
+        width: 30%;
+    }
 }
 @media (min-width: 992px) {
     #controlKit {
@@ -342,6 +366,13 @@ body {
     }
     #fileSelector {
         width: 12.5%;
+    }
+    #notSupported {
+        top: 30%;
+        font-size: 2.25vw;
+    }
+    #notSupported p img {
+        width: 20%;
     }
 }
 @media (min-width: 1680px) {
@@ -400,5 +431,12 @@ body {
     }
     #copyright p {
         font-size: 1vw;
+    }
+    #notSupported {
+        top: 30%;
+        font-size: 1.75vw;
+    }
+    #notSupported p img {
+        width: 12.5%;
     }
 }
