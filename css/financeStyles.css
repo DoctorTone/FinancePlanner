@@ -170,12 +170,10 @@ body {
 }
 #copyright {
     left: 15%;
-    bottom: 1%;
+    bottom: 1.5%;
     color: white;
+    font-size: 3.5vw;
     -webkit-touch-callout: none;
-}
-#copyright p {
-    font-size: 2.75vw;
 }
 /* Media queries */
 @media (min-width: 568px) {
@@ -220,10 +218,8 @@ body {
         width: 7.5%;
     }
     #copyright {
-        left: 10%;
-    }
-    #copyright p {
-        font-size: 2vw;
+        left: 11%;
+        font-size: 2.25vw;
     }
     #addFormContainer {
         top: 0.5%;
@@ -271,9 +267,7 @@ body {
         width: 10%;
     }
     #copyright {
-        left: 15%;
-    }
-    #copyright p {
+        left: 12.5%;
         font-size: 2.75vw;
     }
     #addFormContainer {
@@ -314,6 +308,10 @@ body {
         left: 25%;
         top: 15%;
     }
+    #copyright {
+        left: 10%;
+        font-size: 2vw;
+    }
 }
 @media (min-width: 768px) and (orientation: portrait) {
     #expenseInfo {
@@ -337,6 +335,10 @@ body {
     }
     #notSupported p img {
         width: 30%;
+    }
+    #copyright {
+        left: 12%;
+        font-size: 2.5vw;
     }
 }
 @media (min-width: 992px) {
@@ -373,6 +375,10 @@ body {
     }
     #notSupported p img {
         width: 20%;
+    }
+    #copyright {
+        left: 7.5%;
+        font-size: 1.5vw;
     }
 }
 @media (min-width: 1680px) {
@@ -429,8 +435,8 @@ body {
     #instructions {
         width: 4.5%;
     }
-    #copyright p {
-        font-size: 1vw;
+    #copyright {
+        font-size: 1.25vw;
     }
     #notSupported {
         top: 30%;
