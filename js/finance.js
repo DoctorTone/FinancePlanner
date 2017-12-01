@@ -171,10 +171,6 @@ class Finance extends BaseApp {
                     .addSlider(labelConfig, "amountWidth", "amountWidthRange", { label: "Width", dp: 1, onChange: () => {
                         this.onAmountLabelScale(X_AXIS, labelConfig.amountWidth);
                     }})
-                .addSubGroup({label: "Nodes", enable: false})
-                    .addSlider(nodeConfig, "nodeScale", "nodeScaleRange", { label: "Height", dp: 1, onChange: () => {
-                        this.nodeHeightChanged(nodeConfig.nodeScale);
-                    }})
                 .addSubGroup({label: "Preferences"})
                     .addButton("Save", () => {
                         for(let prop in saveConfig) {
@@ -831,6 +827,8 @@ class Finance extends BaseApp {
         $('#expenseTableContainer').hide();
         if(dailyTotal) {
             this.showExpense();
+        } else {
+            this.expenseState = EXPENSE_NOTHING;
         }
         this.expenseIndex = -1;
     }
@@ -850,7 +848,7 @@ class Finance extends BaseApp {
     updateNode(date, total) {
         let group = this.monthReps[this.currentGroup];
         let label = spriteManager.getSpriteByDate(date.day, this.currentGroup);
-        label.position.y = this.labelOffset + total;
+        label.position.y = this.labelOffset + total + 10;
         spriteManager.setTextAmount(label, total);
         group.updateNode(date, total);
     }

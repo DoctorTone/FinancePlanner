@@ -11,7 +11,7 @@ const DATE_LABEL = {
 };
 const EXPEND_LABEL = {
     X_OFFSET: 0,
-    Y_OFFSET: 13.5,
+    Y_OFFSET: 17.5,
     Z_OFFSET: 0
 };
 const LABEL_SCALE = new THREE.Vector3(45, 45, 1);
@@ -222,6 +222,7 @@ class ExpendRepresentation {
         for(let i=0, numStands=this.stands.length; i<numStands; ++i) {
             this.stands[i].scale.y = newScale;
             this.stands[i].position.y = newScale/2;
+            this.nodes[i].position.y = START_POS_Y + newScale;
         }
     }
 }

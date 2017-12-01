@@ -181,7 +181,7 @@ var spriteManager = (function () {
             var offset = (CANVAS_WIDTH - (textWidth + defaultBorderThickness))/2;
 
             context.clearRect(0, 0, canvas.width, canvas.height);
-            context.fillText(amount, defaultBorderThickness + offset, currentFontSize + defaultBorderThickness);
+            context.fillText(amount, defaultBorderThickness + offset, CANVAS_HEIGHT/2 + currentFontSize/2);
             labels[i].material.map.needsUpdate = true;
         }
     };
