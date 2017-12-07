@@ -10,7 +10,7 @@ Just go to www.drt-software.com and select from the demo section.
 Select a particular day from the date controls.
 Select Add expense and fill in the necessary details and click submit.
 You'll now see the column for the day grow by the specified amount.
-You can add or edit data for any day over the last four months.
+You can add/edit/delete data for any day over the last four months.
 You can select each day/week/month via the controls.
 You can see the spending pattern for the whole month if you toggle the view.
 
