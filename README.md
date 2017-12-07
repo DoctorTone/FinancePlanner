@@ -1,8 +1,23 @@
 # FinancePlanner
-The app keeps a track of everyday expenditure and visualises the details.<br>
-To use:-<br>
-Select a date and add a new amount and description.
-Click submit and you'll see the column for that day go by the designated amount.
-You can add any amounts for each day and you'll see a visualisation of your expenditure for the week and for the last few months.<br>
-Makes use of the three.js library.<br>
-To utilise, go to www.drt-software.com and select from the demo section.
+The app keeps a track of everyday expenditure and visualises the details.
+
+## Installation
+
+Just go to www.drt-software.com and select from the demo section.
+
+## Usage
+
+Select a particular day from the date controls.
+Select Add expense and fill in the necessary details and click submit.
+You'll now see the column for the day grow by the specified amount.
+You can add or edit data for any day over the last four months.
+You can select each day/week/month via the controls.
+You can see the spending pattern for the whole month if you toggle the view.
+
+## Credits
+
+The application makes use of the three.js library.
+
+## License
+
+Free to use according to the MIT license. Please tell others where you got it from!!
